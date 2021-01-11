@@ -1,7 +1,6 @@
 package common.src.main;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -12,6 +11,7 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 import org.jspace.SequentialSpace;
+import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
 public class SecretHitler {
@@ -20,153 +20,106 @@ public class SecretHitler {
 		try {
 			
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-            Console cnsl = System.console();
+
+            // Read user name from the console			
+			System.out.print("Enter your name: ");
+			String name = input.readLine();
 
             System.out.print("Do you wish to create a game, or join existing game? [.create/.join]: ");
             String cmd = input.readLine();
+            Boolean started = false;
 
-            switch(cmd) {
-                case ".create":
-                    gameCreate(input, cnsl);
-
-                    break;
-                case ".join":
-                    gameJoin(input, cnsl);
-
-                    break;
+            while(!started) {
+                switch(cmd) {
+                    case ".create":
+                        started = true;
+                        gameCreate(input, name);
+                        break;
+                    case ".join":
+                        started = true;
+                        gameJoin(input, name);
+                        break;
+                    default:
+                        System.out.println("Do you wish to create a game, or join existing game? [.create/.join]: ");
+                        break;
+                }
             }
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
     
-    public static void gameCreate(BufferedReader in, Console console) {
+    public static void gameCreate(BufferedReader in, String name) {
+        String userName = name;
         try {
             // Create a repository 
 			SpaceRepository repository = new SpaceRepository();
 
 			// Create a local space for the chat messages
-			SequentialSpace chat = new SequentialSpace();
+            SequentialSpace chat = new SequentialSpace();
+            SequentialSpace users = new SequentialSpace();
 
 			// Add the space to the repository
-			repository.add("chat", chat);
+            repository.add("chat", chat);
+            repository.add("users", users);
 			
 			// Set the URI of the chat space
-			System.out.print("Enter URI of the chat server or press enter for default: ");
-			String uri = in.readLine();
+			System.out.print("Enter IP and port of the game server or press enter for default [IP:port]: ");
+            String IP_Port = in.readLine();
+            String protocol = "tcp://";
+
             // Default value
             // stationær intern ip: "tcp://192.168.68.112:9001/chat?keep"
             // localhost: "tcp://127.0.0.1:9001/?keep"
-			if (uri.isEmpty()) { 
-				uri = "tcp://192.168.68.112:9001/chat?keep";
-			}
+			if (IP_Port.isEmpty()) { 
+                IP_Port = "192.168.68.112:9001";
+            }
 
 			// Open a gate
-			URI myUri = new URI(uri);
-			String gateUri = "tcp://" + myUri.getHost() + ":" + myUri.getPort() +  "?keep" ;
-			System.out.println("Opening repository gate at " + gateUri + "...");
-            repository.addGate(gateUri);
+			String gateURI = protocol + IP_Port + "/?keep";
+			System.out.println("Opening repository gate at " + gateURI + "...");
+            repository.addGate(gateURI);
             System.out.println("Gate added");
 
-            // Read user name from the console			
-			System.out.print("Enter your name: ");
-			String name = in.readLine();
+            chat.put("lock", 0);
+            users.put("lock", 0);
 
-            // Keep sending whatever the user types
-            int i = 0;
-            String message;
-            System.out.println("Start chatting...");
-            chat.put("lock", i);
-			while(true) {
-                try {
-                    console.flush();
-                    Object[] t = chat.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(i));
-                    if (t != null) {
-                        System.out.println(t[0] + ": " + t[1] + ": " + t[2]);
-                        i++;
-                    }
-                    
-                    if (in.ready() && (message = in.readLine()) != null) {
-                        t = chat.get(new ActualField("lock"), new FormalField(Integer.class));
-                        i = (int)t[1];
-                        chat.put(name, message, i);
-                        System.out.println(name + ": " + message + ": " + i);
-                        i++;
-                        chat.put("lock", i);
-                    }
-                    
-                } catch (Exception e) {
-                    //TODO: handle exception
-                }
-			}
+            chatController(chat, users, in, userName);
         } catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
     }
 
-    public static void gameJoin(BufferedReader in, Console console) {
+    public static void gameJoin(BufferedReader in, String name) {
+        String userName = name;
         try {
 			// Set the URI of the chat space
 			// Default value
-			System.out.print("Enter URI of the chat server or press enter for default: ");
-			String uri = in.readLine();
+			// Set the URI of the chat space
+			System.out.print("Enter IP and port of the game server or press enter for default [IP:port]: ");
+            String IP_Port = in.readLine();
+            String protocol = "tcp://";
+            String chatSpace = "/chat?keep";
+            String userSpace = "/users?keep";
             // Default value
             // localhost: "tcp://127.0.0.1:9001/?keep"
             // router extern port forwarded IP: "tcp://212.237.106.43:9001/chat?keep"
-			if (uri.isEmpty()) { 
-				uri = "tcp://212.237.106.43:9001/chat?keep";
-			}
+			if (IP_Port.isEmpty()) { 
+                IP_Port = "212.237.106.43:9001";
+            }
+            
+            String chatURI = protocol + IP_Port + chatSpace;
+            String userURI = protocol + IP_Port + userSpace;
 
 			// Connect to the remote chat space 
-			System.out.println("Connecting to chat space " + uri + "...");
-			RemoteSpace chat = new RemoteSpace(uri);
-
-			// Read user name from the console			
-			System.out.print("Enter your name: ");
-			String name = in.readLine();
-
-            // Keep sending whatever the user types
-            int i = 0;
-            String message;
-            System.out.println("Start chatting...");
-            try {
-                Object[] initId = chat.get(new ActualField("lock"), new FormalField(Integer.class));
-                i = (int)initId[1];
-                chat.put(name, name + " has joined the chat", i);
-                i++;
-            } catch (Exception e) {
-                //TODO: handle exception
-            }
-			while(true) {
-                try {
-                    //console.flush();
-                    Object[] t = chat.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(i));
-                    if (t != null) {
-                        System.out.println(t[0] + ": " + t[1] + ": " + t[2]);
-                        i++;
-                    }
-
-                    if (in.ready() && (message = in.readLine()) != null) {
-                        t = chat.get(new ActualField("lock"), new FormalField(Integer.class));
-                        i = (int)t[1];
-                        chat.put(name, message, i);
-                        System.out.println(name + ": " + message + ": " + i);
-                        i++;
-                        chat.put("lock", i);
-                    }
-                    
-                } catch (Exception e) {
-                    //TODO: handle exception
-                }
-			}			
+			System.out.println("Connecting to chat space " + chatURI + "...");
+            RemoteSpace chat = new RemoteSpace(chatURI);
+            RemoteSpace users = new RemoteSpace(userURI);
+            chatController(chat, users, in, userName);		
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,6 +128,50 @@ public class SecretHitler {
 			e.printStackTrace();
 		}
 
+    }
+
+    public static void chatController(Space chat, Space users, BufferedReader in, String name) {
+        String userName = name;
+        // Keep sending whatever the user types
+        int chatId = 0;
+        int userId = 0;
+        String message;
+        System.out.println("Start chatting...");
+        try {
+            Object[] user = users.get(new ActualField("lock"), new FormalField(Integer.class));
+            Object[] initId = chat.query(new ActualField("lock"), new FormalField(Integer.class));
+            chatId = (int)initId[1];
+            userId = (int)user[1];
+            users.put("join", userName, userId);
+            userId++;
+            users.put("lock", userId);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        try {
+		    while(true) {
+                Object[] newUser = users.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(userId));
+                Object[] newChat = chat.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
+                if (newChat != null) {
+                    System.out.println(newChat[0] + ": " + newChat[1] + ": " + newChat[2]);
+                    chatId++;
+                }
+                if (newUser != null) {
+                    System.out.println(newUser[1] + " has joined the game!");
+                    userId++;
+                }
+                if (in.ready() && (message = in.readLine()) != null) {
+                    newChat = chat.get(new ActualField("lock"), new FormalField(Integer.class));
+                    chatId = (int)newChat[1];
+                    chat.put(userName, message, chatId);
+                    System.out.println(userName + ": " + message);
+                    chatId++;
+                    chat.put("lock", chatId);
+                }
+            } 
+        } catch (Exception e) {
+        //TODO: handle exception
+        }
     }
     
 }

@@ -4,5 +4,10 @@
         "**/.project": true,
         "**/.settings": true,
         "**/.factorypath": true
-    }
+    },
+    
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "C:\\Users\\Elias\\Downloads\\jlayer1.0.1\\JLayer1.0.1\\jl1.0.1.jar"
+    ]
 }

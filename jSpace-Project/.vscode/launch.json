@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch SecretHitler",
+            "request": "launch",
+            "mainClass": "common.src.main.SecretHitler",
+            "projectName": "jSpace-Project"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

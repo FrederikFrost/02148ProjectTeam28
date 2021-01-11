@@ -1,0 +1,11 @@
+Program struktur
+ - En version af spillet
+	- Man kan enten vælge 'create game' eller 'join game'
+	- Når et spil laves bliver en 'koordinator' initialiseret til at styre spillet
+	
+	
+Features:
+- chatroom på spil
+	- all-chat
+- anonym voting
+- character power

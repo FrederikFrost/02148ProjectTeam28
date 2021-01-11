@@ -3,8 +3,6 @@ package common.src.main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.jspace.ActualField;
@@ -26,10 +24,10 @@ public class SecretHitler {
 			String name = input.readLine();
 
             System.out.print("Do you wish to create a game, or join existing game? [.create/.join]: ");
-            String cmd = input.readLine();
             Boolean started = false;
 
             while(!started) {
+                String cmd = input.readLine();
                 switch(cmd) {
                     case ".create":
                         started = true;
@@ -40,7 +38,7 @@ public class SecretHitler {
                         gameJoin(input, name);
                         break;
                     default:
-                        System.out.println("Do you wish to create a game, or join existing game? [.create/.join]: ");
+                        System.out.print("Do you wish to create a game, or join existing game? [.create/.join]: ");
                         break;
                 }
             }

@@ -8,8 +8,25 @@ import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.PlainDocument;
 import javax.swing.text.BadLocationException;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionListener;
 
 public class Menu {
+
+    static String      appName     = "Secret Hitler Chat";
+    static MainGUI     mainGUI;
+    static JFrame      newFrame    = new JFrame(appName);
+    static JButton sendMessage;
+    static JTextField  messageBox;
+    static JTextArea   chatBox;
+    static JTextField  usernameChooser;
+    static JFrame      preFrame;
+    static String      username;
     public static SecretHitlerV2 game;
 	public static void display() {
         JFrame frame = new JFrame("Secret Hitler");
@@ -47,8 +64,10 @@ public class Menu {
                 frame.dispose();
                 String name = JOptionPane.showInputDialog(frame, "What is your name?");
                 game.setUser(name);
-                String IP_Port = JOptionPane.showInputDialog(frame, "What is your name?", "192.168.68.112:9001");
+                username = name;
+                String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                 game.gameCreate(IP_Port);
+                chatDisplay();
                 System.out.println("Created Game");
             } 
             });  
@@ -113,6 +132,68 @@ public class Menu {
         cgFrame.pack();
         cgFrame.setVisible(true);
     }
+
+    public static void chatDisplay() {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel southPanel = new JPanel();
+        southPanel.setBackground(Color.BLUE);
+        southPanel.setLayout(new GridBagLayout());
+
+        messageBox = new JTextField(30);
+        messageBox.requestFocusInWindow();
+
+        sendMessage = new JButton("Send Message");
+        sendMessage.addActionListener(new sendMessageButtonListener());
+
+        chatBox = new JTextArea();
+        chatBox.setEditable(false);
+        chatBox.setFont(new Font("Serif", Font.PLAIN, 15));
+        chatBox.setLineWrap(true);
+
+        mainPanel.add(new JScrollPane(chatBox), BorderLayout.CENTER);
+
+        GridBagConstraints left = new GridBagConstraints();
+        left.anchor = GridBagConstraints.LINE_START;
+        left.fill = GridBagConstraints.HORIZONTAL;
+        left.weightx = 512.0D;
+        left.weighty = 1.0D;
+
+        GridBagConstraints right = new GridBagConstraints();
+        right.insets = new Insets(0, 10, 0, 0);
+        right.anchor = GridBagConstraints.LINE_END;
+        right.fill = GridBagConstraints.NONE;
+        right.weightx = 1.0D;
+        right.weighty = 1.0D;
+
+        southPanel.add(messageBox, left);
+        southPanel.add(sendMessage, right);
+
+        mainPanel.add(BorderLayout.SOUTH, southPanel);
+
+        newFrame.add(mainPanel);
+        newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        newFrame.setSize(470, 300);
+        newFrame.setVisible(true);
+    }
+
+    static class sendMessageButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if (messageBox.getText().length() < 1) {
+                // do nothing
+            } else if (messageBox.getText().equals(".clear")) {
+                chatBox.setText("Cleared all messages\n");
+                messageBox.setText("");
+            } else {
+                chatBox.append("<" + username + ">:  " + messageBox.getText()
+                        + "\n");
+                messageBox.setText("");
+            }
+            messageBox.requestFocusInWindow();
+        }
+    }
+
 	public static void main(String[] args) {
         game = new SecretHitlerV2();
         display();

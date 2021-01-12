@@ -1,9 +1,13 @@
 package common.src.main;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.BadLocationException;
 
 public class Menu {
     public static SecretHitlerV2 game;
@@ -39,12 +43,14 @@ public class Menu {
     // ACTION LISTENERS
         createGame.addActionListener(new AbstractAction(){  
             public void actionPerformed(ActionEvent e){
+                frame.setVisible(false);
+                frame.dispose();
                 String name = JOptionPane.showInputDialog(frame, "What is your name?");
                 game.setUser(name);
                 String IP_Port = JOptionPane.showInputDialog(frame, "What is your name?", "192.168.68.112:9001");
                 game.gameCreate(IP_Port);
                 System.out.println("Created Game");
-            }  
+            } 
             });  
 
         joinGame.addActionListener(new AbstractAction(){  
@@ -74,13 +80,31 @@ public class Menu {
         
 		
     }
-    
-    public static void createGameFrame(){
+
+    static class JTextFieldLimit extends PlainDocument {
+        private int limit;
+        JTextFieldLimit(int limit) {
+          super();
+          this.limit = limit;
+        }
+      
+        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+          if (str == null)
+            return;
+      
+          if ((getLength() + str.length()) <= limit) {
+            super.insertString(offset, str, attr);
+          }
+        }
+      }
+
+      public static void createGameFrame(){
         JFrame cgFrame = new JFrame("Secret Hitler");
         JPanel cgPanel = new JPanel();
         JButton submitGameId = new JButton("Search for game");
         JLabel gameId = new JLabel("Enter Game ID");
         JTextField gameIdField = new JTextField(6);
+        gameIdField.setDocument(new JTextFieldLimit(6));
         cgPanel.add(gameId);
         cgPanel.add(gameIdField);
         cgPanel.add(submitGameId);

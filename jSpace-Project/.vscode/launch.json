@@ -6,13 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch SecretHitler",
-            "request": "launch",
-            "mainClass": "common.src.main.SecretHitler",
-            "projectName": "jSpace-Project"
-        },
-        {
-            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -21,14 +14,21 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "mainClass": "App",
-            "projectName": "jSpace-Project_3d47eb9e"
+            "mainClass": "common.src.main.App",
+            "projectName": "jSpace-Project"
         },
         {
             "type": "java",
-            "name": "Launch App(1)",
+            "name": "Launch Menu",
             "request": "launch",
-            "mainClass": "common.src.main.App",
+            "mainClass": "common.src.main.Menu",
+            "projectName": "jSpace-Project"
+        },
+        {
+            "type": "java",
+            "name": "Launch SecretHitler",
+            "request": "launch",
+            "mainClass": "common.src.main.SecretHitler",
             "projectName": "jSpace-Project"
         }
     ]

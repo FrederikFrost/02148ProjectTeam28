@@ -34,7 +34,8 @@ public class Menu {
         frame.pack();
 
         System.out.println(frame.getHeight() + " " +  frame.getWidth());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     // ACTION LISTENERS
@@ -70,7 +71,13 @@ public class Menu {
 
         
 		
-	}
+    }
+    
+    public static void createGameFrame(){
+        JFrame cgFrame = new JFrame("Secret Hitler");
+
+
+    }
 	public static void main(String[] args) {
         display();
         

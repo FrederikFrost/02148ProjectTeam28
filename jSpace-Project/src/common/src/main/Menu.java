@@ -38,6 +38,7 @@ public class Menu {
     // ACTION LISTENERS
         createGame.addActionListener(new AbstractAction(){  
             public void actionPerformed(ActionEvent e){  
+                    createGameFrame();
                     System.out.println("Created Game");
             }  
             });  
@@ -72,8 +73,17 @@ public class Menu {
     
     public static void createGameFrame(){
         JFrame cgFrame = new JFrame("Secret Hitler");
-
-
+        JPanel cgPanel = new JPanel();
+        JButton submitGameId = new JButton("Search for game");
+        JLabel gameId = new JLabel("Enter Game ID");
+        JTextField gameIdField = new JTextField(6);
+        cgPanel.add(gameId);
+        cgPanel.add(gameIdField);
+        cgPanel.add(submitGameId);
+        cgFrame.add(cgPanel);
+        cgFrame.setLocationRelativeTo(null);
+        cgFrame.pack();
+        cgFrame.setVisible(true);
     }
 	public static void main(String[] args) {
         display();

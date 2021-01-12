@@ -49,7 +49,8 @@ public class Menu {
                 game.setUser(name);
                 String IP_Port = JOptionPane.showInputDialog(frame, "What is your name?", "192.168.68.112:9001");
                 game.gameCreate(IP_Port);
-                System.out.println("Created Game");
+                createGameFrame();
+
             } 
             });  
 
@@ -99,19 +100,19 @@ public class Menu {
       }
 
       public static void createGameFrame(){
-        JFrame cgFrame = new JFrame("Secret Hitler");
-        JPanel cgPanel = new JPanel();
-        JButton submitGameId = new JButton("Search for game");
-        JLabel gameId = new JLabel("Enter Game ID");
-        JTextField gameIdField = new JTextField(6);
-        gameIdField.setDocument(new JTextFieldLimit(6));
-        cgPanel.add(gameId);
-        cgPanel.add(gameIdField);
-        cgPanel.add(submitGameId);
-        cgFrame.add(cgPanel);
-        cgFrame.setLocationRelativeTo(null);
-        cgFrame.pack();
-        cgFrame.setVisible(true);
+        JFrame gFrame = new JFrame("Secret Hitler");
+        JPanel gPanel = new JPanel();
+        JTextArea chat = new JTextArea(20,20);
+        JTextField textField = new JTextField("Start chatting", 6);
+        JButton startButton = new JButton("Start game");
+        textField.setDocument(new JTextFieldLimit(40));
+        gPanel.add(chat);
+        gPanel.add(textField);
+        gPanel.add(startButton);
+        gFrame.add(gPanel);
+        gFrame.setLocationRelativeTo(null);
+        gFrame.pack();
+        gFrame.setVisible(true);
     }
 	public static void main(String[] args) {
         game = new SecretHitlerV2();

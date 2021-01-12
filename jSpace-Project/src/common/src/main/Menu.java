@@ -1,10 +1,7 @@
 package common.src.main;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
-//import javazoom.jl.player.*;
-import java.io.FileInputStream;
 
 import javax.swing.*;
 

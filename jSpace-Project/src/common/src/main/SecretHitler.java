@@ -174,7 +174,7 @@ public class SecretHitler {
 
             } 
         } catch (Exception e) {
-        //TODO: handle exception lololol
+        //TODO: handle Frederik toxicness
         }
     }
     

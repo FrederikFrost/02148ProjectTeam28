@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class Menu {
+    public static SecretHitlerV2 game;
 	public static void display() {
         JFrame frame = new JFrame("Secret Hitler");
         frame.getContentPane().setLayout(new FlowLayout());
@@ -37,9 +38,12 @@ public class Menu {
 
     // ACTION LISTENERS
         createGame.addActionListener(new AbstractAction(){  
-            public void actionPerformed(ActionEvent e){  
-                    createGameFrame();
-                    System.out.println("Created Game");
+            public void actionPerformed(ActionEvent e){
+                String name = JOptionPane.showInputDialog(frame, "What is your name?");
+                game.setUser(name);
+                String IP_Port = JOptionPane.showInputDialog(frame, "What is your name?", "192.168.68.112:9001");
+                game.gameCreate(IP_Port);
+                System.out.println("Created Game");
             }  
             });  
 
@@ -86,6 +90,7 @@ public class Menu {
         cgFrame.setVisible(true);
     }
 	public static void main(String[] args) {
+        game = new SecretHitlerV2();
         display();
         
     }

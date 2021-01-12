@@ -59,18 +59,17 @@ public class SecretHitlerV2 {
             //create and start game coordinator
             controller = new GameController(_chatSpace, _userSpace, _gameSpace);
             new Thread(controller).start();
+            gameInit();
         } catch (InterruptedException e) {
 			e.printStackTrace();
         }
     }
 
-    public static void gameJoin() {
+    public void gameJoin(String IP_Port) {
         try {
 			// Set the URI of the chat space
 			// Default value
 			// Set the URI of the chat space
-			System.out.print("Enter IP and port of the game server or press enter for default [IP:port]: ");
-            String IP_Port = _reader.readLine();
             String protocol = "tcp://";
             String chatSpace = "/chat?keep";
             String userSpace = "/users?keep";
@@ -78,9 +77,6 @@ public class SecretHitlerV2 {
             // Default value
             // localhost: "tcp://127.0.0.1:9001/?keep"
             // router extern port forwarded IP: "tcp://212.237.106.43:9001/chat?keep"
-			if (IP_Port.isEmpty()) { 
-                IP_Port = "212.237.106.43:9001";
-            }
             
             String chatURI = protocol + IP_Port + chatSpace;
             String userURI = protocol + IP_Port + userSpace;
@@ -91,21 +87,20 @@ public class SecretHitlerV2 {
             _chatSpace =  new RemoteSpace(chatURI);
             _userSpace = new RemoteSpace(userURI);
             _gameSpace = new RemoteSpace(gameURI);
-            gameInit();		
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            gameInit();
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        //TODO: ERROR handling - wrong written ip fx
+        // TODO: ERROR handling - wrong written ip fx
 
     }
 
     public static void gameInit() {
         // Keep sending whatever the user types
-        System.out.println("Start chatting...");
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
             Object[] initId = _chatSpace.query(new ActualField("lock"), new FormalField(Integer.class));
@@ -117,22 +112,23 @@ public class SecretHitlerV2 {
         } catch (Exception e) {
             //TODO: handle exception
         }
+    }
 
+    public void sendMessage(String msg, ChatHandler chatHandler) {
         try {
-		    while(true) {
-
-                //event getCard
-
-
-                //handle chat
-                chatHandler();
-
-            } 
+            Object[] newChat = _chatSpace.get(new ActualField("lock"), new FormalField(Integer.class));
+            int newChatId = (int)newChat[1];
+            chatHandler.incChatId();
+            _chatSpace.put(_user.Name(), msg, newChatId);
+            System.out.println(_user.Name() + ": " + msg);
+            newChatId++;
+            _chatSpace.put("lock", newChatId);
         } catch (Exception e) {
-        //TODO: handle Frederik toxicness
+            //TODO: handle exception
         }
     }
     
+    /*
     public static void chatHandler() throws Exception{
         String message;
         Object[] newUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(nextUserId));
@@ -154,9 +150,26 @@ public class SecretHitlerV2 {
             chatId++;
             _chatSpace.put("lock", chatId);
         }
-    }
+    } */
 
     public void setUser(String name) {
         _user = new User(name);
     }
+
+    public Space getUserSpace() {
+        return _userSpace;
+    }
+
+    public Space getChatSpace() {
+        return _chatSpace;
+    }
+
+    public int getChatId() {
+        return chatId;
+    }
+
+    public User getUser() {
+        return _user;
+    }
+
 }

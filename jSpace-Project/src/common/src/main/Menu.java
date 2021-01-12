@@ -19,7 +19,6 @@ import java.awt.event.ActionListener;
 public class Menu {
 
     static String      appName     = "Secret Hitler Chat";
-    static MainGUI     mainGUI;
     static JFrame      newFrame    = new JFrame(appName);
     static JButton sendMessage;
     static JTextField  messageBox;
@@ -28,7 +27,9 @@ public class Menu {
     static JFrame      preFrame;
     static String      username;
     public static SecretHitlerV2 game;
-	public static void display() {
+    public static ChatHandler chatHandler;
+
+    public static void display() {
         JFrame frame = new JFrame("Secret Hitler");
         frame.getContentPane().setLayout(new FlowLayout());
         frame.setSize(800, 600);
@@ -68,13 +69,25 @@ public class Menu {
                 String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                 game.gameCreate(IP_Port);
                 chatDisplay();
+                chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
+                new Thread(chatHandler).start();
                 System.out.println("Created Game");
             } 
             });  
 
         joinGame.addActionListener(new AbstractAction(){  
             public void actionPerformed(ActionEvent e){  
-                    System.out.println("Joined Game");
+                frame.setVisible(false);
+                frame.dispose();
+                String name = JOptionPane.showInputDialog(frame, "What is your name?");
+                game.setUser(name);
+                username = name;
+                String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                game.gameJoin(IP_Port);
+                chatDisplay();
+                chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
+                new Thread(chatHandler).start();
+                System.out.println("Joined Game");
             }  
             });  
 
@@ -143,9 +156,10 @@ public class Menu {
 
         messageBox = new JTextField(30);
         messageBox.requestFocusInWindow();
+        messageBox.addActionListener(new sendMessageListener());
 
         sendMessage = new JButton("Send Message");
-        sendMessage.addActionListener(new sendMessageButtonListener());
+        sendMessage.addActionListener(new sendMessageListener());
 
         chatBox = new JTextArea();
         chatBox.setEditable(false);
@@ -178,7 +192,7 @@ public class Menu {
         newFrame.setVisible(true);
     }
 
-    static class sendMessageButtonListener implements ActionListener {
+    static class sendMessageListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if (messageBox.getText().length() < 1) {
                 // do nothing
@@ -186,8 +200,9 @@ public class Menu {
                 chatBox.setText("Cleared all messages\n");
                 messageBox.setText("");
             } else {
-                chatBox.append("<" + username + ">:  " + messageBox.getText()
-                        + "\n");
+                String msg = messageBox.getText();
+                game.sendMessage(msg, chatHandler);
+                chatBox.append("<" + username + ">:  " + msg + "\n");
                 messageBox.setText("");
             }
             messageBox.requestFocusInWindow();

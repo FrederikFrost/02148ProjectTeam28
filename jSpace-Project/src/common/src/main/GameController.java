@@ -1,6 +1,8 @@
 package common.src.main;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.Action;
@@ -31,19 +33,24 @@ public class GameController implements Runnable {
                     Object[] userLock = _userSpace.query(new ActualField("lock"), new FormalField(Integer.class));
                     if ((int) userLock[1] >= 5) {
                         enoughPlayers = true;
-                        Object[] lock = _gameSpace.get(new ActualField("lock"));
+                        _gameSpace.get(new ActualField("lock"));
                         _gameSpace.put("readyToStart");
                         _gameSpace.put("lock");
                     }
                 } else {
-                    Object[] startGame = _gameSpace.query(new ActualField("start"));
+                    _gameSpace.get(new ActualField("start"));
                     playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
                     //TODO: maybe grap userSpace lock to prevent players from joining a started game
                     gameStarted = true;
                 }
             }
 
+            _gameSpace.get(new ActualField("lock"));
+            
             SetupGame(playerCount);
+            AssignRoles(playerCount);
+            
+            _gameSpace.put("lock");
             
             while(true) {
                 //game started
@@ -53,6 +60,45 @@ public class GameController implements Runnable {
             //possibly put tuble in game space to let players know an error occured
             e.printStackTrace();
         }
+    }
+
+    public void AssignRoles(int playerCount) throws Exception {
+
+        Role liberal = new Role(RoleType.Liberal, RoleType.Liberal);
+        Role fascist = new Role(RoleType.Fascist, RoleType.Fascist);
+        Role hitler = new Role(RoleType.Fascist, RoleType.Hitler);
+
+        Role[] roles;
+        switch (playerCount) {
+            case 5:
+                roles = new Role[] {liberal, liberal, liberal, fascist, hitler};
+                break;
+            case 6:
+                roles = new Role[] {liberal, liberal, liberal, liberal, fascist, hitler};
+                break;     
+            case 7:
+                roles = new Role[] {liberal, liberal, liberal, liberal, fascist, fascist, hitler};
+                break;
+            case 8:
+                roles = new Role[] {liberal, liberal, liberal, liberal, liberal, fascist, fascist, hitler};
+                break;
+            case 9:
+                roles = new Role[] {liberal, liberal, liberal, liberal, liberal, fascist, fascist, fascist, hitler};
+                break;
+            case 10:
+                roles = new Role[] {liberal, liberal, liberal, liberal, liberal, liberal, fascist, fascist, fascist, hitler};
+                break;
+            default:
+                throw new IllegalArgumentException("Player size is wrong");   //maybe refactor this to if statement above
+        }
+
+        Collections.shuffle(Arrays.asList(roles));
+        _gameSpace.put("roles", roles, playerCount);
+        
+        Random rand = new Random();
+        int president = rand.nextInt(playerCount);
+        _gameSpace.put("president", president);
+
     }
 
     public void SetupGame(int playerCount) throws Exception {
@@ -85,10 +131,8 @@ public class GameController implements Runnable {
 
         LegislativeType[] deck = GetShuffledDeck();
 
-        Object[] lock = _gameSpace.get(new ActualField("lock"));
         _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
-        _gameSpace.put("lock");
 
     }
 

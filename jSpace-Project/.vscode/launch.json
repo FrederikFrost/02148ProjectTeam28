@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch GameControllerTests",
+            "request": "launch",
+            "mainClass": "common.src.main.GameControllerTests",
+            "projectName": "jSpace-Project"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

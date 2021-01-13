@@ -93,7 +93,7 @@ public class SecretHitler {
 
             _chatSpace.put("lock", 0);
             _userSpace.put("lock", 0);
-            _gameSpace.put("lock", 0);
+            _gameSpace.put("lock");
 
 
             //create and start game coordinator

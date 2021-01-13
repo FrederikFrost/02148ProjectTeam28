@@ -54,6 +54,23 @@ public class GameController implements Runnable {
             
             while(true) {
                 //game started
+                Boolean elected = false;
+                int i = 0;
+                int suggestedChancellor = -1;
+                while(elected == false && i < 3) {
+                    suggestedChancellor = SuggestChancellor(playerCount);
+                    elected = Election(playerCount, suggestedChancellor);
+                    i++;
+                }
+                if (elected) {
+                    // TODO: do something with elected government
+                    
+                } else {
+                    // TODO: draw card and enact the policy
+                }
+
+                
+
             }
             
         } catch (Exception e) {
@@ -136,6 +153,22 @@ public class GameController implements Runnable {
 
     }
 
+    public int SuggestChancellor(int playerCount) throws Exception{
+        // TODO: Implement logic for possible candidates
+        _gameSpace.get(new ActualField("lock"));
+        // Best feature below:
+        int pres = (int) _gameSpace.get(new ActualField("president"), new FormalField(Integer.class))[1];
+        _gameSpace.put("suggest", pres);
+        _gameSpace.put("lock");
+        return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
+
+    }
+
+    public Boolean Election(int playerCount, int newChancellor) {
+        return false;
+
+    }
+
     public LegislativeType[] GetShuffledDeck() {
         int liberalCards = 6;
         int fascistCards = 11;
@@ -151,7 +184,6 @@ public class GameController implements Runnable {
                 fascistCards--;
             }
         }
-
         return deck;
     }
 

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.PlainDocument;
@@ -12,50 +13,112 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Menu {
-
-    static String      appName     = "Secret Hitler Chat";
-    static JFrame      newFrame    = new JFrame(appName);
+    static String guiPath = "jSpace-Project\\src\\common\\gui\\";
+    static String appName;
+    static String tcp;
+    static JFrame newFrame = new JFrame();
+    static JPanel mainPanel = new JPanel();
     static JButton sendMessage;
-    static JTextField  messageBox;
-    static JTextArea   chatBox;
-    static JTextField  usernameChooser;
-    static JFrame      preFrame;
-    static String      username;
+    static JTextField messageBox;
+    static JTextArea chatBox;
+    static JScrollPane scrollPane;
+    static JScrollBar scrollBar;
+    static JTextField usernameChooser;
+    static JFrame preFrame;
+    static String username;
     public static SecretHitlerV2 game;
     public static ChatHandler chatHandler;
 
-    public static void display() {
+    public static void menu() throws IOException {
         JFrame frame = new JFrame("Secret Hitler");
-        frame.getContentPane().setLayout(new FlowLayout());
-        frame.setSize(800, 600);
-        int WIDTH = frame.getWidth();
-        int HEIGHT = frame.getHeight();
-
-        JButton createGame = new JButton("Create Game");
-        JButton joinGame = new JButton("Join Game");
-        JButton playMusic = new JButton("Play Music");
-
-        frame.getContentPane().add(createGame, BorderLayout.SOUTH);
-        frame.getContentPane().add(joinGame);
-        frame.getContentPane().add(playMusic);
-        frame.pack();
+        frame.setBackground(Color.WHITE);
+        BufferedImage gameLogo = ImageIO.read(new File(guiPath + "SecretLogo.png"));
+        BufferedImage gameName = ImageIO.read(new File(guiPath + "label_secret-hitler.png"));
+        BufferedImage groupName = ImageIO.read(new File(guiPath + "label_group-name.png"));
+        BufferedImage createGameButtonIcon = ImageIO.read(new File(guiPath + "button_create.png"));
+        BufferedImage createGameButtonHoverIcon = ImageIO.read(new File(guiPath + "button_create_hover.png"));
+        BufferedImage joinGameButtonIcon = ImageIO.read(new File(guiPath + "button_join.png"));
+        BufferedImage joinGameButtonHoverIcon = ImageIO.read(new File(guiPath + "button_join_hover.png"));
+        BufferedImage exitButtonIcon = ImageIO.read(new File(guiPath + "button_exit.png"));
+        BufferedImage exitButtonHoverIcon = ImageIO.read(new File(guiPath + "button_exit_hover.png"));
+        JLabel gameLogoLabel = new JLabel(new ImageIcon(gameLogo));
+        JLabel gameNameLabel = new JLabel(new ImageIcon(gameName));
+        JLabel groupNameLabel = new JLabel(new ImageIcon(groupName));
+        gameLogoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gameNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        groupNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JButton createGameButton = new JButton(new ImageIcon(createGameButtonIcon));
+        createGameButton.setRolloverIcon(new ImageIcon(createGameButtonHoverIcon));
+        JButton joinGameButton = new JButton(new ImageIcon(joinGameButtonIcon));
+        joinGameButton.setRolloverIcon(new ImageIcon(joinGameButtonHoverIcon));
+        JButton exitButton = new JButton(new ImageIcon(exitButtonIcon));
+        exitButton.setRolloverIcon(new ImageIcon(exitButtonHoverIcon));
+        JButton[] buttons = {createGameButton, joinGameButton, exitButton};
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        mainPanel.add(gameLogoLabel);
+        mainPanel.add(gameNameLabel);
+        mainPanel.add(groupNameLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(30,30)));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        for (JButton b : buttons){
+            b.setBorder(BorderFactory.createEmptyBorder());
+            b.setContentAreaFilled(false);
+            b.setAlignmentX(Component.CENTER_ALIGNMENT);
+            mainPanel.add(b);
+            mainPanel.add(Box.createRigidArea(new Dimension(10,10)));
+        }
+        //JButton playMusic = new JButton("Play Music");
+        //frame.getContentPane().add(playMusic);
+        frame.add(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
         frame.setLocationRelativeTo(null);
+       // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setSize(new Dimension(800,600));
         frame.setVisible(true);
 
     // ACTION LISTENERS
-        createGame.addActionListener(new AbstractAction(){  
-            public void actionPerformed(ActionEvent e){
+        createGameButton.addActionListener(new AbstractAction(){  
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                frame.dispose();
-                String name = JOptionPane.showInputDialog(frame, "What is your name?");
+                String name = JOptionPane.showInputDialog(frame, "Enter your name");
+                if (name == null) {
+                    frame.setVisible(true);
+                    return;
+                }
+                else if (name.isEmpty()){
+                    do {
+                        name = JOptionPane.showInputDialog(frame, "Enter your name");
+                    } while (name.isEmpty());
+                }
                 game.setUser(name);
                 username = name;
+
+
                 String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                if (IP_Port == null) { 
+                    frame.setVisible(true);
+                    return;
+                }
+                else if (IP_Port.isEmpty()) {
+                    do {
+                        IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    } while (IP_Port.isEmpty());
+                }
+                tcp = IP_Port;
+                newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
                 game.gameCreate(IP_Port);
                 chatDisplay();
                 chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
@@ -64,14 +127,46 @@ public class Menu {
             } 
             });  
 
-        joinGame.addActionListener(new AbstractAction(){  
-            public void actionPerformed(ActionEvent e){  
+            // createGameButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            //     public void mouseEntered(java.awt.event.MouseEvent evt) {
+            //         createGameButton.setIcon
+            //     }
+            
+            //     public void mouseExited(java.awt.event.MouseEvent evt) {
+            //         createGameButton.setBackground(UIManager.getColor("control"));
+            //     }
+            // });
+
+        joinGameButton.addActionListener(new AbstractAction(){  
+            private static final long serialVersionUID = 1L;
+
+            public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                frame.dispose();
-                String name = JOptionPane.showInputDialog(frame, "What is your name?");
+                 String name = JOptionPane.showInputDialog(frame, "Enter your name");
+                if (name == null) {
+                    frame.setVisible(true);
+                    return;
+                }
+                else if (name.isEmpty()){
+                    do {
+                        name = JOptionPane.showInputDialog(frame, "Enter your name");
+                    } while (name.isEmpty());
+                }
                 game.setUser(name);
                 username = name;
+
+
                 String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                if (IP_Port == null) { 
+                    frame.setVisible(true);
+                    return;
+                }
+                else if (IP_Port.isEmpty()) {
+                    do {
+                        IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    } while (IP_Port.isEmpty());
+                }
+                tcp = IP_Port;
                 game.gameJoin(IP_Port);
                 chatDisplay();
                 chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
@@ -80,19 +175,29 @@ public class Menu {
             }  
             });  
 
-        playMusic.addActionListener(new AbstractAction()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                System.out.println("Music is playing!");
+        exitButton.addActionListener(new AbstractAction()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    System.exit(1);
                 }
-        });
+            });
+        // playMusic.addActionListener(new AbstractAction()
+        // {
+        //     private static final long serialVersionUID = 1L;
+
+        //     @Override
+        //     public void actionPerformed(ActionEvent e){
+        //         System.out.println("Music is playing!");
+        //         }
+        // });
 
         
 		
     }
 
     static class JTextFieldLimit extends PlainDocument {
+        private static final long serialVersionUID = 1L;
         private int limit;
         JTextFieldLimit(int limit) {
           super();
@@ -126,11 +231,11 @@ public class Menu {
     }
 
     public static void chatDisplay() {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        JPanel chatPanel = new JPanel();
+        chatPanel.setLayout(new BorderLayout());
 
         JPanel southPanel = new JPanel();
-        southPanel.setBackground(Color.BLUE);
+       // southPanel.setBackground(Color.BLUE);
         southPanel.setLayout(new GridBagLayout());
 
         messageBox = new JTextField(30);
@@ -144,8 +249,9 @@ public class Menu {
         chatBox.setEditable(false);
         chatBox.setFont(new Font("Serif", Font.PLAIN, 15));
         chatBox.setLineWrap(true);
-
-        mainPanel.add(new JScrollPane(chatBox), BorderLayout.CENTER);
+        scrollPane = new JScrollPane(chatBox);
+        scrollBar = scrollPane.getVerticalScrollBar();
+        chatPanel.add(scrollPane, BorderLayout.CENTER);
 
         GridBagConstraints left = new GridBagConstraints();
         left.anchor = GridBagConstraints.LINE_START;
@@ -163,9 +269,9 @@ public class Menu {
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
 
-        mainPanel.add(BorderLayout.SOUTH, southPanel);
+        chatPanel.add(BorderLayout.SOUTH, southPanel);
 
-        newFrame.add(mainPanel);
+        newFrame.add(chatPanel);
         newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         newFrame.setLocationRelativeTo(null);
         newFrame.setSize(470, 300);
@@ -174,24 +280,32 @@ public class Menu {
 
     static class sendMessageListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            if (messageBox.getText().length() < 1) {
+            if (messageBox.getText().length() < 1) { }
                 // do nothing
-            } else if (messageBox.getText().equals(".clear")) {
-                chatBox.setText("Cleared all messages\n");
-                messageBox.setText("");
-            } else {
-                String msg = messageBox.getText();
-                game.sendMessage(msg, chatHandler);
-                chatBox.append("<" + username + ">:  " + msg + "\n");
+            else {
+                    String msg = messageBox.getText();
+                    game.sendMessage(msg, chatHandler);
+                    chatBox.append("<" + username + ">:  " + msg + "\n");
+                    newFrame.revalidate();
+                    scrollBar.setValue(scrollBar.getMaximum());
+                    
+                    if (messageBox.getText().equals(".help")) {
+                        chatBox.append("<ChatBot>: Chat functions will be listed:\n\".clear\":" +
+                        "Clears the chat screen messages.\n\".tcp\": Lists the tcp address of the chat room.\n");
+                    } else if (messageBox.getText().equals(".clear")) {
+                        chatBox.setText("<ChatBot>: Cleared all messages\n");
+                    } else if (messageBox.getText().equals(".tcp")) {
+                        chatBox.append("<ChatBot>: This chat room's tcp is: " + tcp + "\n");
+                    }
+                messageBox.requestFocusInWindow();
                 messageBox.setText("");
             }
-            messageBox.requestFocusInWindow();
         }
-    }
+    }  
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
         game = new SecretHitlerV2();
-        display();
+        menu();
         
     }
     /*

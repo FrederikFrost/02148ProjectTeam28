@@ -54,6 +54,30 @@ public class GameController implements Runnable {
             
             while(true) {
                 //game started
+                
+                
+
+                /**
+                 * Suggest chancellor
+                 * Vote chancellor
+                 * loop if chancellor isn't chosen
+                 *  - counter for inactive 
+                 * 
+                 * choose legislate
+                 *  - show president 3 cards
+                 *  - president discards 1, show chancellor remaining cards
+                 *  - chancellor picks legislate
+                 *     - veto logic should be here
+                 * 
+                 * executive action
+                 * 
+                 * rotate president (except if executive action: Special Election)
+                 * 
+                */
+
+
+
+
             }
             
         } catch (Exception e) {

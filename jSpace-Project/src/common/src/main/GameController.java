@@ -1,5 +1,6 @@
 package common.src.main;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.swing.Action;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
+import org.jspace.Tuple;
 
 public class GameController implements Runnable {
     public Space _chatSpace;
@@ -80,11 +82,8 @@ public class GameController implements Runnable {
                     elected = Election(playerCount, suggestedChancellor);
                     i++;
                 }
-                if (elected) {
-                    // TODO: do something with elected government
-                    
-                } else {
-                    // TODO: draw card and enact the policy
+                if (!elected) {
+                    //
                 }
             }
             
@@ -179,7 +178,23 @@ public class GameController implements Runnable {
 
     }
 
-    public Boolean Election(int playerCount, int newChancellor) {
+    public Boolean Election(int playerCount, int newChancellor) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        ArrayList votes = new ArrayList<Tuple>();   //does this generic tuple work in tupleSpace?
+        Vote[] votes2 = new Vote[playerCount];  //should account for dead players
+        _gameSpace.put("votes", votes2, 0); //counter seems easier as we can match on it directly in 'get' instead of putting while-loop around.
+        _gameSpace.put("lock");
+
+        //instead we could just call 'get' without the lock
+        _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+
+        _gameSpace.get(new ActualField("lock"));        
+        _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+        _gameSpace.put("lock");
+
+        //run through the array
+        //if chancellor chosen, put in gamespace and return true
+
         return false;
 
     }

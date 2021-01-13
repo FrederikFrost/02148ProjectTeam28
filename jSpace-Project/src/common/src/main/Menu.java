@@ -17,7 +17,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,6 +26,8 @@ public class Menu {
     static String tcp;
     static JFrame newFrame = new JFrame();
     static JPanel mainPanel = new JPanel();
+    static JLabel[] labels = new JLabel[3];
+    static JButton[] buttons = new JButton[3];
     static JButton sendMessage;
     static JTextField messageBox;
     static JTextArea chatBox;
@@ -39,53 +40,35 @@ public class Menu {
     public static ChatHandler chatHandler;
 
     public static void menu() throws IOException {
-        JFrame frame = new JFrame("Secret Hitler");
-        frame.setBackground(Color.WHITE);
-        
-        BufferedImage gameLogo = ImageIO.read(new File(guiPath + "SecretLogo.png"));
-        BufferedImage gameName = ImageIO.read(new File(guiPath + "label_secret-hitler.png"));
-        BufferedImage groupName = ImageIO.read(new File(guiPath + "label_group-name.png"));
-        BufferedImage createGameButtonIcon = ImageIO.read(new File(guiPath + "button_create.png"));
-        BufferedImage createGameButtonHoverIcon = ImageIO.read(new File(guiPath + "button_create_hover.png"));
-        BufferedImage joinGameButtonIcon = ImageIO.read(new File(guiPath + "button_join.png"));
-        BufferedImage joinGameButtonHoverIcon = ImageIO.read(new File(guiPath + "button_join_hover.png"));
-        BufferedImage exitButtonIcon = ImageIO.read(new File(guiPath + "button_exit.png"));
-        BufferedImage exitButtonHoverIcon = ImageIO.read(new File(guiPath + "button_exit_hover.png"));
-        JLabel gameLogoLabel = new JLabel(new ImageIcon(gameLogo));
-        JLabel gameNameLabel = new JLabel(new ImageIcon(gameName));
-        JLabel groupNameLabel = new JLabel(new ImageIcon(groupName));
-        gameLogoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        gameNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        groupNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JButton createGameButton = new JButton(new ImageIcon(createGameButtonIcon));
-        createGameButton.setRolloverIcon(new ImageIcon(createGameButtonHoverIcon));
-        JButton joinGameButton = new JButton(new ImageIcon(joinGameButtonIcon));
-        joinGameButton.setRolloverIcon(new ImageIcon(joinGameButtonHoverIcon));
-        JButton exitButton = new JButton(new ImageIcon(exitButtonIcon));
-        exitButton.setRolloverIcon(new ImageIcon(exitButtonHoverIcon));
-        JButton[] buttons = {createGameButton, joinGameButton, exitButton};
+
+        //Labels
+        createLabel(0, "SecretLogo.png");
+        createLabel(1, "label_secret-hitler.png");
+        createLabel(2, "label_group-name.png");
+
+        //Buttons
+        JButton createGameButton = createButton(0, "button_create.png", "button_create_hover.png");
+        JButton joinGameButton = createButton(1, "button_join.png", "button_join_hover.png");
+        JButton exitButton = createButton(2, "button_exit.png", "button_exit.png");
+
+        //Panel settings
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        mainPanel.add(gameLogoLabel);
-        mainPanel.add(gameNameLabel);
-        mainPanel.add(groupNameLabel);
+        for (JLabel l : labels) mainPanel.add(l);
         mainPanel.add(Box.createRigidArea(new Dimension(30,30)));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        for (JButton b : buttons){
-            b.setBorder(BorderFactory.createEmptyBorder());
-            b.setContentAreaFilled(false);
-            b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (JButton b : buttons) {
             mainPanel.add(b);
             mainPanel.add(Box.createRigidArea(new Dimension(10,10)));
         }
-        //JButton playMusic = new JButton("Play Music");
-        //frame.getContentPane().add(playMusic);
+
+        //Frame
+        JFrame frame = new JFrame("Secret Hitler");
+        frame.setBackground(Color.WHITE);
         frame.add(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
-       // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //frame.setSize(new Dimension(800,600));
         frame.setVisible(true);
 
     // ACTION LISTENERS
@@ -99,10 +82,11 @@ public class Menu {
                     frame.setVisible(true);
                     return;
                 }
-                else if (name.isEmpty()){
+                else if (name.isEmpty() || name.equals("ChatBot")){
+                    System.out.println("I go here");
                     do {
                         name = JOptionPane.showInputDialog(frame, "Enter your name");
-                    } while (name.isEmpty());
+                    } while (name.isEmpty() || name.equals("ChatBot"));
                 }
                 game.setUser(name);
                 username = name;
@@ -148,10 +132,11 @@ public class Menu {
                     frame.setVisible(true);
                     return;
                 }
-                else if (name.isEmpty()){
+                else if (name.isEmpty() || name.equals("ChatBot")){
+                    System.out.println("I go here");
                     do {
                         name = JOptionPane.showInputDialog(frame, "Enter your name");
-                    } while (name.isEmpty());
+                    } while (name.isEmpty() || name.equals("ChatBot"));
                 }
                 game.setUser(name);
                 username = name;
@@ -178,22 +163,35 @@ public class Menu {
 
         exitButton.addActionListener(new AbstractAction()
             {
-                @Override
+            private static final long serialVersionUID = 1L;
+
+            @Override
                 public void actionPerformed(ActionEvent e){
                     System.exit(1);
                 }
             });
-        // playMusic.addActionListener(new AbstractAction()
-        // {
-        //     private static final long serialVersionUID = 1L;
-
-        //     @Override
-        //     public void actionPerformed(ActionEvent e){
-        //         System.out.println("Music is playing!");
-        //         }
-        // });
-
     }
+
+    public static JButton createButton(int index, String path, String hoverPath) throws IOException {
+        JButton b = new JButton(new ImageIcon(ImageIO.read(new File(guiPath + path))));
+        b.setBorder(BorderFactory.createEmptyBorder());
+        b.setContentAreaFilled(false);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        b.setRolloverIcon(new ImageIcon(ImageIO.read(new File(guiPath + hoverPath))));
+        buttons[index] = b;
+        return b;
+    }
+
+    public static void createLabel(int index, String path) throws IOException {
+        JLabel l = new JLabel(new ImageIcon(ImageIO.read(new File(guiPath + path))));
+        l.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labels[index] = l;
+    }
+
+
+
+
+
 
     static class JTextFieldLimit extends PlainDocument {
         private static final long serialVersionUID = 1L;

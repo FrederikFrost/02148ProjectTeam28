@@ -5,6 +5,7 @@ import javax.swing.JTextArea;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
+import java.awt.Font;
 
 public class ChatHandler implements Runnable {
     private Space _userSpace;

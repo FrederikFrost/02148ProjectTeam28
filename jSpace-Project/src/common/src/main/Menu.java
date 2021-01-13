@@ -111,7 +111,7 @@ public class Menu {
                 new Thread(chatHandler).start();
                 System.out.println("Created Game");
             } 
-            });  
+        });  
 
         joinGameButton.addActionListener(new AbstractAction(){  
             private static final long serialVersionUID = 1L;
@@ -151,7 +151,7 @@ public class Menu {
                 new Thread(chatHandler).start();
                 System.out.println("Joined Game");
             }  
-            });  
+        });  
 
         exitButton.addActionListener(new AbstractAction()
             {
@@ -189,16 +189,16 @@ public class Menu {
         }
       
         public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-          if (str == null)
-            return;
+            if (str == null)
+                return;
       
-          if ((getLength() + str.length()) <= limit) {
-            super.insertString(offset, str, attr);
-          }
+            if ((getLength() + str.length()) <= limit) {
+                super.insertString(offset, str, attr);
+            }
         }
-      }
+    }
 
-      public static void createGameFrame(){
+    public static void createGameFrame(){
         JFrame gFrame = new JFrame("Secret Hitler");
         JPanel gPanel = new JPanel();
         JTextArea chat = new JTextArea(20,20);
@@ -297,4 +297,4 @@ public class Menu {
         mediaPlayer.start();
     WORK IN PROGRESS
     */
-    }
+}

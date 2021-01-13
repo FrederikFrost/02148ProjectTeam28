@@ -24,6 +24,7 @@ public class GameControllerTests {
         }
 
         runMethod("CardShuffleTest", args);
+        runMethod("AssignRolesTest", args);
         runMethod("SetupGameTest", args);
     }
 
@@ -61,15 +62,30 @@ public class GameControllerTests {
             controller.SetupGame(numberOfPlayers);
             Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), 
                 new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
+            Object[] deck = _gameSpace.get(new ActualField("deck"), new FormalField(LegislativeType[].class));
             Helper.printArray("Liberal", (LegislativeType[]) boards[1]);
             Helper.printArray("Fascist", (LegislativeType[]) boards[2]);
             Helper.printArray("Actions", (ActionType[]) boards[3]);
-            
+            Helper.printArray("Deck", (LegislativeType[]) deck[1], true);
+           
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private static void AssignRolesTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+        int numberOfPlayers = 7;
+        try {
+            controller.AssignRoles(numberOfPlayers);
+            Object[] roles = _gameSpace.get(new ActualField("roles"), new FormalField(Role[].class), new FormalField(Integer.class));
+            Object[] president = _gameSpace.get(new ActualField("president"), new FormalField(Integer.class));
+            Helper.printArray("Roles", (Role[]) roles[1]);
+            System.out.println("President: " + president[1]);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+    }
 
     private static void runMethod(String method, String[] args) {
         System.out.println("---------------------------------------");

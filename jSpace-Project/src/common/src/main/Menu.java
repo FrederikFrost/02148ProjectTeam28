@@ -41,6 +41,7 @@ public class Menu {
     public static void menu() throws IOException {
         JFrame frame = new JFrame("Secret Hitler");
         frame.setBackground(Color.WHITE);
+        
         BufferedImage gameLogo = ImageIO.read(new File(guiPath + "SecretLogo.png"));
         BufferedImage gameName = ImageIO.read(new File(guiPath + "label_secret-hitler.png"));
         BufferedImage groupName = ImageIO.read(new File(guiPath + "label_group-name.png"));
@@ -125,7 +126,7 @@ public class Menu {
                 new Thread(chatHandler).start();
                 System.out.println("Created Game");
             } 
-            });  
+        });  
 
             // createGameButton.addMouseListener(new java.awt.event.MouseAdapter() {
             //     public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -142,7 +143,7 @@ public class Menu {
 
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                 String name = JOptionPane.showInputDialog(frame, "Enter your name");
+                String name = JOptionPane.showInputDialog(frame, "Enter your name");
                 if (name == null) {
                     frame.setVisible(true);
                     return;
@@ -173,7 +174,7 @@ public class Menu {
                 new Thread(chatHandler).start();
                 System.out.println("Joined Game");
             }  
-            });  
+        });  
 
         exitButton.addActionListener(new AbstractAction()
             {
@@ -192,8 +193,6 @@ public class Menu {
         //         }
         // });
 
-        
-		
     }
 
     static class JTextFieldLimit extends PlainDocument {
@@ -205,16 +204,16 @@ public class Menu {
         }
       
         public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-          if (str == null)
-            return;
+            if (str == null)
+                return;
       
-          if ((getLength() + str.length()) <= limit) {
-            super.insertString(offset, str, attr);
-          }
+            if ((getLength() + str.length()) <= limit) {
+                super.insertString(offset, str, attr);
+            }
         }
-      }
+    }
 
-      public static void createGameFrame(){
+    public static void createGameFrame(){
         JFrame gFrame = new JFrame("Secret Hitler");
         JPanel gPanel = new JPanel();
         JTextArea chat = new JTextArea(20,20);
@@ -314,4 +313,4 @@ public class Menu {
         mediaPlayer.start();
     WORK IN PROGRESS
     */
-    }
+}

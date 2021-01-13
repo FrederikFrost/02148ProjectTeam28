@@ -76,7 +76,7 @@ public class Menu {
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
+               // frame.setVisible(false);
                 String name = JOptionPane.showInputDialog(frame, "Enter your name");
                 if (name == null) {
                     frame.setVisible(true);
@@ -102,6 +102,7 @@ public class Menu {
                         IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                     } while (IP_Port.isEmpty());
                 }
+                frame.setVisible(false);
                 tcp = IP_Port;
                 newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
                 game.gameCreate(IP_Port);
@@ -112,21 +113,11 @@ public class Menu {
             } 
             });  
 
-            // createGameButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            //     public void mouseEntered(java.awt.event.MouseEvent evt) {
-            //         createGameButton.setIcon
-            //     }
-            
-            //     public void mouseExited(java.awt.event.MouseEvent evt) {
-            //         createGameButton.setBackground(UIManager.getColor("control"));
-            //     }
-            // });
-
         joinGameButton.addActionListener(new AbstractAction(){  
             private static final long serialVersionUID = 1L;
 
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
+               // frame.setVisible(false);
                 String name = JOptionPane.showInputDialog(frame, "Enter your name");
                 if (name == null) {
                     frame.setVisible(true);
@@ -152,6 +143,7 @@ public class Menu {
                         IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                     } while (IP_Port.isEmpty());
                 }
+                frame.setVisible(false);
                 tcp = IP_Port;
                 game.gameJoin(IP_Port);
                 chatDisplay();
@@ -187,11 +179,6 @@ public class Menu {
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
-
-
-
-
-
 
     static class JTextFieldLimit extends PlainDocument {
         private static final long serialVersionUID = 1L;
@@ -303,7 +290,6 @@ public class Menu {
 	public static void main(String[] args) throws IOException {
         game = new SecretHitlerV2();
         menu();
-        
     }
     /*
     public static void playSong(URL media) {

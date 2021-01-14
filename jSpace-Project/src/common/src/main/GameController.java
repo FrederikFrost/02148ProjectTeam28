@@ -1,17 +1,13 @@
 package common.src.main;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
-import javax.swing.Action;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
-import org.jspace.Tuple;
 
 public class GameController implements Runnable {
     public Space _chatSpace;

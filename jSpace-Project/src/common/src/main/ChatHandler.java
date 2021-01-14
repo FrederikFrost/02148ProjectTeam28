@@ -1,9 +1,6 @@
 package common.src.main;
 
 import javax.swing.JEditorPane;
-//import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -37,7 +34,7 @@ public class ChatHandler implements Runnable {
                     chatId++;
                 }
                 if (newUser != null) {
-                    Menu.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", false);
+                    Menu.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
                 }

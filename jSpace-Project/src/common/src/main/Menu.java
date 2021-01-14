@@ -201,7 +201,7 @@ public class Menu {
         //  gameLabel.setFont(new Font("Calibri", Font.PLAIN, 45));
          gamePanel.setLayout(new GridBagLayout());
         //  gamePanel.add(gameLabel);
-         gamePanel.setSize(800,800);
+         gamePanel.setSize(1200,800);
 
          // ADD GAMEPLAY GUI HERE
          return gamePanel;

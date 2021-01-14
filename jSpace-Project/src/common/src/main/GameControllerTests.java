@@ -8,10 +8,15 @@ import org.jspace.FormalField;
 import org.jspace.SequentialSpace;
 import org.jspace.Space;
 
+import common.src.main.Types.ActionType;
+import common.src.main.Types.LegislativeType;
+import common.src.main.Types.VoteType;
+
 public class GameControllerTests {
     public static Space _chatSpace;
     public static Space _userSpace;
     public static Space _gameSpace;
+
     public static void main(String[] args) {
         _chatSpace = new SequentialSpace();
         _userSpace = new SequentialSpace();
@@ -41,14 +46,14 @@ public class GameControllerTests {
                     _gameSpace.put("suggestion", 4);
 
                 } catch (Exception e) {
-                    //TODO: handle exception
+                    // TODO: handle exception
                 }
             }).start();
-    
+
             int suggestion = controller.SuggestChancellor();
             System.out.println("Voting on " + suggestion + " for Chancellor!");
         } catch (Exception e) {
-            //TODO: handle exception
+            // TODO: handle exception
         }
     }
 
@@ -63,9 +68,10 @@ public class GameControllerTests {
                 _gameSpace.get(new ActualField("startVote"));
                 for (int i = 0; i < 5; ++i) {
                     _gameSpace.get(new ActualField("lock"));
-                    Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
-                    Vote answer = rand.nextBoolean()? Vote.Ja : Vote.Nein;
-                    Vote[] votes = (Vote[]) votesTuple[1];
+                    Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(VoteType[].class),
+                            new FormalField(Integer.class));
+                    VoteType answer = rand.nextBoolean() ? VoteType.Ja : VoteType.Nein;
+                    VoteType[] votes = (VoteType[]) votesTuple[1];
                     votes[i] = answer;
                     int count = (int)votesTuple[2]+1;
                     _gameSpace.put("votes", votes, count);
@@ -80,14 +86,14 @@ public class GameControllerTests {
         }).start();
         try {
             boolean res = controller.Election(4);
-            Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
+            Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
             if (res) {
                 Object[] chanTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(Integer.class));
                 System.out.println((int) chanTuple[1] + " was elected chancellor");
-                Helper.printArray("Votes", (Vote[]) votesTuple[1], true);
+                Helper.printArray("Votes", (VoteType[]) votesTuple[1], true);
             } else {
                 System.out.println("Votes failed");
-                Helper.printArray("Votes", (Vote[]) votesTuple[1], true);
+                Helper.printArray("Votes", (VoteType[]) votesTuple[1], true);
             }
             
         } catch (Exception e) {

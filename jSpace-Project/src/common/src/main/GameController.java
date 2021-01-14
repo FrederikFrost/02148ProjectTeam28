@@ -8,6 +8,11 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import common.src.main.Types.ActionType;
+import common.src.main.Types.LegislativeType;
+import common.src.main.Types.RoleType;
+import common.src.main.Types.VoteType;
+
 public class GameController implements Runnable {
     public Space _chatSpace;
     public Space _userSpace;
@@ -139,21 +144,22 @@ public class GameController implements Runnable {
         //maybe change to ArrayList<int[]>
         _gameSpace.get(new ActualField("lock"));
 
-        Vote[] votes = new Vote[playerCount];  //should account for dead players
-        Arrays.fill(votes, Vote.None);
-        _gameSpace.getp(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+        VoteType[] votes = new VoteType[playerCount];  //should account for dead players
+        Arrays.fill(votes, VoteType.None);
+        _gameSpace.getp(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount)); 
+        // should also account for votes
 
         _gameSpace.put("votes", votes, 0); 
         _gameSpace.put("startVote");
-
         _gameSpace.put("lock");
         
-        Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+        Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class),
+                new ActualField(playerCount)); // should also account for votes
 
         int numToPass = playerCount/2+1;
         int votesChancellor = 0;
-        for (Vote vote : (Vote[]) votesReturn[1]) {
-            if (vote == Vote.Ja) {
+        for (VoteType vote : (VoteType[]) votesReturn[1]) {
+            if (vote == VoteType.Ja) {
                 votesChancellor++;
             }
         }

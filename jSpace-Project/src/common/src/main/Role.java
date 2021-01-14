@@ -1,5 +1,7 @@
 package common.src.main;
 
+import common.src.main.Types.RoleType;
+
 public class Role {
     private RoleType PartyMembership;
     private RoleType SecretRole;

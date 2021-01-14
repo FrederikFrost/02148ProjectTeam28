@@ -11,6 +11,8 @@ import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
+import common.src.main.Types.CommandType;
+
 public class SecretHitlerV2 {
 
     public static Space _chatSpace;
@@ -21,6 +23,7 @@ public class SecretHitlerV2 {
     public static User _user;
     public static int nextUserId;
     public static int chatId = 0;
+    public static boolean running;
     public static GameController controller;
     
     public void gameCreate(String IP_Port) {
@@ -84,7 +87,7 @@ public class SecretHitlerV2 {
 
 			// Connect to the remote chat space 
 			System.out.println("Connecting to chat space " + chatURI + "...");
-            _chatSpace =  new RemoteSpace(chatURI);
+            _chatSpace = new RemoteSpace(chatURI);
             _userSpace = new RemoteSpace(userURI);
             _gameSpace = new RemoteSpace(gameURI);
             gameInit();
@@ -112,6 +115,30 @@ public class SecretHitlerV2 {
         } catch (Exception e) {
             //TODO: handle exception
         }
+        try {
+            while(running){
+                //event getCard
+                //listen for command
+                Object[] commands = _gameSpace.get(new ActualField(CommandType.class));
+                CommandType cmd = (CommandType) commands[0];
+                switch (cmd) {
+                    case Election:
+                        _gameSpace.get(new ActualField("lock"));
+                        controller.SuggestChancellor();
+                        int suggestion = (int) _gameSpace.get(new ActualField("suggest"), new FormalField(Integer.class))[1];
+                        System.out.println("Election has happened");
+
+                        break;
+                    case LegislativeSession:
+                        System.out.println("L_session has happened");
+                    case ExecutiveAction:
+                        System.out.println("Executive action has happened");
+                    default:
+                        break;
+                }
+                _gameSpace.put(new ActualField("lock"));
+            }
+        } catch (Exception e) {}
     }
 
     public void sendMessage(String msg, ChatHandler chatHandler) {

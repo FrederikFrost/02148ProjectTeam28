@@ -78,12 +78,13 @@ public class GameController implements Runnable {
                 int i = 0;
                 int suggestedChancellor = -1;
                 while(elected == false && i < 3) {
-                    suggestedChancellor = SuggestChancellor(playerCount);
+                    suggestedChancellor = SuggestChancellor();
                     elected = Election(playerCount, suggestedChancellor);
                     i++;
+                    //TODO - we need to rotate president here
                 }
                 if (!elected) {
-                    //
+                    // skip choose legislate
                 }
             }
             
@@ -93,6 +94,51 @@ public class GameController implements Runnable {
         }
     }
 
+    public int SuggestChancellor() throws Exception{
+        _gameSpace.get(new ActualField("lock"));
+        
+        int pres = (int) _gameSpace.get(new ActualField("president"), new FormalField(Integer.class))[1];
+        _gameSpace.put("suggest", pres);
+        //TODO: send president choices to pick from
+        _gameSpace.put("lock");
+        //TODO: should a lock be here aswell?
+        return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
+    }
+
+    public Boolean Election(int playerCount, int newChancellor) throws Exception {
+        //maybe change to ArrayList<int[]>
+        _gameSpace.get(new ActualField("lock"));
+
+        Vote[] votes = new Vote[playerCount];  //should account for dead players
+        Arrays.fill(votes, Vote.None);
+        _gameSpace.getp(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+
+        _gameSpace.put("votes", votes, 0); 
+        _gameSpace.put("startVote");
+
+        _gameSpace.put("lock");
+        
+        Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+
+        int numToPass = playerCount/2+1;
+        int votesChancellor = 0;
+        for (Vote vote : (Vote[]) votesReturn[1]) {
+            if (vote == Vote.Ja) {
+                votesChancellor++;
+            }
+        }
+        if (votesChancellor >= numToPass) {
+            _gameSpace.get(new ActualField("lock")); 
+            _gameSpace.put("chancellor", newChancellor);
+            _gameSpace.put("lock");
+
+            return true;
+        }
+        
+        return false;
+    }
+
+    //#region setup
     public void AssignRoles(int playerCount) throws Exception {
 
         Role liberal = new Role(RoleType.Liberal, RoleType.Liberal);
@@ -166,38 +212,7 @@ public class GameController implements Runnable {
         _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
 
     }
-
-    public int SuggestChancellor(int playerCount) throws Exception{
-        // TODO: Implement logic for possible candidates
-        _gameSpace.get(new ActualField("lock"));
-        // Best feature below:
-        int pres = (int) _gameSpace.get(new ActualField("president"), new FormalField(Integer.class))[1];
-        _gameSpace.put("suggest", pres);
-        _gameSpace.put("lock");
-        return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
-
-    }
-
-    public Boolean Election(int playerCount, int newChancellor) throws Exception {
-        _gameSpace.get(new ActualField("lock"));
-        ArrayList votes = new ArrayList<Tuple>();   //does this generic tuple work in tupleSpace?
-        Vote[] votes2 = new Vote[playerCount];  //should account for dead players
-        _gameSpace.put("votes", votes2, 0); //counter seems easier as we can match on it directly in 'get' instead of putting while-loop around.
-        _gameSpace.put("lock");
-
-        //instead we could just call 'get' without the lock
-        _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
-
-        _gameSpace.get(new ActualField("lock"));        
-        _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
-        _gameSpace.put("lock");
-
-        //run through the array
-        //if chancellor chosen, put in gamespace and return true
-
-        return false;
-
-    }
+    //#endregion
 
     public LegislativeType[] GetShuffledDeck() {
         int liberalCards = 6;
@@ -217,7 +232,5 @@ public class GameController implements Runnable {
         return deck;
     }
 
-    private void printGameStatus() {
-        //print game status for debug
-    }
+
 }

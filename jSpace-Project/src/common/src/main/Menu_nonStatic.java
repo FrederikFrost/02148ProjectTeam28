@@ -1,3 +1,4 @@
+
 package common.src.main;
 
 import java.awt.BorderLayout;
@@ -9,7 +10,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,11 +18,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 
-public class Menu {
-    static String guiPath = "gui/";
+public class Menu_nonStatic {
+    static String guiPath = "../../gui/";
+    // "jSpace-Project/src/common/gui/"; 
     static String appName;
     static String tcp;
     static JFrame frame = new JFrame("Secret Hitler");
@@ -41,12 +41,7 @@ public class Menu {
     public static SecretHitlerV2 game;
     public static ChatHandler chatHandler;
 
-    public static void main(String[] args) throws IOException {
-        game = new SecretHitlerV2();
-        menu();
-    }
-
-    public static void menu() throws IOException {
+    public void menu() throws IOException {
 
         //Labels
         createLabel(0, "SecretLogo.png");
@@ -84,18 +79,18 @@ public class Menu {
     }
 
     // Method for creating buttons
-    public static JButton createButton(int index, String path, String hoverPath) throws IOException {
-        JButton b = new JButton(new ImageIcon(ImageIO.read(new File(guiPath + path))));
+    public JButton createButton(int index, String path, String hoverPath) throws IOException {
+        JButton b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
         b.setBorder(BorderFactory.createEmptyBorder());
         b.setContentAreaFilled(false);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
-        b.setRolloverIcon(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + hoverPath))));
+        b.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource(guiPath + path))));
         buttons[index] = b;
         return b;
     }
     // Method for creating labels
-    public static void createLabel(int index, String path) throws IOException {
-        JLabel l = new JLabel(new ImageIcon(ImageIO.read(new File(guiPath + path))));
+    public void createLabel(int index, String path) throws IOException {
+        JLabel l = new JLabel(new ImageIcon(ImageIO.read(getClass().getResource(guiPath + path))));
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
@@ -135,7 +130,7 @@ public class Menu {
     // }
     
     // Chatdisplay appears after creating/joining game
-    public static void chatDisplay() {
+    public void chatDisplay() {
         // String fonts[]
         // = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
@@ -155,7 +150,7 @@ public class Menu {
         sendMessage = new JButton("Send Message");
         sendMessage.addActionListener(new sendMessageListener());
 
-        chatBox = new JEditorPane("text/rtf", "");
+        chatBox = new JEditorPane("text/html", "");
         chatBox.setEditable(false);
         chatBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
         scrollPane = new JScrollPane(chatBox);
@@ -186,7 +181,7 @@ public class Menu {
         newFrame.setSize(470, 300);
         newFrame.setVisible(true);
     }
-    public static void append(JEditorPane jea, String s, Boolean b) {
+    public void append(String s, Boolean b) {
         try {
            Document doc = chatBox.getDocument();
            if (b) {
@@ -197,38 +192,36 @@ public class Menu {
        }
    }
 
-   private static SimpleAttributeSet bold() {
+   private SimpleAttributeSet bold() {
         SimpleAttributeSet sas = new SimpleAttributeSet(); 
         StyleConstants.setBold(sas, true);
         return sas;
     }
 
-    static class sendMessageListener implements ActionListener {
+    class sendMessageListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if (messageBox.getText().length() < 1) { }
                 // do nothing
             else {
                     String msg = messageBox.getText();
                     game.sendMessage(msg, chatHandler);
-                    append(chatBox, "<" + username + ">:  " + msg + "\n", false);
+                    append("<" + username + ">:  " + msg + "\n", false);
                     newFrame.revalidate();
                     scrollBar.setValue(scrollBar.getMaximum());
                     
                     if (msg.equals(".help")) {
-                        append(chatBox, "<ChatBot>: Chat commands will be listed:\n\n" +
+                        append("<ChatBot>: Chat functions will be listed:\n\n" +
                         "\".clear\":   Clears the chat screen messages.\n" +
                         "\".tcp\":   Lists the tcp address of the chat room.\n" +
                         "\".leave\":   Allows for leaving chatroom.\n", true);
                     } else if (msg.equals(".clear")) {
                         chatBox.setText("");
-                        append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
+                        append("<ChatBot>: The chat has been cleared!\n", true);
                     } else if (msg.equals(".tcp")) {
-                        append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
+                        append("<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                     } else if (msg.equals(".leave")) {
-                        append(chatBox, "<ChatBot>: username " + "has left!", true);
+                        append("<ChatBot>: Bye bye!", true);
                         System.exit(1);
-                    } else if (msg.startsWith(".") && !msg.endsWith(".")){
-                        append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                     }
                 messageBox.requestFocusInWindow();
                 messageBox.setText("");
@@ -238,7 +231,7 @@ public class Menu {
 
 
     // AbstractActions
-    public static AbstractAction createGameAction = new AbstractAction(){  
+    public AbstractAction createGameAction = new AbstractAction(){  
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -279,7 +272,7 @@ public class Menu {
         }
     };
 
-    public static AbstractAction joinGameAction = new AbstractAction(){  
+    public AbstractAction joinGameAction = new AbstractAction(){  
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -319,7 +312,7 @@ public class Menu {
         }  
     };
 
-    public static AbstractAction exitAction = new AbstractAction() {
+    public AbstractAction exitAction = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
             @Override

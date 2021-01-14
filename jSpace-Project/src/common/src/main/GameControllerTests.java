@@ -1,6 +1,7 @@
 package common.src.main;
 
 import java.lang.reflect.Method;
+import java.util.Random;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -23,12 +24,82 @@ public class GameControllerTests {
             e.printStackTrace();
         }
 
-        runMethod("CardShuffleTest", args);
-        runMethod("AssignRolesTest", args);
-        runMethod("SetupGameTest", args);
+        // runMethod("CardShuffleTest", args);
+        // runMethod("AssignRolesTest", args);
+        // runMethod("SetupGameTest", args);
+        runMethod("SuggestChancellorTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
+        runMethod("ElectionTest", args);
     }
 
+    private static void SuggestChancellorTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+
+        try {
+            _gameSpace.put("president", 1);
+            new Thread(() -> {
+                try {
+                    _gameSpace.get(new ActualField("suggest"), new ActualField(1));
+                    _gameSpace.put("suggestion", 4);
+
+                } catch (Exception e) {
+                    //TODO: handle exception
+                }
+            }).start();
     
+            int suggestion = controller.SuggestChancellor();
+            System.out.println("Voting on " + suggestion + " for Chancellor!");
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+    }
+
+    private static void ElectionTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+        int playerCount = 5;
+        Random rand = new Random();
+        new Thread(() -> {
+            try {
+                _gameSpace.get(new ActualField("startVote"));
+                for (int i = 0; i < 5; ++i) {
+                    _gameSpace.get(new ActualField("lock"));
+                    Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
+                    Vote answer = rand.nextBoolean()? Vote.Ja : Vote.Nein;
+                    Vote[] votes = (Vote[]) votesTuple[1];
+                    votes[i] = answer;
+                    int count = (int)votesTuple[2]+1;
+                    _gameSpace.put("votes", votes, count);
+                    System.out.println(i + " just voted: " + answer.toString() + " | count: " + count);
+                    Helper.printArray("Votes", votes);
+                    _gameSpace.put("lock");
+                }
+
+            } catch (Exception e) {
+                //TODO: handle exception
+            }
+        }).start();
+        try {
+            boolean res = controller.Election(playerCount, 4);
+            Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
+            if (res) {
+                Object[] chanTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(Integer.class));
+                System.out.println((int) chanTuple[1] + " was elected chancellor");
+                Helper.printArray("Votes", (Vote[]) votesTuple[1], true);
+            } else {
+                System.out.println("Votes failed");
+                Helper.printArray("Votes", (Vote[]) votesTuple[1], true);
+            }
+            
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+
+    }
 
     private static void CardShuffleTest() {
 

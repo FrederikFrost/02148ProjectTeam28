@@ -10,6 +10,10 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.jspace.ActualField;
+import org.jspace.FormalField;
+import org.jspace.Space;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,35 +44,48 @@ public class Menu {
     public static SecretHitlerV2 game;
     public static ChatHandler chatHandler;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         game = new SecretHitlerV2();
-        menu();
+        try {
+            menu();
+        } catch (Exception e) {
+            // TODO: handle exception
+            try {
+                game.leaveGame();
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                System.exit(2);
+            }
+            System.exit(1);
+        }   
     }
 
     public static void menu() throws IOException {
 
-        //Labels
+        // Labels
         createLabel(0, "SecretLogo.png");
         createLabel(1, "label_secret-hitler.png");
         createLabel(2, "label_group-name.png");
 
-        //Buttons
+        // Buttons
         JButton createGameButton = createButton(0, "button_create.png", "button_create_hover.png");
         JButton joinGameButton = createButton(1, "button_join.png", "button_join_hover.png");
         JButton exitButton = createButton(2, "button_exit.png", "button_exit_hover.png");
 
-        //Panel settings
+        // Panel settings
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        for (JLabel l : labels) mainPanel.add(l);
-        mainPanel.add(Box.createRigidArea(new Dimension(30,30)));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        for (JLabel l : labels)
+            mainPanel.add(l);
+        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         for (JButton b : buttons) {
             mainPanel.add(b);
-            mainPanel.add(Box.createRigidArea(new Dimension(10,10)));
+            mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
 
-        //Frame
+        // Frame
         frame.setBackground(Color.WHITE);
         frame.add(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,9 +93,9 @@ public class Menu {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        //Action Listeners
-        createGameButton.addActionListener(createGameAction);  
-        joinGameButton.addActionListener(joinGameAction);  
+        // Action Listeners
+        createGameButton.addActionListener(createGameAction);
+        joinGameButton.addActionListener(joinGameAction);
         exitButton.addActionListener(exitAction);
     }
 
@@ -92,6 +109,7 @@ public class Menu {
         buttons[index] = b;
         return b;
     }
+
     // Method for creating labels
     public static void createLabel(int index, String path) throws IOException {
         JLabel l = new JLabel(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
@@ -100,51 +118,53 @@ public class Menu {
     }
 
     // static class JTextFieldLimit extends PlainDocument {
-    //     private static final long serialVersionUID = 1L;
-    //     private int limit;
-    //     JTextFieldLimit(int limit) {
-    //       super();
-    //       this.limit = limit;
-    //     }
-      
-    //     public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-    //         if (str == null)
-    //             return;
-      
-    //         if ((getLength() + str.length()) <= limit) {
-    //             super.insertString(offset, str, attr);
-    //         }
-    //     }
+    // private static final long serialVersionUID = 1L;
+    // private int limit;
+    // JTextFieldLimit(int limit) {
+    // super();
+    // this.limit = limit;
+    // }
+
+    // public void insertString(int offset, String str, AttributeSet attr) throws
+    // BadLocationException {
+    // if (str == null)
+    // return;
+
+    // if ((getLength() + str.length()) <= limit) {
+    // super.insertString(offset, str, attr);
+    // }
+    // }
     // }
 
     // public static void createGameFrame(){
-    //     JFrame gFrame = new JFrame("Secret Hitler");
-    //     JPanel gPanel = new JPanel();
-    //     JTextArea chat = new JTextArea(20,20);
-    //     JTextField textField = new JTextField("Start chatting", 6);
-    //     JButton startButton = new JButton("Start game");
-    //     textField.setDocument(new JTextFieldLimit(40));
-    //     gPanel.add(chat);
-    //     gPanel.add(textField);
-    //     gPanel.add(startButton);
-    //     gFrame.add(gPanel);
-    //     gFrame.setLocationRelativeTo(null);
-    //     gFrame.pack();
-    //     gFrame.setVisible(true);
+    // JFrame gFrame = new JFrame("Secret Hitler");
+    // JPanel gPanel = new JPanel();
+    // JTextArea chat = new JTextArea(20,20);
+    // JTextField textField = new JTextField("Start chatting", 6);
+    // JButton startButton = new JButton("Start game");
+    // textField.setDocument(new JTextFieldLimit(40));
+    // gPanel.add(chat);
+    // gPanel.add(textField);
+    // gPanel.add(startButton);
+    // gFrame.add(gPanel);
+    // gFrame.setLocationRelativeTo(null);
+    // gFrame.pack();
+    // gFrame.setVisible(true);
     // }
-    
+
     // Chatdisplay appears after creating/joining game
     public static void chatDisplay() {
         // String fonts[]
-        // = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        // =
+        // GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
         // for (int i = 0; i < fonts.length; i++) {
-        //     System.out.println(fonts[i]);
+        // System.out.println(fonts[i]);
         JPanel chatPanel = new JPanel();
         chatPanel.setLayout(new BorderLayout());
 
         JPanel southPanel = new JPanel();
-       // southPanel.setBackground(Color.BLUE);
+        // southPanel.setBackground(Color.BLUE);
         southPanel.setLayout(new GridBagLayout());
 
         messageBox = new JTextField(30);
@@ -154,7 +174,7 @@ public class Menu {
         sendMessage = new JButton("Send Message");
         sendMessage.addActionListener(new sendMessageListener());
 
-        chatBox = new JEditorPane("text/html", "");
+        chatBox = new JEditorPane("text/rtf", "");
         chatBox.setEditable(false);
         chatBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
         scrollPane = new JScrollPane(chatBox);
@@ -185,67 +205,80 @@ public class Menu {
         newFrame.setSize(470, 300);
         newFrame.setVisible(true);
     }
-    public static void append(String s, Boolean b) {
-        try {
-           Document doc = chatBox.getDocument();
-           if (b) {
-               doc.insertString(doc.getLength(), s, bold());
-           } else doc.insertString(doc.getLength(), s, null);
-       } catch (BadLocationException exc) {
-           exc.printStackTrace();
-       }
-   }
 
-   private static SimpleAttributeSet bold() {
-        SimpleAttributeSet sas = new SimpleAttributeSet(); 
+    public static void append(JEditorPane jea, String s, Boolean b) {
+        try {
+            Document doc = jea.getDocument();
+            if (b) {
+                doc.insertString(doc.getLength(), s, bold());
+            } else
+                doc.insertString(doc.getLength(), s, null);
+        } catch (BadLocationException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    private static SimpleAttributeSet bold() {
+        SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setBold(sas, true);
         return sas;
     }
 
     static class sendMessageListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            if (messageBox.getText().length() < 1) { }
-                // do nothing
+            if (messageBox.getText().length() < 1) {
+            }
+            // do nothing
             else {
-                    String msg = messageBox.getText();
-                    game.sendMessage(msg, chatHandler);
-                    append("<" + username + ">:  " + msg + "\n", false);
-                    newFrame.revalidate();
-                    scrollBar.setValue(scrollBar.getMaximum());
-                    
-                    if (msg.equals(".help")) {
-                        append("<ChatBot>: Chat functions will be listed:\n\n" +
-                        "\".clear\":   Clears the chat screen messages.\n" +
-                        "\".tcp\":   Lists the tcp address of the chat room.\n" +
-                        "\".leave\":   Allows for leaving chatroom.\n", true);
-                    } else if (msg.equals(".clear")) {
-                        chatBox.setText("");
-                        append("<ChatBot>: The chat has been cleared!\n", true);
-                    } else if (msg.equals(".tcp")) {
-                        append("<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
-                    } else if (msg.equals(".leave")) {
-                        append("<ChatBot>: Bye bye!", true);
-                        System.exit(1);
+                String msg = messageBox.getText();
+
+                newFrame.revalidate();
+                scrollBar.setValue(scrollBar.getMaximum());
+
+                if (msg.equals(".help")) {
+                    append(chatBox,
+                            "<ChatBot>: Chat commands will be listed:\n\n"
+                                    + "\".clear\":   Clears the chat screen messages.\n"
+                                    + "\".tcp\":   Lists the tcp address of the chat room.\n"
+                                    + "\".leave\":   Allows for leaving chatroom.\n",
+                            true);
+                } else if (msg.equals(".clear")) {
+                    chatBox.setText("");
+                    append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
+                } else if (msg.equals(".tcp")) {
+                    append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
+                } else if (msg.equals(".leave")) {
+                    game.sendMessage("<ChatBot>: " + username + " has left!", chatHandler);
+                    try {
+                        game.leaveGame();
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        throw new RuntimeException(e);
                     }
+                    System.exit(1);
+                } else if (msg.startsWith(".") && !msg.endsWith(".")) {
+                    append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
+                } else {
+                    append(chatBox, "<" + username + ">:  " + msg + "\n", false);
+                    game.sendMessage(msg, chatHandler);
+                }
                 messageBox.requestFocusInWindow();
                 messageBox.setText("");
             }
         }
-    }  
-
+    }
 
     // AbstractActions
-    public static AbstractAction createGameAction = new AbstractAction(){  
+    public static AbstractAction createGameAction = new AbstractAction() {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
-           // frame.setVisible(false);
+            // frame.setVisible(false);
             String name = JOptionPane.showInputDialog(frame, "Enter your name");
             if (name == null) {
                 frame.setVisible(true);
                 return;
-            }
-            else if (name.isEmpty() || name.equals("ChatBot")){
+            } else if (name.isEmpty() || name.equals("ChatBot")) {
                 System.out.println("I go here");
                 do {
                     name = JOptionPane.showInputDialog(frame, "Enter your name");
@@ -254,13 +287,11 @@ public class Menu {
             game.setUser(name);
             username = name;
 
-
             String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            if (IP_Port == null) { 
+            if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
-            }
-            else if (IP_Port.isEmpty()) {
+            } else if (IP_Port.isEmpty()) {
                 do {
                     IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                 } while (IP_Port.isEmpty());
@@ -270,23 +301,23 @@ public class Menu {
             newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             game.gameCreate(IP_Port);
             chatDisplay();
-            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
+            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(),
+                    game.getUser().Id(), chatBox);
             new Thread(chatHandler).start();
             System.out.println("Created Game");
         }
     };
 
-    public static AbstractAction joinGameAction = new AbstractAction(){  
+    public static AbstractAction joinGameAction = new AbstractAction() {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
-           // frame.setVisible(false);
+            // frame.setVisible(false);
             String name = JOptionPane.showInputDialog(frame, "Enter your name");
             if (name == null) {
                 frame.setVisible(true);
                 return;
-            }
-            else if (name.isEmpty() || name.equals("ChatBot")){
+            } else if (name.isEmpty() || name.equals("ChatBot")) {
                 System.out.println("I go here");
                 do {
                     name = JOptionPane.showInputDialog(frame, "Enter your name");
@@ -295,13 +326,11 @@ public class Menu {
             game.setUser(name);
             username = name;
 
-
             String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            if (IP_Port == null) { 
+            if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
-            }
-            else if (IP_Port.isEmpty()) {
+            } else if (IP_Port.isEmpty()) {
                 do {
                     IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
                 } while (IP_Port.isEmpty());
@@ -309,18 +338,35 @@ public class Menu {
             frame.setVisible(false);
             tcp = IP_Port;
             game.gameJoin(IP_Port);
+            Space userSpace = game.getUserSpace();
+            Object[] creator;
+            try {
+                creator = userSpace.query(new ActualField("join"), new FormalField(String.class), new ActualField(0));
+                String roomName = creator[1].toString();
+                newFrame.setTitle("Secret Hitler  |  " + roomName + "'s Room  |  tcp: " + tcp);
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             chatDisplay();
-            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
+            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(),
+                    game.getUser().Id(), chatBox);
             new Thread(chatHandler).start();
             System.out.println("Joined Game");
-        }  
+        }
     };
 
     public static AbstractAction exitAction = new AbstractAction() {
-            private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-            @Override
-                public void actionPerformed(ActionEvent e){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                game.leaveGame();
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                throw new RuntimeException(e1);
+            }
                     System.exit(1);
                 }
             };

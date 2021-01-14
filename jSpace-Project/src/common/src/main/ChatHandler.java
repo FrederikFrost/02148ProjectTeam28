@@ -1,9 +1,6 @@
 package common.src.main;
 
 import javax.swing.JEditorPane;
-//import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -15,16 +12,7 @@ public class ChatHandler implements Runnable {
     private int chatId;
     private int nextUserId;
     private JEditorPane _chatBox;
-
-    public void append(String s) {
-        try {
-           Document doc = _chatBox.getDocument();
-           doc.insertString(doc.getLength(), s, null);
-        } catch(BadLocationException exc) {
-           exc.printStackTrace();
-        }
-     }
-
+    
     public ChatHandler(Space userSpace, Space chatSpace, int chatId, int nextUserId, JEditorPane chatBox) {
         this._userSpace = userSpace;
         this._chatSpace = chatSpace;
@@ -41,12 +29,12 @@ public class ChatHandler implements Runnable {
                 Object[] newUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(nextUserId));
                 Object[] newChat = _chatSpace.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
                 if (newChat != null) {
-                    append("<" + newChat[0] + ">:  " + newChat[1] + "\n");
+                    Menu.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", false);
                     System.out.println(newChat[0] + ": " + newChat[1]);
                     chatId++;
                 }
                 if (newUser != null) {
-                    append("<" + newUser[1] + ">: has joined the game!\n");
+                    Menu.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
                 }

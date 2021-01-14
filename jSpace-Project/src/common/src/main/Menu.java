@@ -208,7 +208,6 @@ public class Menu {
                 // do nothing
             else {
                     String msg = messageBox.getText();
-                    game.sendMessage(msg, chatHandler);
                     append("<" + username + ">:  " + msg + "\n", false);
                     newFrame.revalidate();
                     scrollBar.setValue(scrollBar.getMaximum());
@@ -226,6 +225,8 @@ public class Menu {
                     } else if (msg.equals(".leave")) {
                         append("<ChatBot>: Bye bye!", true);
                         System.exit(1);
+                    } else {
+                        game.sendMessage(msg, chatHandler);
                     }
                 messageBox.requestFocusInWindow();
                 messageBox.setText("");

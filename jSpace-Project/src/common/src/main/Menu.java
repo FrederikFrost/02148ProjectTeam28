@@ -44,9 +44,21 @@ public class Menu {
     public static SecretHitlerV2 game;
     public static ChatHandler chatHandler;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         game = new SecretHitlerV2();
-        menu();
+        try {
+            menu();
+        } catch (Exception e) {
+            // TODO: handle exception
+            try {
+                game.leaveGame();
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                System.exit(2);
+            }
+            System.exit(1);
+        }   
     }
 
     public static void menu() throws IOException {
@@ -237,6 +249,12 @@ public class Menu {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                 } else if (msg.equals(".leave")) {
                     game.sendMessage("<ChatBot>: " + username + " has left!", chatHandler);
+                    try {
+                        game.leaveGame();
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        throw new RuntimeException(e);
+                    }
                     System.exit(1);
                 } else if (msg.startsWith(".") && !msg.endsWith(".")) {
                     append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
@@ -331,17 +349,24 @@ public class Menu {
                 e1.printStackTrace();
             }
             chatDisplay();
-            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
+            chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(),
+                    game.getUser().Id(), chatBox);
             new Thread(chatHandler).start();
             System.out.println("Joined Game");
-        }  
+        }
     };
 
     public static AbstractAction exitAction = new AbstractAction() {
-            private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-            @Override
-                public void actionPerformed(ActionEvent e){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                game.leaveGame();
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                throw new RuntimeException(e1);
+            }
                     System.exit(1);
                 }
             };

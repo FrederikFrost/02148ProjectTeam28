@@ -152,6 +152,10 @@ public class SecretHitlerV2 {
         }
     } */
 
+    public void leaveGame() throws InterruptedException {
+        _userSpace.put("leave", _user.Name(), _user.Id());
+    }
+
     public void setUser(String name) {
         _user = new User(name);
     }

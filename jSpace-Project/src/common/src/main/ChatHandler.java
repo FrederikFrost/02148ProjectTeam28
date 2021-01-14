@@ -1,20 +1,31 @@
 package common.src.main;
 
-import javax.swing.JTextArea;
+import javax.swing.JEditorPane;
+//import javax.swing.JTextArea;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
-import java.awt.Font;
 
 public class ChatHandler implements Runnable {
     private Space _userSpace;
     private Space _chatSpace;
     private int chatId;
     private int nextUserId;
-    private JTextArea _chatBox;
+    private JEditorPane _chatBox;
 
-    public ChatHandler(Space userSpace, Space chatSpace, int chatId, int nextUserId, JTextArea chatBox) {
+    public void append(String s) {
+        try {
+           Document doc = _chatBox.getDocument();
+           doc.insertString(doc.getLength(), s, null);
+        } catch(BadLocationException exc) {
+           exc.printStackTrace();
+        }
+     }
+
+    public ChatHandler(Space userSpace, Space chatSpace, int chatId, int nextUserId, JEditorPane chatBox) {
         this._userSpace = userSpace;
         this._chatSpace = chatSpace;
         this.chatId = chatId;
@@ -30,12 +41,12 @@ public class ChatHandler implements Runnable {
                 Object[] newUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(nextUserId));
                 Object[] newChat = _chatSpace.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
                 if (newChat != null) {
-                    _chatBox.append("<" + newChat[0] + ">:  " + newChat[1] + "\n");
+                    append("<" + newChat[0] + ">:  " + newChat[1] + "\n");
                     System.out.println(newChat[0] + ": " + newChat[1]);
                     chatId++;
                 }
                 if (newUser != null) {
-                    _chatBox.append("<" + newUser[1] + ">: has joined the game!\n");
+                    append("<" + newUser[1] + ">: has joined the game!\n");
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
                 }

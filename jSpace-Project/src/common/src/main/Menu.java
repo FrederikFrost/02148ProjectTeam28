@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 public class Menu {
@@ -84,7 +85,7 @@ public class Menu {
 
     // Method for creating buttons
     public static JButton createButton(int index, String path, String hoverPath) throws IOException {
-        JButton b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+        JButton b = new JButton(new ImageIcon(ImageIO.read(new File(guiPath + path))));
         b.setBorder(BorderFactory.createEmptyBorder());
         b.setContentAreaFilled(false);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,7 +95,7 @@ public class Menu {
     }
     // Method for creating labels
     public static void createLabel(int index, String path) throws IOException {
-        JLabel l = new JLabel(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+        JLabel l = new JLabel(new ImageIcon(ImageIO.read(new File(guiPath + path))));
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
@@ -154,7 +155,7 @@ public class Menu {
         sendMessage = new JButton("Send Message");
         sendMessage.addActionListener(new sendMessageListener());
 
-        chatBox = new JEditorPane("text/html", "");
+        chatBox = new JEditorPane("text/rtf", "");
         chatBox.setEditable(false);
         chatBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
         scrollPane = new JScrollPane(chatBox);
@@ -185,7 +186,7 @@ public class Menu {
         newFrame.setSize(470, 300);
         newFrame.setVisible(true);
     }
-    public static void append(String s, Boolean b) {
+    public static void append(JEditorPane jea, String s, Boolean b) {
         try {
            Document doc = chatBox.getDocument();
            if (b) {
@@ -208,23 +209,25 @@ public class Menu {
                 // do nothing
             else {
                     String msg = messageBox.getText();
-                    append("<" + username + ">:  " + msg + "\n", false);
+                    append(chatBox, "<" + username + ">:  " + msg + "\n", false);
                     newFrame.revalidate();
                     scrollBar.setValue(scrollBar.getMaximum());
                     
                     if (msg.equals(".help")) {
-                        append("<ChatBot>: Chat functions will be listed:\n\n" +
+                        append(chatBox, "<ChatBot>: Chat commands will be listed:\n\n" +
                         "\".clear\":   Clears the chat screen messages.\n" +
                         "\".tcp\":   Lists the tcp address of the chat room.\n" +
                         "\".leave\":   Allows for leaving chatroom.\n", true);
                     } else if (msg.equals(".clear")) {
                         chatBox.setText("");
-                        append("<ChatBot>: The chat has been cleared!\n", true);
+                        append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
                     } else if (msg.equals(".tcp")) {
-                        append("<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
+                        append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                     } else if (msg.equals(".leave")) {
-                        append("<ChatBot>: Bye bye!", true);
+                        append(chatBox, "<ChatBot>: username " + "has left!", true);
                         System.exit(1);
+                    } else if (msg.startsWith(".") && !msg.endsWith(".")){
+                        append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                     } else {
                         game.sendMessage(msg, chatHandler);
                     }

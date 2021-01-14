@@ -1,22 +1,18 @@
 package common.src.main;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-
-import javax.swing.Action;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
-import org.jspace.Tuple;
 
 public class GameController implements Runnable {
     public Space _chatSpace;
     public Space _userSpace;
     public Space _gameSpace;
+    private int playerCount;
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
         this._chatSpace = _chatSpace;
@@ -24,11 +20,16 @@ public class GameController implements Runnable {
         this._gameSpace = _gameSpace;
     }
 
+    //only used for test!
+    public void setPlayerCount(int playerCount) {
+        this.playerCount = playerCount;
+    }
+
     @Override
     public void run() {
         boolean enoughPlayers = false;
         boolean gameStarted = false;
-        int playerCount = -1;
+        playerCount = -1;
         try {
             while (!gameStarted) {
                 if (!enoughPlayers) {
@@ -49,11 +50,11 @@ public class GameController implements Runnable {
 
             _gameSpace.get(new ActualField("lock"));
             
-            SetupGame(playerCount);
-            AssignRoles(playerCount);
+            SetupGame();
+            AssignRoles();
             
             _gameSpace.put("lock");
-            
+            boolean useOldPres = false;
             while(true) {
                 /**
                  * Suggest chancellor
@@ -78,8 +79,10 @@ public class GameController implements Runnable {
                 int i = 0;
                 int suggestedChancellor = -1;
                 while(elected == false && i < 3) {
+                    if (i != 0) useOldPres = rotatePresident(useOldPres);
+
                     suggestedChancellor = SuggestChancellor();
-                    elected = Election(playerCount, suggestedChancellor);
+                    elected = Election(suggestedChancellor);
                     i++;
                     //TODO - we need to rotate president here
                 }
@@ -94,10 +97,37 @@ public class GameController implements Runnable {
         }
     }
 
-    public int SuggestChancellor() throws Exception{
-        _gameSpace.get(new ActualField("lock"));
+    public boolean rotatePresident(boolean useOldPres, int newPres) throws Exception {
+        int oldPres = getOldPresident();
+        int currPres = getPresident();
+        setOldPresident(currPres);
+
+        if (newPres != -1) {
+            setPresident(newPres);
+            return true;
+        } else if (useOldPres) {
+            setPresident(getNextPresident(oldPres));
+            return false;
+        } else {
+            setPresident(getNextPresident(currPres));
+            return false;
+        }
         
-        int pres = (int) _gameSpace.get(new ActualField("president"), new FormalField(Integer.class))[1];
+    }
+
+    public boolean rotatePresident(boolean useOldPres) throws Exception {
+        return rotatePresident(useOldPres, -1);
+    }
+
+    public int getNextPresident(int pres) {
+        return pres+1%playerCount; //TODO handle dead players
+    }
+
+    public int SuggestChancellor() throws Exception {
+        
+        int pres = getPresident();
+
+        _gameSpace.get(new ActualField("lock"));
         _gameSpace.put("suggest", pres);
         //TODO: send president choices to pick from
         _gameSpace.put("lock");
@@ -105,7 +135,7 @@ public class GameController implements Runnable {
         return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
     }
 
-    public Boolean Election(int playerCount, int newChancellor) throws Exception {
+    public Boolean Election(int newChancellor) throws Exception {
         //maybe change to ArrayList<int[]>
         _gameSpace.get(new ActualField("lock"));
 
@@ -128,9 +158,7 @@ public class GameController implements Runnable {
             }
         }
         if (votesChancellor >= numToPass) {
-            _gameSpace.get(new ActualField("lock")); 
-            _gameSpace.put("chancellor", newChancellor);
-            _gameSpace.put("lock");
+            setChancellor(newChancellor);
 
             return true;
         }
@@ -139,7 +167,7 @@ public class GameController implements Runnable {
     }
 
     //#region setup
-    public void AssignRoles(int playerCount) throws Exception {
+    public void AssignRoles() throws Exception {
 
         Role liberal = new Role(RoleType.Liberal, RoleType.Liberal);
         Role fascist = new Role(RoleType.Fascist, RoleType.Fascist);
@@ -174,11 +202,12 @@ public class GameController implements Runnable {
         
         Random rand = new Random();
         int president = rand.nextInt(playerCount);
-        _gameSpace.put("president", president);
+        setPresident(president);
+        setOldPresident(-1);
 
     }
 
-    public void SetupGame(int playerCount) throws Exception {
+    public void SetupGame() throws Exception {
         if (playerCount < 5) throw new IllegalArgumentException("Player count cannot be less than 5." + (playerCount==-1? "PlayerCount was not set":""));
 
         LegislativeType[] liberalBoard = new LegislativeType[5];
@@ -232,5 +261,52 @@ public class GameController implements Runnable {
         return deck;
     }
 
+    //#region getters and setters
+
+    private int getPresident() throws Exception {
+        return (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+    }
+
+    private void setPresident(int president) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        _gameSpace.getp(new ActualField("president"), new FormalField(Integer.class));
+        _gameSpace.put("president", president);
+        _gameSpace.put("lock");
+    }
+
+    private int getOldPresident() throws Exception {
+        return (int) _gameSpace.query(new ActualField("oldPresident"), new FormalField(Integer.class))[1];
+    }
+
+    private void setOldPresident(int president) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        _gameSpace.getp(new ActualField("oldPresident"), new FormalField(Integer.class));
+        _gameSpace.put("oldPresident", president);
+        _gameSpace.put("lock");
+    }
+
+    private int getChancellor() throws Exception {
+        return (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
+    }
+
+    private void setChancellor(int chancellor) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        _gameSpace.getp(new ActualField("chancellor"), new FormalField(Integer.class));
+        _gameSpace.put("chancellor", chancellor);
+        _gameSpace.put("lock");
+    }
+
+    private int getOldChancellor() throws Exception {
+        return (int) _gameSpace.query(new ActualField("OldChancellor"), new FormalField(Integer.class))[1];
+    }
+
+    private void setOldChancellor(int chancellor) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        _gameSpace.getp(new ActualField("OldChancellor"), new FormalField(Integer.class));
+        _gameSpace.put("OldChancellor", chancellor);
+        _gameSpace.put("lock");
+    }
+
+    //#endregion
 
 }

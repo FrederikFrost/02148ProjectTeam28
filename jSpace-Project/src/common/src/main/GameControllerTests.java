@@ -27,14 +27,7 @@ public class GameControllerTests {
         // runMethod("CardShuffleTest", args);
         // runMethod("AssignRolesTest", args);
         // runMethod("SetupGameTest", args);
-        runMethod("SuggestChancellorTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
-        runMethod("ElectionTest", args);
+        runMethod("rotatePresidentTest", args);
     }
 
     private static void SuggestChancellorTest() {
@@ -62,6 +55,8 @@ public class GameControllerTests {
     private static void ElectionTest() {
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
         int playerCount = 5;
+        controller.setPlayerCount(playerCount);
+
         Random rand = new Random();
         new Thread(() -> {
             try {
@@ -84,7 +79,7 @@ public class GameControllerTests {
             }
         }).start();
         try {
-            boolean res = controller.Election(playerCount, 4);
+            boolean res = controller.Election(4);
             Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
             if (res) {
                 Object[] chanTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(Integer.class));
@@ -95,6 +90,44 @@ public class GameControllerTests {
                 Helper.printArray("Votes", (Vote[]) votesTuple[1], true);
             }
             
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+    }
+
+    private static void rotatePresidentTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+        int playerCount = 5;
+        controller.setPlayerCount(playerCount);
+
+        try {
+
+            int pres = 0;
+            int oldPres = -1;
+            _gameSpace.put("president", pres);
+            _gameSpace.put("oldPresident", oldPres);
+
+            System.out.println("President: " + pres + " | Old president: " + oldPres);
+
+            boolean useOldPres = controller.rotatePresident(false); 
+
+            pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+            oldPres = (int) _gameSpace.query(new ActualField("oldPresident"), new FormalField(Integer.class))[1];
+            System.out.println("President: " + pres + " | Old president: " + oldPres);
+
+            useOldPres = controller.rotatePresident(useOldPres, 4);
+
+            pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+            oldPres = (int) _gameSpace.query(new ActualField("oldPresident"), new FormalField(Integer.class))[1];
+            System.out.println("President: " + pres + " | Old president: " + oldPres);
+
+            useOldPres = controller.rotatePresident(useOldPres);
+
+            pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+            oldPres = (int) _gameSpace.query(new ActualField("oldPresident"), new FormalField(Integer.class))[1];
+            System.out.println("President: " + pres + " | Old president: " + oldPres);
+
+
         } catch (Exception e) {
             //TODO: handle exception
         }
@@ -128,9 +161,11 @@ public class GameControllerTests {
 
     private static void SetupGameTest() {
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
-        int numberOfPlayers = 7;
+        int playerCount = 5;
+        controller.setPlayerCount(playerCount);
+
         try {
-            controller.SetupGame(numberOfPlayers);
+            controller.SetupGame();
             Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), 
                 new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
             Object[] deck = _gameSpace.get(new ActualField("deck"), new FormalField(LegislativeType[].class));
@@ -146,9 +181,11 @@ public class GameControllerTests {
 
     private static void AssignRolesTest() {
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
-        int numberOfPlayers = 7;
+        int playerCount = 5;
+        controller.setPlayerCount(playerCount);
+
         try {
-            controller.AssignRoles(numberOfPlayers);
+            controller.AssignRoles();
             Object[] roles = _gameSpace.get(new ActualField("roles"), new FormalField(Role[].class), new FormalField(Integer.class));
             Object[] president = _gameSpace.get(new ActualField("president"), new FormalField(Integer.class));
             Helper.printArray("Roles", (Role[]) roles[1]);

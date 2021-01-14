@@ -1,5 +1,7 @@
 package common.src.main;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
@@ -13,6 +15,9 @@ public class GameController implements Runnable {
     public Space _userSpace;
     public Space _gameSpace;
     private int playerCount;
+    private int lastPres;
+    private int lastChancellor;
+
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
         this._chatSpace = _chatSpace;
@@ -23,6 +28,16 @@ public class GameController implements Runnable {
     //only used for test!
     public void setPlayerCount(int playerCount) {
         this.playerCount = playerCount;
+    }
+
+    //only used for test!
+    public void setLastPres(int lastPres) {
+        this.lastPres = lastPres;
+    }
+
+    //only used for test!
+    public void setLastChancellor(int lastChancellor) {
+        this.lastChancellor = lastChancellor;
     }
 
     @Override
@@ -55,6 +70,7 @@ public class GameController implements Runnable {
             
             _gameSpace.put("lock");
             boolean useOldPres = false;
+
             while(true) {
                 /**
                  * Suggest chancellor
@@ -84,7 +100,6 @@ public class GameController implements Runnable {
                     suggestedChancellor = SuggestChancellor();
                     elected = Election(suggestedChancellor);
                     i++;
-                    //TODO - we need to rotate president here
                 }
                 if (!elected) {
                     // skip choose legislate
@@ -101,7 +116,7 @@ public class GameController implements Runnable {
         int oldPres = getOldPresident();
         int currPres = getPresident();
         setOldPresident(currPres);
-
+  
         if (newPres != -1) {
             setPresident(newPres);
             return true;
@@ -119,20 +134,52 @@ public class GameController implements Runnable {
         return rotatePresident(useOldPres, -1);
     }
 
-    public int getNextPresident(int pres) {
-        return pres+1%playerCount; //TODO handle dead players
+    public int getNextPresident(int pres) throws Exception {
+        // ArrayList<Integer> deads = new ArrayList<Integer>();
+        // for (Object obj : ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1])) {
+        //     deads.add((int) obj);    
+        // }
+
+        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        int newPres = pres;
+        do {
+            newPres = (newPres+1) % playerCount;
+        } while(deads.contains(newPres));
+
+        return newPres;
     }
 
     public int SuggestChancellor() throws Exception {
         
         int pres = getPresident();
+        ArrayList suggestions = GetEligibleCandidates();
 
         _gameSpace.get(new ActualField("lock"));
-        _gameSpace.put("suggest", pres);
-        //TODO: send president choices to pick from
+        _gameSpace.put("suggest", pres, suggestions);
         _gameSpace.put("lock");
         //TODO: should a lock be here aswell?
         return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
+    }
+
+    public ArrayList<Integer> GetEligibleCandidates() throws Exception {
+        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
+        for(int i = 0; i < playerCount; i++){
+            ids.add(i);
+        }
+
+        //gather all none-eligible in list
+        if (!deads.contains(lastPres)) deads.add(lastPres);
+        if (!deads.contains(lastChancellor)) deads.add(lastChancellor);
+
+        //as 'list.remove(int)' removes index, the list must be in descending order
+        Collections.sort(deads, Collections.reverseOrder());
+
+        for (Integer nonEligible : deads) {
+            ids.remove(nonEligible);
+        }
+
+        return ids;
     }
 
     public Boolean Election(int newChancellor) throws Exception {
@@ -148,9 +195,10 @@ public class GameController implements Runnable {
 
         _gameSpace.put("lock");
         
-        Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount));    //should also account for votes
+        int deadPlayers = ((ArrayList<?>) _gameSpace.get(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(Vote[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 
-        int numToPass = playerCount/2+1;
+        int numToPass = (playerCount-deadPlayers)/2+1;
         int votesChancellor = 0;
         for (Vote vote : (Vote[]) votesReturn[1]) {
             if (vote == Vote.Ja) {
@@ -158,6 +206,8 @@ public class GameController implements Runnable {
             }
         }
         if (votesChancellor >= numToPass) {
+            //set term-limit
+            updateTermLimit(newChancellor);
             setChancellor(newChancellor);
 
             return true;
@@ -166,7 +216,13 @@ public class GameController implements Runnable {
         return false;
     }
 
-    //#region setup
+    private void updateTermLimit(int chancellor) throws Exception {
+        int pres = getPresident();
+        lastPres = playerCount > 5? pres : -1;
+        lastChancellor = chancellor;
+    }
+
+    // #region setup
     public void AssignRoles() throws Exception {
 
         Role liberal = new Role(RoleType.Liberal, RoleType.Liberal);
@@ -204,6 +260,13 @@ public class GameController implements Runnable {
         int president = rand.nextInt(playerCount);
         setPresident(president);
         setOldPresident(-1);
+
+        //make dead player list
+        ArrayList<Integer> deadPlayers = new ArrayList<Integer>();
+        _gameSpace.put("deadPlayers", deadPlayers);
+
+        lastPres = -1;
+        lastChancellor = -1;
 
     }
 

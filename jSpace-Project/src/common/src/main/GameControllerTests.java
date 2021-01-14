@@ -1,6 +1,8 @@
 package common.src.main;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.jspace.ActualField;
@@ -27,7 +29,8 @@ public class GameControllerTests {
         // runMethod("CardShuffleTest", args);
         // runMethod("AssignRolesTest", args);
         // runMethod("SetupGameTest", args);
-        runMethod("rotatePresidentTest", args);
+        runMethod("GetEligibleCandidatesTest", args);
+        // runMethod("ElectionTest", args);
     }
 
     private static void SuggestChancellorTest() {
@@ -37,7 +40,7 @@ public class GameControllerTests {
             _gameSpace.put("president", 1);
             new Thread(() -> {
                 try {
-                    _gameSpace.get(new ActualField("suggest"), new ActualField(1));
+                    _gameSpace.get(new ActualField("suggest"), new ActualField(1), new FormalField(ArrayList.class));
                     _gameSpace.put("suggestion", 4);
 
                 } catch (Exception e) {
@@ -54,8 +57,9 @@ public class GameControllerTests {
 
     private static void ElectionTest() {
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
-        int playerCount = 5;
+        int playerCount = 7;
         controller.setPlayerCount(playerCount);
+        ArrayList<Integer> deads = new ArrayList<Integer> (Arrays.asList(0,1));
 
         Random rand = new Random();
         new Thread(() -> {
@@ -79,6 +83,7 @@ public class GameControllerTests {
             }
         }).start();
         try {
+            _gameSpace.put("deadPlayers", deads);
             boolean res = controller.Election(4);
             Object[] votesTuple = _gameSpace.get(new ActualField("votes"), new FormalField(Vote[].class), new FormalField(Integer.class));
             if (res) {
@@ -97,13 +102,14 @@ public class GameControllerTests {
 
     private static void rotatePresidentTest() {
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
-        int playerCount = 5;
+        int playerCount = 7;
         controller.setPlayerCount(playerCount);
+        ArrayList<Integer> deads = new ArrayList<Integer> (Arrays.asList(0,1));
 
         try {
-
-            int pres = 0;
-            int oldPres = -1;
+            _gameSpace.put("deadPlayers", deads);
+            int pres = 6;
+            int oldPres = 5;
             _gameSpace.put("president", pres);
             _gameSpace.put("oldPresident", oldPres);
 
@@ -131,6 +137,24 @@ public class GameControllerTests {
         } catch (Exception e) {
             //TODO: handle exception
         }
+
+    }
+
+    private static void GetEligibleCandidatesTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+        int playerCount = 7;
+        controller.setPlayerCount(playerCount);
+        controller.setLastPres(3);
+        controller.setLastChancellor(4);
+        ArrayList<Integer> deads = new ArrayList<Integer> (Arrays.asList(1,5));
+        try {
+            _gameSpace.put("deadPlayers", deads);
+            ArrayList<Integer> eligible = controller.GetEligibleCandidates();
+            Helper.printArray("Eligible", eligible.toArray(new Integer[0]));
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+
 
     }
 

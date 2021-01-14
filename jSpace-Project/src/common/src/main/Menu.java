@@ -141,18 +141,11 @@ public class Menu {
     // }
 
     // Chatdisplay appears after creating/joining game
-    public static void chatDisplay() {
-        // String fonts[]
-        // =
-        // GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        // for (int i = 0; i < fonts.length; i++) {
-        // System.out.println(fonts[i]);
+    public static JPanel chatPanel() {
         JPanel chatPanel = new JPanel();
         chatPanel.setLayout(new BorderLayout());
 
         JPanel southPanel = new JPanel();
-        // southPanel.setBackground(Color.BLUE);
         southPanel.setLayout(new GridBagLayout());
 
         messageBox = new JTextField(30);
@@ -170,6 +163,7 @@ public class Menu {
         chatPanel.add(scrollPane, BorderLayout.CENTER);
 
         GridBagConstraints left = new GridBagConstraints();
+        left.insets = new Insets(0, 10, 0, 0);
         left.anchor = GridBagConstraints.LINE_START;
         left.fill = GridBagConstraints.HORIZONTAL;
         left.weightx = 512.0D;
@@ -184,13 +178,32 @@ public class Menu {
 
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
-
         chatPanel.add(BorderLayout.SOUTH, southPanel);
+        chatPanel.setSize(400,760);
+        return chatPanel;
+    }
 
+    public static JPanel gamePanel(){
+         JPanel gamePanel = new JPanel();
+         JLabel gameLabel = new JLabel("SECRET HITLER");
+         gameLabel.setFont(new Font("Calibri", Font.PLAIN, 45));
+         gamePanel.setLayout(new GridBagLayout());
+         gamePanel.add(gameLabel);
+         gamePanel.setSize(800,800);
+
+         // ADD GAMEPLAY GUI HERE
+         return gamePanel;
+    }
+
+    public static void gameFrame(){
+        JPanel chatPanel = chatPanel();
+        JPanel gamePanel = gamePanel();
         newFrame.add(chatPanel);
+        newFrame.setLayout(new BorderLayout());
+        newFrame.add(gamePanel);
         newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        newFrame.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
         newFrame.setLocationRelativeTo(null);
-        newFrame.setSize(470, 300);
         newFrame.setVisible(true);
     }
 
@@ -282,7 +295,7 @@ public class Menu {
             tcp = IP_Port;
             newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             game.gameCreate(IP_Port);
-            chatDisplay();
+            gameFrame();
             chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(),
                     game.getUser().Id(), chatBox);
             new Thread(chatHandler).start();
@@ -330,7 +343,7 @@ public class Menu {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            chatDisplay();
+            gameFrame();
             chatHandler = new ChatHandler(game.getUserSpace(), game.getChatSpace(), game.getChatId(), game.getUser().Id(), chatBox);
             new Thread(chatHandler).start();
             System.out.println("Joined Game");

@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 public class Menu {
@@ -84,7 +85,7 @@ public class Menu {
 
     // Method for creating buttons
     public static JButton createButton(int index, String path, String hoverPath) throws IOException {
-        JButton b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+        JButton b = new JButton(new ImageIcon(ImageIO.read(new File(guiPath + path))));
         b.setBorder(BorderFactory.createEmptyBorder());
         b.setContentAreaFilled(false);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,7 +95,10 @@ public class Menu {
     }
     // Method for creating labels
     public static void createLabel(int index, String path) throws IOException {
-        JLabel l = new JLabel(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+        //String fullPath = guiPath.resolve(path).toString();
+        //System.out.println(fullPath);
+        JLabel l = new JLabel(new ImageIcon(ImageIO.read(new File(guiPath + path))));
+            //Menu.class.getResource(fullPath))));
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }

@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
@@ -13,6 +15,8 @@ import javax.swing.text.StyleConstants;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
+
+import common.src.main.Types.VoteType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -195,6 +199,28 @@ public class Menu {
         return chatPanel;
     }
 
+    public static String suggestDialogueBox(){
+        String[] choices = {"Elias", "Frederik", "Erik", "Charles", "Andy"};
+        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+            "Who should be suggested chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                                            // default
+                                                                            // icon
+            choices, // Array of choices
+            choices[1]); // Initial choice
+        return input;
+    }
+
+    public static String voteDialogueBox(String votee){
+        String[]choices = {"Ja", "Nein"};
+        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+        "Should " + votee + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+                                                                        // default
+                                                                        // icon
+        choices, // Array of choices
+        "Select vote");// Initial choice
+        return input;
+    }
+
     public static JPanel gamePanel(){
          JPanel gamePanel = new JPanel();
         //  JLabel gameLabel = new JLabel("SECRET HITLER");
@@ -206,6 +232,41 @@ public class Menu {
          // ADD GAMEPLAY GUI HERE
          return gamePanel;
     }
+
+    // public static void suggestList(JPanel panel){
+    //     JList jList = new JList();
+    //     JTextArea jta = new JTextArea();
+    //     jList.setModel(new AbstractListModel() {
+    //         String[] strings = {"User 1", "User 2", "User 3", "User 4", "User 5"};
+    //         @Override
+    //         public int getSize() {
+    //             return strings.length;
+    //         }
+    //         @Override
+    //         public Object getElementAt(int i) {
+    //             return strings[i];
+    //         }
+    //     });
+    //     jList.addListSelectionListener(new ListSelectionListener() {
+    //         @Override
+    //         public void valueChanged(ListSelectionEvent evt) {
+    //             jListValueChanged(jList, jta, evt);
+    //         }
+    //     });
+    //     panel.add(jList);
+    //     panel.add(jta);
+    // }
+    
+    // private static void jListValueChanged(JList jl, JTextArea jta, ListSelectionEvent evt) {
+    //     //set text on right here
+    //     String s = (String) jl.getSelectedValue();
+    //     if (s.equals("Item 1")) {
+    //         jta.setText("You clicked on list 1");
+    //     }
+    //     if (s.equals("Item 2")) {
+    //         jta.setText("You clicked on list 2");
+    //     }
+    // }
 
     public static void gameFrame(){
         JPanel chatPanel = chatPanel();
@@ -222,10 +283,8 @@ public class Menu {
     public static void append(JEditorPane jea, String s, Boolean b) {
         try {
             Document doc = jea.getDocument();
-            if (b) {
-                doc.insertString(doc.getLength(), s, bold());
-            } else
-                doc.insertString(doc.getLength(), s, null);
+            if (b) doc.insertString(doc.getLength(), s, bold());
+            else doc.insertString(doc.getLength(), s, null);
         } catch (BadLocationException exc) {
             exc.printStackTrace();
         }
@@ -269,6 +328,26 @@ public class Menu {
                         throw new RuntimeException(e);
                     }
                     System.exit(1);
+                } else if (msg.equals(".suggest")){
+                    append(chatBox, "<" + username + ">:  " + msg + "\n", false);
+                    game.sendMessage(msg, chatHandler);
+
+                    // CHECK IF USER IS PRESIDENT:
+                    // IF YES:
+                    append(chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
+                    String sugChan;
+                    sugChan = suggestDialogueBox();
+                    if (sugChan == null){
+                        do sugChan = suggestDialogueBox();
+                        while(sugChan == null);
+                    }
+                    append(chatBox, "<ChatBot>: " + sugChan + " was suggested chancellor by the president! Vote now!\n", true);
+                    String vote = voteDialogueBox(sugChan);
+                    if (vote == null){
+                        do vote = voteDialogueBox(sugChan);
+                        while(vote == null);
+                    }
+                    append(chatBox, "<ChatBot>: " + username + " voted: " + vote, true);
                 } else if (msg.startsWith(".") && !msg.endsWith(".")) {
                     append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                 } else {
@@ -280,6 +359,7 @@ public class Menu {
             }
         }
     }
+
 
     // AbstractActions
     public static AbstractAction createGameAction = new AbstractAction() {

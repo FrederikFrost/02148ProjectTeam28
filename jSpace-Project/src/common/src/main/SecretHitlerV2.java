@@ -131,44 +131,7 @@ public class SecretHitlerV2 {
                 }
                 switch (cmd) {
                     case Election:
-                        Boolean electionDone;
-                        Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
-                        int pres = (int) newElect[1];
-                        ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
-                        int suggestion = -1;
-                        if (_user.Id() == pres) {
-                            suggestion = Menu.suggest(eligibleCands);
-                            _gameSpace.get(new ActualField("lock"));
-                            _gameSpace.put("suggestion", suggestion);
-                            _gameSpace.put("lock");
-                        } else {
-                            suggestion = (int) _gameSpace.query(new ActualField("suggestion"), new FormalField(Integer.class))[1];
-                        }
-                        Boolean Boolvote = Menu.vote(suggestion);
-                        VoteType vote;
-                        if (Boolvote) {
-                            vote = VoteType.Ja;
-                        } else {
-                            vote = VoteType.Nein;
-                        }
-                        _gameSpace.query(new ActualField("startVote"));
-                        _gameSpace.get(new ActualField("lock"));
-                        // BIG CHANCE OF ERROR HERE! What the fuck is an Array.class?
-                        Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
-                        VoteType[] votes = (VoteType[]) voteObj[1];
-                        int voterId = (int) voteObj[2] + 1;
-                        votes[_user.Id()] = vote;
-                        _gameSpace.put("votes", votes, voterId);
-                        _gameSpace.put("lock");
-                        Menu.updateVotes(votes);
-                        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
-                        electionDone = (voterId == (playerCount - deadPlayers - 1));
-                        while(!electionDone) {
-                            voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
-                            votes = (VoteType[]) voteObj[1];
-                            Menu.updateVotes(votes);
-                            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
-                        }
+                        election(playerCount);
                         break;
                     case LegislativeSession:
                         System.out.println("L_session has happened");
@@ -180,6 +143,52 @@ public class SecretHitlerV2 {
                 _gameSpace.put(new ActualField("lock"));
             }
         } catch (Exception e) {}
+    }
+
+    private static void election(int playerCount) throws InterruptedException {
+        // Init election, and suggest chancellor if player is president.
+        Boolean electionDone;
+        Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
+        int pres = (int) newElect[1];
+        ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
+        int suggestion = -1;
+        if (_user.Id() == pres) {
+            suggestion = Menu.suggest(eligibleCands);
+            _gameSpace.get(new ActualField("lock"));
+            _gameSpace.put("suggestion", suggestion);
+            _gameSpace.put("lock");
+        } else {
+            suggestion = (int) _gameSpace.query(new ActualField("suggestion"), new FormalField(Integer.class))[1];
+        }
+
+        // Vote in GUI
+        Boolean Boolvote = Menu.vote(suggestion);
+        VoteType vote;
+        if (Boolvote) {
+            vote = VoteType.Ja;
+        } else {
+            vote = VoteType.Nein;
+        }
+        // Put vote in the gameSpace tuple space.
+        // Also update GUI with incoming votes until vote is complete.
+        _gameSpace.query(new ActualField("startVote"));
+        _gameSpace.get(new ActualField("lock"));
+        // BIG CHANCE OF ERROR HERE! What the fuck is an Array.class?
+        Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+        VoteType[] votes = (VoteType[]) voteObj[1];
+        int voterId = (int) voteObj[2] + 1;
+        votes[_user.Id()] = vote;
+        _gameSpace.put("votes", votes, voterId);
+        _gameSpace.put("lock");
+        Menu.updateVotes(votes);
+        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        electionDone = (voterId == (playerCount - deadPlayers - 1));
+        while(!electionDone) {
+            voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+            votes = (VoteType[]) voteObj[1];
+            Menu.updateVotes(votes);
+            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
+        }
     }
 
     public void sendMessage(String msg, ChatHandler chatHandler) {

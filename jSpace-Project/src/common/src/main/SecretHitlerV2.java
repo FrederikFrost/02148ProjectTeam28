@@ -2,7 +2,9 @@ package common.src.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -12,6 +14,7 @@ import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
 import common.src.main.Types.CommandType;
+import common.src.main.Types.VoteType;
 
 public class SecretHitlerV2 {
 
@@ -112,22 +115,60 @@ public class SecretHitlerV2 {
             _userSpace.put("join", _user.Name(), nextUserId);
             _user.setId(nextUserId);
             _userSpace.put("lock", nextUserId+1);
+            
         } catch (Exception e) {
             //TODO: handle exception
         }
         try {
+            int playerCount = -1;
             while(running){
                 //event getCard
                 //listen for command
-                Object[] commands = _gameSpace.get(new ActualField(CommandType.class));
+                Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 CommandType cmd = (CommandType) commands[0];
+                if (playerCount == -1) {
+                    playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
+                }
                 switch (cmd) {
                     case Election:
+                        Boolean electionDone;
+                        Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
+                        int pres = (int) newElect[1];
+                        ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
+                        int suggestion = -1;
+                        if (_user.Id() == pres) {
+                            suggestion = Menu.suggest(eligibleCands);
+                            _gameSpace.get(new ActualField("lock"));
+                            _gameSpace.put("suggestion", suggestion);
+                            _gameSpace.put("lock");
+                        } else {
+                            suggestion = (int) _gameSpace.query(new ActualField("suggestion"), new FormalField(Integer.class))[1];
+                        }
+                        Boolean Boolvote = Menu.vote(suggestion);
+                        VoteType vote;
+                        if (Boolvote) {
+                            vote = VoteType.Ja;
+                        } else {
+                            vote = VoteType.Nein;
+                        }
+                        _gameSpace.query(new ActualField("startVote"));
                         _gameSpace.get(new ActualField("lock"));
-                        controller.SuggestChancellor();
-                        int suggestion = (int) _gameSpace.get(new ActualField("suggest"), new FormalField(Integer.class))[1];
-                        System.out.println("Election has happened");
-
+                        // BIG CHANCE OF ERROR HERE! What the fuck is an Array.class?
+                        Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+                        VoteType[] votes = (VoteType[]) voteObj[1];
+                        int voterId = (int) voteObj[2] + 1;
+                        votes[_user.Id()] = vote;
+                        _gameSpace.put("votes", votes, voterId);
+                        _gameSpace.put("lock");
+                        Menu.updateVotes(votes);
+                        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+                        electionDone = (voterId == (playerCount - deadPlayers - 1));
+                        while(!electionDone) {
+                            voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+                            votes = (VoteType[]) voteObj[1];
+                            Menu.updateVotes(votes);
+                            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
+                        }
                         break;
                     case LegislativeSession:
                         System.out.println("L_session has happened");

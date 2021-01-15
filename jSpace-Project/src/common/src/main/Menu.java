@@ -14,6 +14,8 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import common.src.main.Types.VoteType;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -23,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Menu {
     static String guiPath = "gui/";
@@ -383,6 +386,20 @@ public class Menu {
                     System.exit(1);
                 }
             };
+
+	public static int suggest(ArrayList<Integer> eligibleCands) {
+        // TODO: make suggestion pop-up list.
+		return 0;
+	}
+
+	public static Boolean vote(int suggestion) {
+        // TODO: Make vote pop-up.
+		return null;
+	}
+
+	public static void updateVotes(VoteType[] votes) {
+        // TODO: update graphics for user votes.
+	}
             
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

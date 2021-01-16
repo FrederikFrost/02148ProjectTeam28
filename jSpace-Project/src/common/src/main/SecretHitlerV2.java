@@ -170,7 +170,7 @@ public class SecretHitlerV2 {
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
-                            cards = Menu.ChooseLegislate(cards);
+                            cards = Game.ChooseLegislate(cards);
                             boolean veto = (boolean) cardsTuple[2];
                             _gameSpace.put("chancellor", cards, veto);
                             _gameSpace.put("lock");
@@ -180,7 +180,7 @@ public class SecretHitlerV2 {
                              * if/else on this
                              */
                             if (vetoRes) {
-                                boolean presVeto = Menu.GetVetoResponseFromPres();
+                                boolean presVeto = Game.GetVetoResponseFromPres();
                                 _gameSpace.put("presVeto", presVeto);
                                 //TODO: update board here
                             } else {
@@ -193,7 +193,7 @@ public class SecretHitlerV2 {
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
                             boolean veto = (boolean) cardsTuple[2];
-                            ArrayList<LegislativeType> tempCards = Menu.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
+                            ArrayList<LegislativeType> tempCards = Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
                             /**
                              * if/else on veto
                              * send veto to pres
@@ -209,7 +209,7 @@ public class SecretHitlerV2 {
                                 if (presVeto) {
                                     cards = tempCards;
                                 } else {
-                                    cards = Menu.ChooseLegislate(cards, false);
+                                    cards = Game.ChooseLegislate(cards, false);
                                 }
                             }
                             

@@ -7,6 +7,7 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import common.src.main.Types.LegislativeType;
 import common.src.main.Types.VoteType;
 
 public class Game {
@@ -63,5 +64,18 @@ public class Game {
 	public static void updateVotes(VoteType[] votes) {
         // TODO: update graphics for user votes.
 	}
+
+	public static ArrayList<LegislativeType> ChooseLegislate(ArrayList<LegislativeType> cards, boolean vetoEnabled) {
+		return null;
+	}
+    
+    public static ArrayList<LegislativeType> ChooseLegislate(ArrayList<LegislativeType> cards) {
+        return ChooseLegislate(cards, false);
+    }
+
+	public static boolean GetVetoResponseFromPres() {
+		return false;
+	}
+
             
 }

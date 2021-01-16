@@ -10,13 +10,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.jspace.ActualField;
-import org.jspace.FormalField;
-import org.jspace.Space;
-
 import common.src.main.Types.ErrorType;
-import common.src.main.Types.VoteType;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -26,8 +20,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class MenuComponents {
     static String guiPath = "gui/";

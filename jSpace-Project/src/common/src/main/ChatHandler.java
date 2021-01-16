@@ -35,6 +35,7 @@ public class ChatHandler implements Runnable {
                 }
                 if (newUser != null) {
                     MenuComponents.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
+                    MenuComponents.incNumPlayers();
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
                 }

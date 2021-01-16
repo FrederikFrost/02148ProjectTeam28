@@ -14,6 +14,9 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import common.src.main.Types.ErrorType;
+import common.src.main.Types.VoteType;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,17 +30,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MenuComponents {
-    static Space userSpace = Menu.game.getUserSpace();
     static String guiPath = "gui/";
     static String appName;
     static String tcp;
     static String username;
-    static String[] takenUsernames = { "ChatBot" };
-    static int numOfPlayers;
+    static int numOfPlayers = 0;
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame newFrame = new JFrame();
     static JPanel mainPanel = new JPanel();
     static JLabel[] labels = new JLabel[3];
+    static JLabel numPlayerLabel;
     static JButton[] buttons = new JButton[3];
     static JButton sendMessage;
     static JTextField messageBox;
@@ -102,10 +104,15 @@ public class MenuComponents {
     }
 
     public static void addNumOfPlayers() {
-        JLabel label = new JLabel("Number of players: " + numOfPlayers);
-        label.setHorizontalAlignment(JLabel.RIGHT);
-        label.setFont(new Font("SansSerif", Font.BOLD, 25));
-        newFrame.add(label, BorderLayout.SOUTH);
+        numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
+        numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
+        numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
+        newFrame.add(numPlayerLabel, BorderLayout.SOUTH);
+    }
+
+    public static void incNumPlayers() {
+        numOfPlayers++;
+        numPlayerLabel.setText("Number of players: " + numOfPlayers);
     }
 
     public static JPanel chatPanel() {
@@ -246,6 +253,10 @@ public class MenuComponents {
                 "Welcome!", 1);
     }
 
+    public static int exitDialogue(String errorMessage) {
+        return JOptionPane.showOptionDialog(frame, errorMessage, "Error", 0, 1, null, null, null);
+    }
+
     public static String suggestDialogueBox(String[] choices) {
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
                 "Who should be suggested chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
@@ -297,7 +308,6 @@ public class MenuComponents {
             }
             frame.setVisible(false);
             tcp = IP_Port;
-            numOfPlayers = 1;
             newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             Menu.game.gameCreate(IP_Port);
             gameFrame();
@@ -314,28 +324,13 @@ public class MenuComponents {
         public void actionPerformed(ActionEvent e) {
             // frame.setVisible(false);
             String hostName = "";
-            List<Object[]> players;
-            try {
-                Object[] creator = userSpace.query(new ActualField("join"), new FormalField(String.class), new ActualField(0));
-                players = userSpace.queryAll(new ActualField("join"), new FormalField(String.class), new ActualField(Integer.class));
-                for (Object[] player : players) takenUsernames[(int) player[2] + 1] = (String) player[1];
-                numOfPlayers = players.size();
-                hostName = (String) creator[1];
-            } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-            String name = JOptionPane.showInputDialog(frame, "Enter your name");
+            String name = getNameInput("Enter your name:");
             if (name == null) {
                 frame.setVisible(true);
                 return;
-            } else if (name.isEmpty() || Arrays.asList(takenUsernames).contains(name)) {
-                do {
-                    name = JOptionPane.showInputDialog(frame, "Enter your name");
-                } while (name.isEmpty() || Arrays.asList(takenUsernames).contains(name));
             }
             Menu.game.setUser(name);
-            username = name;
+            
 
             String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
             if (IP_Port == null) {
@@ -347,16 +342,59 @@ public class MenuComponents {
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
+
+            Menu.game.setIP_Port(IP_Port);
+            Object[] joinObject;
+            do {
+                joinObject = Menu.game.gameJoin();
+                if (joinObject[0].equals(ErrorType.NameTaken)) {
+                    name = getNameInput("Name taken, input new one:");
+                    Menu.game.setUser(name);
+                    if (name == null) {
+                        frame.setVisible(true);
+                        return;
+                    }
+                } else if(joinObject[0].equals(ErrorType.GameFull)) {
+                    int ok = exitDialogue("The game is full, try another IP.");
+                    if (ok == -1) {
+                        frame.setVisible(true);
+                        return;
+                    }
+
+                } else if(joinObject[0].equals(ErrorType.GameStarted)) {
+                    int ok = exitDialogue("The game has started, try another IP.");
+                    if (ok == -1) {
+                        frame.setVisible(true);
+                        return;
+                    }
+                }
+            } while (!joinObject[0].equals(ErrorType.NoError));
+            Menu.game.gameInit();
+            username = name;
             tcp = IP_Port;
+            numOfPlayers = (int) joinObject[1];
+            hostName = (String) joinObject[2];
+
             newFrame.setTitle("Secret Hitler  |  " + hostName + "'s Room  |  tcp: " + tcp);
-            Menu.game.gameJoin(IP_Port);
             gameFrame();
-            Menu.chatHandler = new ChatHandler(Menu.game.getUserSpace(), Menu.game.getChatSpace(), Menu.game.getChatId(),
-                    Menu.game.getUser().Id(), chatBox);
+            Menu.chatHandler = new ChatHandler(Menu.game.getUserSpace(), Menu.game.getChatSpace(),
+                    Menu.game.getChatId(), Menu.game.getUser().Id(), chatBox);
             new Thread(Menu.chatHandler).start();
             System.out.println("Joined Game");
         }
     };
+
+    public static String getNameInput(String namePrompt) {
+        String name = JOptionPane.showInputDialog(frame, namePrompt);
+            if (name == null) {
+                return null;
+            } else if (name.isEmpty() || name.equals("ChatBot")) {
+                do {
+                    name = JOptionPane.showInputDialog(frame, "Name cannot be empty:");
+                } while (name.isEmpty() || name.equals("ChatBot"));
+            }
+            return name;
+    }
 
     public static AbstractAction exitAction = new AbstractAction() {
         private static final long serialVersionUID = 1L;

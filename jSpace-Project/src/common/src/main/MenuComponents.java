@@ -106,28 +106,6 @@ public class MenuComponents {
         labels[index] = l;
     }
 
-    public static String suggestDialogueBox() {
-        String[] choices = { "Elias", "Frederik", "Erik", "Charles", "Andy" };
-        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Who should be suggested chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
-                // default
-                // icon
-                choices, // Array of choices
-                choices[1]); // Initial choice
-        return input;
-    }
-
-    public static String voteDialogueBox(String votee) {
-        String[] choices = { "Ja", "Nein" };
-        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Should " + votee + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
-                // default
-                // icon
-                choices, // Array of choices
-                "Select vote");
-        return input;
-    }
-
     public static void addNumOfPlayers() {
         numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
         numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
@@ -242,8 +220,6 @@ public class MenuComponents {
                         throw new RuntimeException(e);
                     }
                     System.exit(1);
-                } else if (msg.equals(".suggest")) {
-                    suggestFunction(msg);
                 } else if (msg.startsWith(".") && !msg.endsWith(".")) {
                     append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                 } else {
@@ -284,34 +260,25 @@ public class MenuComponents {
         return JOptionPane.showOptionDialog(frame, errorMessage, "Error", 0, 1, null, null, null);
     }
 
-    public static void suggestFunction(String msg) {
-        // THIS SHOULD BE A THREAD I THINK...
+    public static String suggestDialogueBox(String[] choices) {
+        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                "Who should be suggested chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+                // default
+                // icon
+                choices, // Array of choices
+                choices[1]); // Initial choice
+        return input;
+    }
 
-        append(chatBox, "<" + username + ">:  " + msg + "\n", false);
-        Menu.game.sendMessage(msg, Menu.chatHandler);
-
-        // CHECK IF USER IS PRESIDENT:
-        // IF YES:
-        append(chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
-        String sugChan;
-        sugChan = suggestDialogueBox();
-        if (sugChan == null) {
-            do
-                sugChan = suggestDialogueBox();
-            while (sugChan == null);
-        }
-        append(chatBox, "<ChatBot>: " + sugChan + " was suggested chancellor by the president!"
-                + "Use \".vote\"to cast your vote!\n", true);
-        if (messageBox.getText().equals(".vote")) {
-            String vote = voteDialogueBox(sugChan);
-            if (vote == null) {
-                do
-                    vote = voteDialogueBox(sugChan);
-                while (vote == null);
-            }
-            append(chatBox, "<ChatBot>: " + username + " voted: " + vote, true);
-        }
-
+    public static String voteDialogueBox(String sugChan) {
+        String[] choices = { "Ja", "Nein" };
+        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+                // default
+                // icon
+                choices, // Array of choices
+                "Select vote");
+        return input;
     }
 
     // AbstractActions

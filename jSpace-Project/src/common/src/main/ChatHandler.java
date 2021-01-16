@@ -29,12 +29,12 @@ public class ChatHandler implements Runnable {
                 Object[] newUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(nextUserId));
                 Object[] newChat = _chatSpace.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
                 if (newChat != null) {
-                    Menu.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", false);
+                    MenuComponents.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", false);
                     System.out.println(newChat[0] + ": " + newChat[1]);
                     chatId++;
                 }
                 if (newUser != null) {
-                    Menu.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
+                    MenuComponents.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
                 }

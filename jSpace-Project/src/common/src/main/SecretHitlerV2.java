@@ -153,7 +153,7 @@ public class SecretHitlerV2 {
         ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
         int suggestion = -1;
         if (_user.Id() == pres) {
-            suggestion = Menu.suggest(eligibleCands);
+            suggestion = Game.suggest(eligibleCands);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");
@@ -162,7 +162,7 @@ public class SecretHitlerV2 {
         }
 
         // Vote in GUI
-        Boolean Boolvote = Menu.vote(suggestion);
+        Boolean Boolvote = Game.vote(suggestion);
         VoteType vote;
         if (Boolvote) {
             vote = VoteType.Ja;
@@ -180,13 +180,13 @@ public class SecretHitlerV2 {
         votes[_user.Id()] = vote;
         _gameSpace.put("votes", votes, voterId);
         _gameSpace.put("lock");
-        Menu.updateVotes(votes);
+        Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
         electionDone = (voterId == (playerCount - deadPlayers - 1));
         while(!electionDone) {
             voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
-            Menu.updateVotes(votes);
+            Game.updateVotes(votes);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
         }
     }

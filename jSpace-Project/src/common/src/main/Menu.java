@@ -218,7 +218,7 @@ public class Menu {
                                                                         // default
                                                                         // icon
         choices, // Array of choices
-        "Select vote");// Initial choice
+        "Select vote");
         return input;
     }
 
@@ -330,25 +330,7 @@ public class Menu {
                     }
                     System.exit(1);
                 } else if (msg.equals(".suggest")){
-                    append(chatBox, "<" + username + ">:  " + msg + "\n", false);
-                    game.sendMessage(msg, chatHandler);
-
-                    // CHECK IF USER IS PRESIDENT:
-                    // IF YES:
-                    append(chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
-                    String sugChan;
-                    sugChan = suggestDialogueBox();
-                    if (sugChan == null){
-                        do sugChan = suggestDialogueBox();
-                        while(sugChan == null);
-                    }
-                    append(chatBox, "<ChatBot>: " + sugChan + " was suggested chancellor by the president! Vote now!\n", true);
-                    String vote = voteDialogueBox(sugChan);
-                    if (vote == null){
-                        do vote = voteDialogueBox(sugChan);
-                        while(vote == null);
-                    }
-                    append(chatBox, "<ChatBot>: " + username + " voted: " + vote, true);
+                    suggestFunction(msg);
                 } else if (msg.startsWith(".") && !msg.endsWith(".")) {
                     append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                 } else {
@@ -360,7 +342,35 @@ public class Menu {
             }
         }
     }
+    
+    public static void suggestFunction (String msg){
+        //THIS SHOULD BE A THREAD I THINK...
 
+
+        append(chatBox, "<" + username + ">:  " + msg + "\n", false);
+        game.sendMessage(msg, chatHandler);
+
+        // CHECK IF USER IS PRESIDENT:
+        // IF YES:
+        append(chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
+        String sugChan;
+        sugChan = suggestDialogueBox();
+        if (sugChan == null){
+            do sugChan = suggestDialogueBox();
+            while(sugChan == null);
+        }
+        append(chatBox, "<ChatBot>: " + sugChan + " was suggested chancellor by the president!"
+        + "Use \".vote\"to cast your vote!\n", true);
+        if (messageBox.getText().equals(".vote")){
+            String vote = voteDialogueBox(sugChan);
+            if (vote == null){
+                do vote = voteDialogueBox(sugChan);
+                while(vote == null);
+            }
+            append(chatBox, "<ChatBot>: " + username + " voted: " + vote, true);
+        }
+
+    }
 
     // AbstractActions
     public static AbstractAction createGameAction = new AbstractAction() {

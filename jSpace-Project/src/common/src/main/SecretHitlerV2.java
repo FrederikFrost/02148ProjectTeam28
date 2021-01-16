@@ -150,7 +150,7 @@ public class SecretHitlerV2 {
         Boolean electionDone;
         Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
         int pres = (int) newElect[1];
-        ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
+        ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
         int suggestion = -1;
         if (_user.Id() == pres) {
             suggestion = Game.suggest(eligibleCands);

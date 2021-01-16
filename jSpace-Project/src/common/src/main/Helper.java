@@ -1,5 +1,7 @@
 package common.src.main;
 
+import java.util.ArrayList;
+
 public class Helper {
     public static void printArray(String name, Object[] array, boolean trim) {
         System.out.print(name.equals("")? "" : name + ": ");
@@ -16,4 +18,22 @@ public class Helper {
     public static void printArray(String name, Object[] array) {
         printArray(name, array, false);
     }
+
+    public static ArrayList<Integer> cleanCast(Object obj){
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        if (obj instanceof ArrayList<?>) {
+            ArrayList<?> al = (ArrayList<?>) obj;
+            if (al.size() > 0) {
+                for (int i = 0; i < al.size(); i++) {
+                    Object o = al.get(i);
+                    if (o instanceof Integer) {
+                        Integer v = (Integer) o;
+                        result.add(v);
+                    }  
+                }
+            }
+        }
+        return result;
+    }
+    
 }

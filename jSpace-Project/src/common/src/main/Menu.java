@@ -16,6 +16,7 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
 
+import common.src.main.Types.LegislativeType;
 import common.src.main.Types.VoteType;
 
 import java.awt.GridBagConstraints;

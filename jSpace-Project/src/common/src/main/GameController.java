@@ -22,6 +22,7 @@ public class GameController implements Runnable {
     private int lastPres;
     private int lastChancellor;
     private ArrayList<LegislativeType> deck;
+    private boolean veto = false;
 
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
@@ -84,7 +85,7 @@ public class GameController implements Runnable {
             
             _gameSpace.put("lock");
             boolean useOldPres = false;
-
+            int electionTracker = 0;
             while(true) {
                 /**
                  * Suggest chancellor
@@ -106,17 +107,17 @@ public class GameController implements Runnable {
 
                 //game started
                 Boolean elected = false;
-                int i = 0;
                 int suggestedChancellor = -1;
-                while(elected == false && i < 3) {
-                    if (i != 0) useOldPres = rotatePresident(useOldPres);
+                while(elected == false && electionTracker < 3) {
+                    if (electionTracker != 0) useOldPres = rotatePresident(useOldPres);
 
                     suggestedChancellor = SuggestChancellor();
                     elected = Election(suggestedChancellor);
-                    i++;
+                    electionTracker++;
                 }
                 ArrayList<LegislativeType> cards;
                 if (!elected) {
+                    electionTracker = 0;
                     // skip choose legislate - boolean is probably the easiest
                     cards = GetCardsFromDeck(1);
                     //get 1 card, no preview (no preview means the cards are removed from the deck)
@@ -126,8 +127,26 @@ public class GameController implements Runnable {
                     //executive power is ignored
                     UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
                 } else {
+                    electionTracker = 0;
                     //check win
                     cards = GetCardsFromDeck(3);
+
+                    _gameSpace.get(new ActualField("lock"));
+                    _gameSpace.put("president", cards, veto); //maybe send veto bool here
+                    _gameSpace.put("lock");
+
+                    cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
+                    if (1 < cards.size()) throw new IllegalArgumentException("To many legislatives left"); 
+
+                    ActionType executionPower;
+                    if (cards.size() == 1) {
+                        LegislativeType finalCard = cards.get(0); //take the chosen card
+                        executionPower = UpdateBoards(finalCard);
+                    } else {    //in case of veto
+                        electionTracker++;
+                        executionPower = ActionType.None;
+                    }
+
                     /** legislative session
                      * Get 3 cards, no preview
                      * send to president and chancellor
@@ -135,26 +154,47 @@ public class GameController implements Runnable {
                      * else update board with returned legislate
                     */
 
-                    LegislativeType finalCard = cards.get(0);   //represent pres and chan picking card
-                    ActionType executionPower = UpdateBoards(finalCard);
-
                     switch (executionPower) {
                         case Peek:
-                            
+                            cards = GetCardsFromDeck(3, true);
+                            //get 3 cards on top
+                            //pass to president
                             break;
                         case Investigate:
-                            
+                            /**
+                             * pass list to president
+                             * president return person
+                             * controller return info
+                             * 
+                             * alternatively:
+                             * pass list to president
+                             * president looks in 'roles' tuple for info
+                             */
                             break;
                         case Kill:
-                            
+                            /** a player is killed
+                             *      - pass list to president
+                             *      - president return person to kill
+                             */
                             break;
                             
                         case S_Election:
+                            /** pass list to president
+                             *  president returns person
+                             *  use rotatePresident to choose new president
+                             *  TODO should prevent normal election of president somehow  
+                             * 
+                             */
                             
                             break;
                             
                         case Veto:
-                            
+                            /** a player is killed
+                             *      - pass list to president
+                             *      - president return person to kill
+                             * veto = true
+                            */
+                            veto = true;
                             break;
                         default:    //default to None?
 

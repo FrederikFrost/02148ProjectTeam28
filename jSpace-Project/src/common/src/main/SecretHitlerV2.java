@@ -14,6 +14,7 @@ import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
 import common.src.main.Types.CommandType;
+import common.src.main.Types.LegislativeType;
 import common.src.main.Types.VoteType;
 
 public class SecretHitlerV2 {
@@ -124,6 +125,8 @@ public class SecretHitlerV2 {
             while(running){
                 //event getCard
                 //listen for command
+                //TODO: How do we make sure all have read the command, as it must be removed
+                //  otherwise we risk someone reading an old command and getting stuck somewhere
                 Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 CommandType cmd = (CommandType) commands[0];
                 if (playerCount == -1) {
@@ -134,6 +137,64 @@ public class SecretHitlerV2 {
                         election(playerCount);
                         break;
                     case LegislativeSession:
+                        //check locks in this switch
+                        int president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+                        int chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
+                        if (_user.Id() == president) {
+                            _gameSpace.get(new ActualField("lock"));
+                            Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
+                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            cards = Menu.ChooseLegislate(cards);
+                            boolean veto = (boolean) cardsTuple[2];
+                            _gameSpace.put("chancellor", cards, veto);
+                            _gameSpace.put("lock");
+                            boolean vetoRes = (boolean) _gameSpace.get(new ActualField("veto"), new FormalField(Boolean.class))[1];
+                            /**
+                             * Get veto response from chancellor
+                             * if/else on this
+                             */
+                            if (vetoRes) {
+                                boolean presVeto = Menu.GetVetoResponseFromPres();
+                                _gameSpace.put("presVeto", presVeto);
+                                //TODO: update board here
+                            } else {
+                                //TODO: update board here
+                            }
+
+                        } else if (_user.Id() == chancellor) {
+                            _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
+                            _gameSpace.get(new ActualField("lock"));
+                            Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
+                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            boolean veto = (boolean) cardsTuple[2];
+                            ArrayList<LegislativeType> tempCards = Menu.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
+                            /**
+                             * if/else on veto
+                             * send veto to pres
+                             * if/else on pres answer
+                             *      Get new choice with 'cards = Menu.ChanChooseLegislate(cards, false);'
+                             */
+                            if (tempCards.size() == 1) {
+                                _gameSpace.put("veto", false);
+                                cards = tempCards;
+                            } else {
+                                _gameSpace.put("veto", true);
+                                boolean presVeto = (boolean) _gameSpace.get(new ActualField("presVeto"), new FormalField(Boolean.class))[1];
+                                if (presVeto) {
+                                    cards = tempCards;
+                                } else {
+                                    cards = Menu.ChooseLegislate(cards, false);
+                                }
+                            }
+                            
+                            _gameSpace.put("chancellorReturn", cards);
+                            _gameSpace.put("lock");
+
+                            //TODO: update board here
+
+                        } else {
+                            //wait for board update - possibly send keyword here
+                        }
                         System.out.println("L_session has happened");
                     case ExecutiveAction:
                         System.out.println("Executive action has happened");
@@ -142,7 +203,10 @@ public class SecretHitlerV2 {
                 }
                 _gameSpace.put(new ActualField("lock"));
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            //TODO: Player was disconnected, handle this
+            e.printStackTrace();
+        }
     }
 
     private static void election(int playerCount) throws InterruptedException {

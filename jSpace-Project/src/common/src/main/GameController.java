@@ -21,6 +21,7 @@ public class GameController implements Runnable {
     private int playerCount;
     private int lastPres;
     private int lastChancellor;
+    private ArrayList<LegislativeType> deck;
 
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
@@ -42,6 +43,15 @@ public class GameController implements Runnable {
     //only used for test!
     public void setLastChancellor(int lastChancellor) {
         this.lastChancellor = lastChancellor;
+    }
+
+    //only used for test!
+    public void setDeck(ArrayList<LegislativeType> deck){
+        this.deck = deck;
+    }
+
+    public ArrayList<LegislativeType> getDeck() {
+        return deck;
     }
 
     @Override
@@ -105,15 +115,130 @@ public class GameController implements Runnable {
                     elected = Election(suggestedChancellor);
                     i++;
                 }
+                ArrayList<LegislativeType> cards;
                 if (!elected) {
-                    // skip choose legislate
+                    // skip choose legislate - boolean is probably the easiest
+                    cards = GetCardsFromDeck(1);
+                    //get 1 card, no preview (no preview means the cards are removed from the deck)
+                    //directly update boards
+                    //term-limit forgotten
+                    ResetTermLimits();
+                    //executive power is ignored
+                    UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+                } else {
+                    //check win
+                    cards = GetCardsFromDeck(3);
+                    /** legislative session
+                     * Get 3 cards, no preview
+                     * send to president and chancellor
+                     * veto logic should be here
+                     * else update board with returned legislate
+                    */
+
+                    LegislativeType finalCard = cards.get(0);   //represent pres and chan picking card
+                    ActionType executionPower = UpdateBoards(finalCard);
+
+                    switch (executionPower) {
+                        case Peek:
+                            
+                            break;
+                        case Investigate:
+                            
+                            break;
+                        case Kill:
+                            
+                            break;
+                            
+                        case S_Election:
+                            
+                            break;
+                            
+                        case Veto:
+                            
+                            break;
+                        default:    //default to None?
+
+                            break;
+                    }
+                    //executive power is in else statement as this is the case where it is NOT ignored
+                    /** executive power
+                     * check for executive power
+                     * use if one is apparent 
+                    */
                 }
+                
+                //rotatePresident here - what about executive power?
             }
             
         } catch (Exception e) {
             //possibly put tuble in game space to let players know an error occured
             e.printStackTrace();
         }
+    }
+
+    public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception {  //TODO make test
+        if (legislativeType == LegislativeType.None) throw new IllegalArgumentException("Card cannot be none!");
+        _gameSpace.get(new ActualField("lock"));
+        Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
+        LegislativeType[] liberalBoard = (LegislativeType[]) boards[1];
+        LegislativeType[] fascistBoard = (LegislativeType[]) boards[2];
+        ActionType[] executivePowers = (ActionType[]) boards[3];
+        ActionType res;
+        if (legislativeType == LegislativeType.Liberal) {
+            int index = GetEmptyIndex(liberalBoard);
+            liberalBoard[index] = LegislativeType.Liberal;
+            res = ActionType.None;
+        } else {
+            int index = GetEmptyIndex(fascistBoard);
+            fascistBoard[index] = LegislativeType.Fascist;
+            res = executivePowers[index];
+        }
+
+		_gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        _gameSpace.put("lock");
+
+        return res;
+    }
+
+    private int GetEmptyIndex(LegislativeType[] board) throws Exception {
+        //6 is max length for array
+        for (int i = 0; i < 6; ++i) {
+            if (board[i] == LegislativeType.None) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Board is full or has wrong length");
+    }
+
+    public ArrayList<LegislativeType> GetCardsFromDeck(int numberOfCards, boolean preview) throws Exception {
+        //logic depending on the remaining cards in deck
+        if (deck.size() < numberOfCards) {
+            deck = GetShuffledDeck();
+        }
+
+        ArrayList<LegislativeType> res = new ArrayList<LegislativeType>(numberOfCards);
+        for (int i = 0; i < numberOfCards; ++i) {
+            if (preview) {
+                res.add(deck.get(deck.size()-1));
+            } else {
+                res.add(deck.remove(deck.size()-1));
+            }
+        }
+
+        _gameSpace.get(new ActualField("lock"));
+
+        _gameSpace.get(new ActualField("drawPile"), new FormalField(Integer.class));
+        _gameSpace.get(new ActualField("discardPile"), new FormalField(Integer.class));
+        _gameSpace.put("drawPile", deck.size());
+        _gameSpace.put("discardPile", 17-deck.size());
+
+        _gameSpace.put("lock");
+        
+        return res;
+    }
+
+    public ArrayList<LegislativeType> GetCardsFromDeck(int numberOfCards) throws Exception { 
+        return GetCardsFromDeck(numberOfCards, false);
     }
 
     public boolean rotatePresident(boolean useOldPres, int newPres) throws Exception {
@@ -179,7 +304,7 @@ public class GameController implements Runnable {
         //as 'list.remove(int)' removes index, the list must be in descending order
         Collections.sort(deads, Collections.reverseOrder());
 
-        for (Integer nonEligible : deads) {
+        for (Integer nonEligible : deads) { //TODO: test when lastPres = lastChancellor = -1 
             ids.remove(nonEligible);
         }
 
@@ -226,6 +351,11 @@ public class GameController implements Runnable {
         lastChancellor = chancellor;
     }
 
+    private void ResetTermLimits() {
+        int lastPres = -1;
+        int lastChancellor = -1;
+    }
+
     // #region setup
     public void AssignRoles() throws Exception {
 
@@ -259,7 +389,13 @@ public class GameController implements Runnable {
 
         Collections.shuffle(Arrays.asList(roles));
         _gameSpace.put("roles", roles, playerCount);
-        
+        //TODO show fascist who they are working with
+        //  5-6 hitler and fascist know eachother
+        //  7-10 fascist know eachother and hitler, hitler doesn't know anything
+        // possible solutions: 2 queries, 1 for fascist and 1 for hitler
+        //               else: 1 query with all info, hitler checks playerCount to see if he can look at query 
+
+
         Random rand = new Random();
         int president = rand.nextInt(playerCount);
         setPresident(president);
@@ -302,15 +438,18 @@ public class GameController implements Runnable {
                 throw new IllegalArgumentException("Cannot be more than 10 players");   //maybe refactor this to if statement above
         }
 
-        LegislativeType[] deck = GetShuffledDeck();
+        deck = GetShuffledDeck();
 
         _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
-        _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
+        // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
+        _gameSpace.put("drawPile", 17);
+        _gameSpace.put("discardPile", 0);
+
 
     }
     //#endregion
 
-    public LegislativeType[] GetShuffledDeck() {
+    public ArrayList<LegislativeType> GetShuffledDeck() {
         int liberalCards = 6;
         int fascistCards = 11;
 
@@ -325,7 +464,7 @@ public class GameController implements Runnable {
                 fascistCards--;
             }
         }
-        return deck;
+        return new ArrayList<LegislativeType>(Arrays.asList(deck));
     }
 
     //#region getters and setters

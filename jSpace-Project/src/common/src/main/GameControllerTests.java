@@ -3,6 +3,7 @@ package common.src.main;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 
 import org.jspace.ActualField;
@@ -34,8 +35,53 @@ public class GameControllerTests {
         // runMethod("CardShuffleTest", args);
         // runMethod("AssignRolesTest", args);
         // runMethod("SetupGameTest", args);
-        runMethod("GetEligibleCandidatesTest", args);
+        runMethod("GetCardsFromDeckTest", args);
         // runMethod("ElectionTest", args);
+    }
+
+    private static void GetCardsFromDeckTest() {
+        GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
+        int playerCount = 5;
+        controller.setPlayerCount(playerCount);
+
+        try {
+            controller.SetupGame();
+
+            int draw = (int) _gameSpace.query(new ActualField("drawPile"), new FormalField(Integer.class))[1];
+            int discard = (int) _gameSpace.query(new ActualField("discardPile"), new FormalField(Integer.class))[1];
+            System.out.println("Draw: " + draw + " | Discard: " + discard);
+            Helper.printArray("Deck", controller.getDeck().toArray(), true);
+            System.out.println("GetCardsFromDeck(1)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(1).toArray());
+            System.out.println("GetCardsFromDeck(1, true)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(1, true).toArray());
+            System.out.println("GetCardsFromDeck(1)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(1).toArray());
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            Helper.printArray("Deck", controller.getDeck().toArray(), true);
+            System.out.println("GetCardsFromDeck(3,true)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3,true).toArray());
+            Helper.printArray("Deck", controller.getDeck().toArray(), true);
+            System.out.println("GetCardsFromDeck(3)");
+            Helper.printArray("Drawn", controller.GetCardsFromDeck(3).toArray());
+            Helper.printArray("Deck", controller.getDeck().toArray(), true);
+
+
+            
+        } catch (Exception e) { 
+            e.printStackTrace();
+        }
+        
+
     }
 
     private static void SuggestChancellorTest() {
@@ -143,7 +189,6 @@ public class GameControllerTests {
         } catch (Exception e) {
             //TODO: handle exception
         }
-
     }
 
     private static void GetEligibleCandidatesTest() {
@@ -160,14 +205,12 @@ public class GameControllerTests {
         } catch (Exception e) {
             //TODO: handle exception
         }
-
-
     }
 
     private static void CardShuffleTest() {
 
         GameController controller = new GameController(_chatSpace, _userSpace, _gameSpace);
-        LegislativeType[] deck = controller.GetShuffledDeck();
+        LegislativeType[] deck = (LegislativeType[]) controller.GetShuffledDeck().toArray();
         int lib, fas;
         lib = fas = 0;
 

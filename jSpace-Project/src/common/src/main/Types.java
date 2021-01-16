@@ -41,5 +41,12 @@ public class Types {
         ExecutiveAction,
     }
 
+    public enum ErrorType {
+        GameFull,
+        NameTaken,
+        GameStarted,
+        NoError,
+    }
+
 
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -15,6 +16,7 @@ import org.jspace.SpaceRepository;
 
 import common.src.main.Types.CommandType;
 import common.src.main.Types.LegislativeType;
+import common.src.main.Types.ErrorType;
 import common.src.main.Types.VoteType;
 
 public class SecretHitlerV2 {
@@ -29,6 +31,7 @@ public class SecretHitlerV2 {
     public static int chatId = 0;
     public static boolean running;
     public static GameController controller;
+    public static String IP_Port;
     
     public void gameCreate(String IP_Port) {
         try {
@@ -72,7 +75,8 @@ public class SecretHitlerV2 {
         }
     }
 
-    public void gameJoin(String IP_Port) {
+    public Object[] gameJoin() {
+        Object[] returnTriple = {null, null, null};
         try {
 			// Set the URI of the chat space
 			// Default value
@@ -94,19 +98,41 @@ public class SecretHitlerV2 {
             _chatSpace = new RemoteSpace(chatURI);
             _userSpace = new RemoteSpace(userURI);
             _gameSpace = new RemoteSpace(gameURI);
-            gameInit();
+
+            List<Object[]> players;
+            Object[] gameState = _gameSpace.queryp(new ActualField("started"));
+            if (gameState != null) {
+                returnTriple[0] = ErrorType.GameStarted;
+                return returnTriple;
+            }
+
+            players = _userSpace.queryAll(new ActualField("join"), new FormalField(String.class), new FormalField(Integer.class));
+            for (Object[] player : players) if (player[1].equals(_user.Name())) {returnTriple[0] = ErrorType.NameTaken; return returnTriple;}
+            if (players.size() == 10) {
+                returnTriple[0] = ErrorType.GameFull;;
+                return returnTriple;
+            }
+            returnTriple[1] = players.size();
+            returnTriple[2] = players.get(0)[1];
+
+            //gameInit();
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         // TODO: ERROR handling - wrong written ip fx
+        returnTriple[0] = ErrorType.NoError;
+        return returnTriple;
 
     }
 
-    public static void gameInit() {
+    public void gameInit() {
         // Keep sending whatever the user types
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
@@ -214,10 +240,10 @@ public class SecretHitlerV2 {
         Boolean electionDone;
         Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
         int pres = (int) newElect[1];
-        ArrayList<Integer> eligibleCands = (ArrayList<Integer>) newElect[2];
+        ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
         int suggestion = -1;
         if (_user.Id() == pres) {
-            suggestion = Menu.suggest(eligibleCands);
+            suggestion = Game.suggest(eligibleCands);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");
@@ -226,7 +252,7 @@ public class SecretHitlerV2 {
         }
 
         // Vote in GUI
-        Boolean Boolvote = Menu.vote(suggestion);
+        Boolean Boolvote = Game.vote(suggestion);
         VoteType vote;
         if (Boolvote) {
             vote = VoteType.Ja;
@@ -244,13 +270,13 @@ public class SecretHitlerV2 {
         votes[_user.Id()] = vote;
         _gameSpace.put("votes", votes, voterId);
         _gameSpace.put("lock");
-        Menu.updateVotes(votes);
+        Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
         electionDone = (voterId == (playerCount - deadPlayers - 1));
         while(!electionDone) {
             voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
-            Menu.updateVotes(votes);
+            Game.updateVotes(votes);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
         }
     }
@@ -301,6 +327,10 @@ public class SecretHitlerV2 {
         _user = new User(name);
     }
 
+    public void setIP_Port(String address) {
+        IP_Port = address;
+    }
+
     public Space getUserSpace() {
         return _userSpace;
     }
@@ -315,6 +345,9 @@ public class SecretHitlerV2 {
 
     public User getUser() {
         return _user;
+    }
+
+    public SecretHitlerV2() {
     }
 
 }

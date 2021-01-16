@@ -309,7 +309,7 @@ public class GameController implements Runnable {
         //     deads.add((int) obj);    
         // }
 
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
         int newPres = pres;
         do {
             newPres = (newPres+1) % playerCount;
@@ -321,7 +321,7 @@ public class GameController implements Runnable {
     public int SuggestChancellor() throws Exception {
         
         int pres = getPresident();
-        ArrayList suggestions = GetEligibleCandidates();
+        ArrayList<Integer> suggestions = GetEligibleCandidates();
 
         _gameSpace.get(new ActualField("lock"));
         _gameSpace.put("suggest", pres, suggestions);
@@ -331,7 +331,8 @@ public class GameController implements Runnable {
     }
 
     public ArrayList<Integer> GetEligibleCandidates() throws Exception {
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"),
+            new FormalField(ArrayList.class))[1]);
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
             ids.add(i);
@@ -387,7 +388,7 @@ public class GameController implements Runnable {
 
     private void updateTermLimit(int chancellor) throws Exception {
         int pres = getPresident();
-        lastPres = playerCount > 5? pres : -1;
+        lastPres = playerCount > 5 ? pres : -1;
         lastChancellor = chancellor;
     }
 

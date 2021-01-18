@@ -18,6 +18,7 @@ public class Game {
             // TODO: make suggestion pop-up list.
             MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
             String[] choices = new String[eligibleCands.size()];
+            System.out.println(choices.length);
             for (Integer cand : eligibleCands) {
                 try {
                     choices[cand] = (String) userSpace.query(new ActualField("join"),

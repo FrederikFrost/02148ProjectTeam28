@@ -130,9 +130,8 @@ public class MenuComponents {
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
             gamePanel.remove(startGameButton);
-            gamePanel.revalidate();
-            gamePanel.repaint();
-            //newFrame.revalidate();
+            mainPanel.revalidate();
+            mainPanel.repaint();
         }
     }
 
@@ -449,8 +448,8 @@ public class MenuComponents {
                 e1.printStackTrace();
             }
             gamePanel.remove(startGameButton);
-            gamePanel.revalidate();
-            gamePanel.repaint();
+            mainPanel.revalidate();
+            mainPanel.repaint();
         }
     };
     

@@ -65,7 +65,7 @@ public class SecretHitlerV2 {
 
             _chatSpace.put("lock", 0);
             _userSpace.put("lock", 0);
-            _gameSpace.put("lock", 0);
+            _gameSpace.put("lock");
 
 
             //create and start game coordinator
@@ -159,10 +159,8 @@ public class SecretHitlerV2 {
                 //  otherwise we risk someone reading an old command and getting stuck somewhere
                 // Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 // CommandType cmd = (CommandType) commands[0];
+                playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
                 CommandType cmd = readAndPassCommand(playerCount);
-                if (playerCount == -1) {
-                    playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
-                }
                 switch (cmd) {
                     case Election:
                         election(playerCount);
@@ -297,9 +295,10 @@ public class SecretHitlerV2 {
         Boolean electionDone;
         Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
         int pres = (int) newElect[1];
-        ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
+        
         int suggestion = -1;
         if (_user.Id() == pres) {
+            ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             suggestion = Game.suggest(eligibleCands);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);

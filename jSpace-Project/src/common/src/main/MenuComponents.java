@@ -27,6 +27,7 @@ public class MenuComponents {
     static String tcp;
     static String username;
     static int numOfPlayers = 0;
+    static boolean gameHost = false;
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame newFrame = new JFrame();
     static JPanel mainPanel = new JPanel();
@@ -105,6 +106,9 @@ public class MenuComponents {
     public static void incNumPlayers() {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
+        if (numOfPlayers >= 5) {
+
+        }
     }
 
     public static JPanel chatPanel() {
@@ -300,6 +304,7 @@ public class MenuComponents {
             }
             frame.setVisible(false);
             tcp = IP_Port;
+            gameHost = true;
             newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             Menu.game.gameCreate(IP_Port);
             gameFrame();

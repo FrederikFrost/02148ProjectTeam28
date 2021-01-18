@@ -107,8 +107,16 @@ public class MenuComponents {
     public static void incNumPlayers() {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
-        if (numOfPlayers >= 5) {
+        if (numOfPlayers >= 5 && gameHost) {
             newFrame.add(startGameButton, BorderLayout.EAST);
+        }
+    }
+
+    public static void decNumPlayers() {
+        numOfPlayers--;
+        numPlayerLabel.setText("Number of players: " + numOfPlayers);
+        if (numOfPlayers == 4 && gameHost) {
+            newFrame.remove(startGameButton);
         }
     }
 
@@ -205,10 +213,8 @@ public class MenuComponents {
                 } else if (msg.equals(".tcp")) {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                 } else if (msg.equals(".leave")) {
-                    Menu.game.sendMessage("<ChatBot>: " + username + " has left!", Menu.chatHandler);
                     try {
                         Menu.game.leaveGame();
-                        numOfPlayers--;
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         throw new RuntimeException(e);

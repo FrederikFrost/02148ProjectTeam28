@@ -332,6 +332,7 @@ public class MenuComponents {
             gameHost = true;
             newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             Menu.game.gameCreate(IP_Port);
+            new Thread(Menu.game).start();
             gameFrame();
             Menu.chatHandler = new ChatHandler(Menu.game.getUserSpace(), Menu.game.getChatSpace(),
                     Menu.game.getChatId(), Menu.game.getUser().Id(), chatBox);
@@ -390,8 +391,8 @@ public class MenuComponents {
                     }
                 }
             } while (!joinObject[0].equals(ErrorType.NoError));
-            System.out.println("About to call gameInit()!");
-            Menu.game.gameInit();
+            new Thread(Menu.game).start();
+            //Menu.game.gameInit();
             username = name;
             tcp = IP_Port;
             numOfPlayers = (int) joinObject[1];

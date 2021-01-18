@@ -118,8 +118,9 @@ public class GameController implements Runnable {
                 int suggestedChancellor = -1;
                 while(elected == false && electionTracker < 3) {
                     if (electionTracker != 0) useOldPres = rotatePresident(useOldPres);
-
+                    printDebug("Where is my money!?");
                     suggestedChancellor = SuggestChancellor();
+                    printDebug("Got suggestion");
                     elected = Election(suggestedChancellor);
                     electionTracker++;
                 }
@@ -334,11 +335,13 @@ public class GameController implements Runnable {
         
         int pres = getPresident();
         ArrayList<Integer> suggestions = GetEligibleCandidates();
+        printDebug("Got candidates");
 
         _gameSpace.get(new ActualField("lock"));
         _gameSpace.put(CommandType.Election, 0);
         _gameSpace.put("suggest", pres, suggestions);
         _gameSpace.put("lock");
+        printDebug("Put suggest thingy");
         //TODO: should a lock be here aswell?
         return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
     }

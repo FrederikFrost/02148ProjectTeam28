@@ -5,6 +5,7 @@ public class Menu {
     public static ChatHandler chatHandler;
 
     public static void main(String[] args) {
+        
         game = new SecretHitlerV2();
         try {
             MenuComponents.menu();

@@ -23,7 +23,7 @@ import common.src.main.Types.LegislativeType;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.VoteType;
 
-public class SecretHitlerV2 {
+public class SecretHitlerV2 implements Runnable {
 
     public static Space _chatSpace;
     public static Space _userSpace;
@@ -73,7 +73,6 @@ public class SecretHitlerV2 {
             //create and start game coordinator
             controller = new GameController(_chatSpace, _userSpace, _gameSpace);
             new Thread(controller).start();
-            gameInit();
         } catch (InterruptedException e) {
 			e.printStackTrace();
         }
@@ -136,9 +135,8 @@ public class SecretHitlerV2 {
 
     }
 
-    public void gameInit() {
-        printDebug("In gameInit()!");
-        System.out.println("Heeeeeey");
+    public void run() {
+        System.out.println("Hello mein friends!");
         // Keep sending whatever the user types
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
@@ -171,6 +169,7 @@ public class SecretHitlerV2 {
                 printDebug("Read command");
                 switch (cmd) {
                     case Election:
+                        System.out.println("Handler starting election for :" + _user.Id());
                         election(playerCount);
                         break;
                     case LegislativeSession:

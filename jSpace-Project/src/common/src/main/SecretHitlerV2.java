@@ -393,7 +393,7 @@ public class SecretHitlerV2 implements Runnable {
 
     private CommandType readAndPassCommand(int playerCount) throws Exception {
         //TODO: maybe handle dead players
-        CommandType cmd = (CommandType) _gameSpace.get(new FormalField(CommandType.class), new ActualField(_user.Id()))[1];
+        CommandType cmd = (CommandType) _gameSpace.get(new FormalField(CommandType.class), new ActualField(_user.Id()))[0];
         if (_user.Id() != playerCount-1) {
             _gameSpace.put(cmd, _user.Id()+1);
         }

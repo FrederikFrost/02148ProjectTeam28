@@ -30,6 +30,7 @@ public class MenuComponents {
     static boolean gameHost = false;
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame newFrame = new JFrame();
+    static JPanel gamePanel = new JPanel();
     static JPanel mainPanel = new JPanel();
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
@@ -108,7 +109,9 @@ public class MenuComponents {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5) {
-            newFrame.add(startGameButton, BorderLayout.EAST);
+            gamePanel.add(startGameButton, BorderLayout.CENTER);
+            gamePanel.revalidate();
+            newFrame.revalidate(); // MIGHT BE UNNECESSARY
         }
     }
 
@@ -168,7 +171,7 @@ public class MenuComponents {
 
     public static void gameFrame() {
         JPanel chatPanel = chatPanel();
-        JPanel gamePanel = gamePanel();
+        gamePanel = gamePanel();
         newFrame.add(chatPanel);
         newFrame.setLayout(new BorderLayout());
         newFrame.add(gamePanel);
@@ -178,7 +181,6 @@ public class MenuComponents {
         newFrame.setVisible(true);
         addNumOfPlayers();
         welcomeDialogue();
-
     }
 
     static class sendMessageListener implements ActionListener {

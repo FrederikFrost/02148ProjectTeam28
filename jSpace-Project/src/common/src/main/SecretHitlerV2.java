@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.UnknownHostException;
+import java.rmi.activation.ActivationGroupDesc.CommandEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,8 +157,9 @@ public class SecretHitlerV2 {
                 //listen for command
                 //TODO: How do we make sure all have read the command, as it must be removed
                 //  otherwise we risk someone reading an old command and getting stuck somewhere
-                Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
-                CommandType cmd = (CommandType) commands[0];
+                // Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
+                // CommandType cmd = (CommandType) commands[0];
+                CommandType cmd = readAndPassCommand(playerCount);
                 if (playerCount == -1) {
                     playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
                 }
@@ -373,6 +375,30 @@ public class SecretHitlerV2 {
             _chatSpace.put("lock", chatId);
         }
     } */
+
+    private void readAndPassKeyWord(String string, int playerCount) throws Exception {
+        _gameSpace.get(new ActualField(string), new ActualField(_user.Id()));
+        if (_user.Id() != playerCount-1) {
+            _gameSpace.put(string, _user.Id()+1);
+        }
+    }
+
+    private CommandType readAndPassCommand(int playerCount) throws Exception {
+        //TODO: maybe handle dead players
+        CommandType cmd = (CommandType) _gameSpace.get(new FormalField(CommandType.class), new ActualField(_user.Id()))[1];
+        if (_user.Id() != playerCount-1) {
+            _gameSpace.put(cmd, _user.Id()+1);
+        }
+        return cmd;
+    }
+
+    //  POSSIBLE REAFACTORING
+    // private void readAndPass(Object obj, int playerCount) throws Exception {
+    //     _gameSpace.get(new ActualField(obj), new ActualField(_user.Id()));
+    //     if (_user.Id() != playerCount-1) {
+    //         _gameSpace.put(obj, _user.Id());
+    //     } 
+    // }
 
     public void leaveGame() throws InterruptedException {
         _userSpace.put("leave", _user.Name(), _user.Id());

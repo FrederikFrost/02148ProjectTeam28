@@ -21,7 +21,7 @@ import common.src.main.Types.LegislativeType;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.VoteType;
 
-public class SecretHitlerV2 {
+public class SecretHitlerV2 implements Runnable {
 
     public static Space _chatSpace;
     public static Space _userSpace;
@@ -71,7 +71,6 @@ public class SecretHitlerV2 {
             //create and start game coordinator
             controller = new GameController(_chatSpace, _userSpace, _gameSpace);
             new Thread(controller).start();
-            gameInit();
         } catch (InterruptedException e) {
 			e.printStackTrace();
         }
@@ -134,7 +133,8 @@ public class SecretHitlerV2 {
 
     }
 
-    public void gameInit() {
+    public void run() {
+        System.out.println("Hello mein friends!");
         // Keep sending whatever the user types
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
@@ -146,23 +146,27 @@ public class SecretHitlerV2 {
             _userSpace.put("lock", nextUserId+1);
             
         } catch (Exception e) {
+            e.printStackTrace();
             //TODO: handle exception
         }
         try {
             int president;
             int chancellor; 
             int playerCount = -1;
-            while(running){
+            while(true){
                 //event getCard
                 //listen for command
                 //TODO: How do we make sure all have read the command, as it must be removed
                 //  otherwise we risk someone reading an old command and getting stuck somewhere
                 // Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 // CommandType cmd = (CommandType) commands[0];
+                System.out.println("We got into the game handler");
                 playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
+                System.out.println("We got the player count");
                 CommandType cmd = readAndPassCommand(playerCount);
                 switch (cmd) {
                     case Election:
+                        System.out.println("Handler starting election for :" + _user.Id());
                         election(playerCount);
                         break;
                     case LegislativeSession:

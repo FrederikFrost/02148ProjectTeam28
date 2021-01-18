@@ -31,7 +31,8 @@ public class MenuComponents {
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame newFrame = new JFrame();
     static JPanel gamePanel = new JPanel();
-    static JPanel mainPanel = new JPanel();
+    static JPanel menuPanel = new JPanel();
+    static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
     static JButton[] buttons = new JButton[4];
@@ -55,20 +56,20 @@ public class MenuComponents {
         JButton exitButton = createButton(2, "button_exit.png", "button_exit_hover.png");
 
         // Panel settings
-        mainPanel.setBackground(Color.WHITE);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        menuPanel.setBackground(Color.WHITE);
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         for (JLabel l : labels)
-            mainPanel.add(l);
-        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+            menuPanel.add(l);
+        menuPanel.add(Box.createRigidArea(new Dimension(30, 30)));
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         for (int i = 0 ; i < 3 ; i++){
-            mainPanel.add(buttons[i]);
-            mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            menuPanel.add(buttons[i]);
+            menuPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
         startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png");
         // Frame
         frame.setBackground(Color.WHITE);
-        frame.add(mainPanel);
+        frame.add(menuPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -78,6 +79,7 @@ public class MenuComponents {
         createGameButton.addActionListener(createGameAction);
         joinGameButton.addActionListener(joinGameAction);
         exitButton.addActionListener(exitAction);
+        startGameButton.addActionListener(startGameAction);
     }
 
     // Method for creating buttons
@@ -102,16 +104,24 @@ public class MenuComponents {
         numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
         numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
         numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
-        newFrame.add(numPlayerLabel, BorderLayout.SOUTH);
+        mainPanel.add(numPlayerLabel, BorderLayout.SOUTH);
     }
 
     public static void incNumPlayers() {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5 && gameHost) {
-            gamePanel.add(startGameButton, BorderLayout.CENTER);
+            System.out.println("Enough players to start!");
+            GridBagConstraints con = new GridBagConstraints();
+            //con.fill = GridBagConstraints.HORIZONTAL;
+            con.gridwidth = 2;
+            con.gridheight = 1;
+            con.weightx = 0.5;
+            con.gridx = 5;
+            con.gridy = 5;
+            gamePanel.add(startGameButton, con);
             gamePanel.revalidate();
-            newFrame.revalidate(); // MIGHT BE UNNECESSARY
+            //gamePanel.repaint();
         }
     }
 
@@ -121,7 +131,8 @@ public class MenuComponents {
         if (numOfPlayers == 4 && gameHost) {
             gamePanel.remove(startGameButton);
             gamePanel.revalidate();
-            newFrame.revalidate();
+            gamePanel.repaint();
+            //newFrame.revalidate();
         }
     }
 
@@ -168,11 +179,8 @@ public class MenuComponents {
     }
 
     public static JPanel gamePanel() {
-        JPanel gamePanel = new JPanel();
-        // JLabel gameLabel = new JLabel("SECRET HITLER");
-        // gameLabel.setFont(new Font("Calibri", Font.PLAIN, 45));
-        gamePanel.setLayout(new GridBagLayout());
-        // gamePanel.add(gameLabel);
+        JPanel gamePanel = new JPanel(new GridBagLayout());
+        gamePanel.setLocation(400, 0);
         gamePanel.setSize(1200, 800);
 
         // ADD GAMEPLAY GUI HERE
@@ -180,13 +188,20 @@ public class MenuComponents {
     }
 
     public static void gameFrame() {
+        mainPanel = new JPanel(new BorderLayout());
+        
         JPanel chatPanel = chatPanel();
         gamePanel = gamePanel();
-        newFrame.add(chatPanel);
-        newFrame.setLayout(new BorderLayout());
-        newFrame.add(gamePanel);
+        mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
+        System.out.println("Chat panel width is: " + chatPanel.getWidth());
+        System.out.println("Game panel width is: " + gamePanel.getWidth());
+        mainPanel.add(chatPanel);
+        //mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(gamePanel);
+        newFrame.add(mainPanel);
         newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        newFrame.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
+        newFrame.setSize(mainPanel.getSize());
+        //newFrame.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
@@ -201,7 +216,7 @@ public class MenuComponents {
             else {
                 String msg = messageBox.getText();
 
-                newFrame.revalidate();
+                mainPanel.revalidate();
                 scrollBar.setValue(scrollBar.getMaximum());
 
                 if (msg.equals(".help")) {
@@ -433,7 +448,9 @@ public class MenuComponents {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            newFrame.remove(startGameButton);
+            gamePanel.remove(startGameButton);
+            gamePanel.revalidate();
+            gamePanel.repaint();
         }
     };
     

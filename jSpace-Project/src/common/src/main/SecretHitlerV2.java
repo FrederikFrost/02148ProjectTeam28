@@ -14,6 +14,7 @@ import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
+import common.src.main.Types.ActionType;
 import common.src.main.Types.CommandType;
 import common.src.main.Types.LegislativeType;
 import common.src.main.Types.ErrorType;
@@ -147,6 +148,8 @@ public class SecretHitlerV2 {
             //TODO: handle exception
         }
         try {
+            int president;
+            int chancellor; 
             int playerCount = -1;
             while(running){
                 //event getCard
@@ -164,8 +167,8 @@ public class SecretHitlerV2 {
                         break;
                     case LegislativeSession:
                         //check locks in this switch
-                        int president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
-                        int chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
+                        president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+                        chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         if (_user.Id() == president) {
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
@@ -223,6 +226,58 @@ public class SecretHitlerV2 {
                         }
                         System.out.println("L_session has happened");
                     case ExecutiveAction:
+                        president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+                        chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
+                        
+                        ActionType executivePower = (ActionType) _gameSpace.query(new ActualField("executivePower"), new FormalField(ActionType.class))[1];
+
+                        switch (executivePower) {
+                            case Peek:
+                                
+                                //get 3 cards on top
+                                //pass to president
+                                break;
+                            case Investigate:
+                                /**
+                                 * pass list to president
+                                 * president return person
+                                 * controller return info
+                                 * 
+                                 * alternatively:
+                                 * pass list to president
+                                 * president looks in 'roles' tuple for info
+                                 */
+                                break;
+                            case Kill:
+                                /** a player is killed
+                                 *      - pass list to president
+                                 *      - president return person to kill
+                                 */
+                                break;
+                                
+                            case S_Election:
+                                /** pass list to president
+                                 *  president returns person
+                                 *  use rotatePresident to choose new president
+                                 *  TODO should prevent normal election of president somehow  
+                                 * 
+                                 */
+                                
+                                break;
+                                
+                            case Veto:
+                                /** a player is killed
+                                 *      - pass list to president
+                                 *      - president return person to kill
+                                 * veto = true
+                                */
+                                
+                                break;
+                            default:    //default to None?
+    
+                                break;
+                        }
+                        //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
                     default:
                         break;

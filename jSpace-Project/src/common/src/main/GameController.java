@@ -57,26 +57,31 @@ public class GameController implements Runnable {
 
     @Override
     public void run() {
-        boolean enoughPlayers = false;
-        boolean gameStarted = false;
+        // boolean enoughPlayers = false;
+        // boolean gameStarted = false;
         playerCount = -1;
         try {
-            while (!gameStarted) {
-                if (!enoughPlayers) {
-                    Object[] userLock = _userSpace.query(new ActualField("lock"), new FormalField(Integer.class));
-                    if ((int) userLock[1] >= 5) {
-                        enoughPlayers = true;
-                        _gameSpace.get(new ActualField("lock"));
-                        _gameSpace.put("readyToStart");
-                        _gameSpace.put("lock");
-                    }
-                } else {
-                    _gameSpace.get(new ActualField("start"));
-                    playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
-                    //TODO: maybe grap userSpace lock to prevent players from joining a started game
-                    gameStarted = true;
-                }
-            }
+            // while (!gameStarted) {
+            //     if (!enoughPlayers) {
+            //         Object[] userLock = _userSpace.query(new ActualField("lock"), new FormalField(Integer.class));
+            //         if ((int) userLock[1] >= 5) {
+            //             enoughPlayers = true;
+            //             _gameSpace.get(new ActualField("lock"));
+            //             _gameSpace.put("readyToStart");
+            //             _gameSpace.put("lock");
+            //         }
+            //     } else {
+            //         _gameSpace.get(new ActualField("start"));
+            //         playerCount = (int) _userSpace.query(new ActualField("lock"), new FormalField(Integer.class))[1];
+            //         //TODO: maybe grap userSpace lock to prevent players from joining a started game
+            //         gameStarted = true;
+            //     }
+            // }
+
+            Object[] startTuple = _gameSpace.get(new ActualField("start"), new FormalField(Integer.class));
+            playerCount = (int) startTuple[1];
+            if (playerCount < 5 || 10 < playerCount) throw new IllegalArgumentException("Too few or too many players!");
+            //TODO: maybe grap userSpace lock to prevent players from joining a started game
 
             _gameSpace.get(new ActualField("lock"));
             
@@ -138,13 +143,13 @@ public class GameController implements Runnable {
                     cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
                     if (1 < cards.size()) throw new IllegalArgumentException("To many legislatives left"); 
 
-                    ActionType executionPower;
+                    ActionType executivePower;
                     if (cards.size() == 1) {
                         LegislativeType finalCard = cards.get(0); //take the chosen card
-                        executionPower = UpdateBoards(finalCard);
+                        executivePower = UpdateBoards(finalCard);
                     } else {    //in case of veto
                         electionTracker++;
-                        executionPower = ActionType.None;
+                        executivePower = ActionType.None;
                     }
 
                     /** legislative session
@@ -153,10 +158,14 @@ public class GameController implements Runnable {
                      * veto logic should be here
                      * else update board with returned legislate
                     */
-
-                    switch (executionPower) {
+                    _gameSpace.put("executivePower", executivePower);
+                    //TODO: put executetive power up in gamespace
+                    switch (executivePower) {
                         case Peek:
                             cards = GetCardsFromDeck(3, true);
+                            _gameSpace.get(new ActualField("lock"));
+                            _gameSpace.put("peek", cards);
+                            // _gameSpace.query("")
                             //get 3 cards on top
                             //pass to president
                             break;

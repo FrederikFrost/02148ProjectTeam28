@@ -308,7 +308,11 @@ public class SecretHitlerV2 implements Runnable {
         int suggestion = -1;
         if (_user.Id() == pres) {
             ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
-            suggestion = Game.suggest(eligibleCands);
+            int[] eliCands = Helper.convertIntegers(eligibleCands);
+
+            // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
+            Helper.printArray("Cands", eligibleCands.toArray());
+            suggestion = Game.suggest(eliCands);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");

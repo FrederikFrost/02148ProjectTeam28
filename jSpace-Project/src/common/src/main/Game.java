@@ -2,6 +2,7 @@ package common.src.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -14,12 +15,14 @@ public class Game {
     static Space userSpace = Menu.game.getUserSpace();
 
     
-    public static int suggest(ArrayList<Integer> eligibleCands) {
+    public static int suggest(int[] eligibleCands) {
             // TODO: make suggestion pop-up list.
             MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
-            String[] choices = new String[eligibleCands.size()];
+            // String[] choices = new String[eligibleCands.size()];
+            String[] choices = new String[eligibleCands.length];
             System.out.println(choices.length);
-            for (Integer cand : eligibleCands) {
+            // Integer[] eliCands = eligibleCands.toArray(new Integer[eligibleCands.size()]);
+            for (int cand : eligibleCands) {
                 try {
                     choices[cand] = (String) userSpace.query(new ActualField("join"),
                         new FormalField(String.class), new ActualField(cand))[1];

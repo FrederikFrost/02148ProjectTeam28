@@ -20,20 +20,38 @@ public class Helper {
     }
 
     public static ArrayList<Integer> cleanCast(Object obj){
-        ArrayList<Integer> result = new ArrayList<Integer>();
-        if (obj instanceof ArrayList<?>) {
-            ArrayList<?> al = (ArrayList<?>) obj;
-            if (al.size() > 0) {
-                for (int i = 0; i < al.size(); i++) {
-                    Object o = al.get(i);
-                    if (o instanceof Integer) {
-                        Integer v = (Integer) o;
-                        result.add(v);
-                    }  
-                }
-            }
+        // ArrayList<Integer> result = new ArrayList<Integer>();
+        // if (obj instanceof ArrayList<?>) {
+        //     ArrayList<?> al = (ArrayList<?>) obj;
+        //     if (al.size() > 0) {
+        //         for (int i = 0; i < al.size(); i++) {
+        //             Object o = al.get(i);
+        //             if (o instanceof Integer) {
+        //                 Integer v = (Integer) o;
+        //                 result.add(v);
+        //             }  
+        //         }
+        //     }
+        // }
+        // return result;//
+
+        ArrayList<Integer> res = new ArrayList<Integer>();
+        for (Object obj1 : (ArrayList<?>) obj) {
+            res.add((int) obj1);    
         }
-        return result;//
+
+        return res;
+    }
+
+    public static int[] convertIntegers(ArrayList<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = ((Integer) integers.get(i)).intValue();
+        }
+
+        return ret;
     }
 
 }

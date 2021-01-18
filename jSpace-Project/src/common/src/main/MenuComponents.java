@@ -204,7 +204,7 @@ public class MenuComponents {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
-        welcomeDialogue();
+        // welcomeDialogue();
     }
 
     static class sendMessageListener implements ActionListener {
@@ -318,13 +318,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -354,13 +356,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);

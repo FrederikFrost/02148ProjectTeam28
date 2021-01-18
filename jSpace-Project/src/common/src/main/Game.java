@@ -48,16 +48,15 @@ public class Game {
 
         //TODO: MAKE THIS SEND TO ALL PLAYERS
         MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " +
-        suggestion + " was suggested chancellor by the president!"
-            + "Use \".vote\"to cast your vote!\n", true);
+        sugChan + " was suggested chancellor by the president!"
+            + "Cast your vote now!\n", true);
 
-        String vote = MenuComponents.voteDialogueBox(sugChan);
-        if (vote == null) {
-            do
-                vote = MenuComponents.voteDialogueBox(sugChan);
-            while (vote == null);
-            }
-        MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " + MenuComponents.username + " voted: " + vote, true);
+        String vote = null;
+        do {
+            vote = MenuComponents.voteDialogueBox(sugChan);
+        } while (vote == null);
+
+        //MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " + MenuComponents.username + " voted: " + vote, true);
 		return true;
 	}
 

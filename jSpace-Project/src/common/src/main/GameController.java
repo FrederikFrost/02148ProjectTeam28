@@ -10,6 +10,7 @@ import org.jspace.FormalField;
 import org.jspace.Space;
 
 import common.src.main.Types.ActionType;
+import common.src.main.Types.CommandType;
 import common.src.main.Types.LegislativeType;
 import common.src.main.Types.RoleType;
 import common.src.main.Types.VoteType;
@@ -78,7 +79,7 @@ public class GameController implements Runnable {
             //     }
             // }
 
-            Object[] startTuple = _gameSpace.get(new ActualField("start"), new FormalField(Integer.class));
+            Object[] startTuple = _gameSpace.query(new ActualField("start"), new FormalField(Integer.class));
             playerCount = (int) startTuple[1];
             if (playerCount < 5 || 10 < playerCount) throw new IllegalArgumentException("Too few or too many players!");
             printDebug("Game stated! PlayerCount: " + playerCount);
@@ -335,6 +336,7 @@ public class GameController implements Runnable {
         ArrayList<Integer> suggestions = GetEligibleCandidates();
 
         _gameSpace.get(new ActualField("lock"));
+        _gameSpace.put(CommandType.Election, 0);
         _gameSpace.put("suggest", pres, suggestions);
         _gameSpace.put("lock");
         //TODO: should a lock be here aswell?
@@ -451,8 +453,11 @@ public class GameController implements Runnable {
 
         Random rand = new Random();
         int president = rand.nextInt(playerCount);
+        _gameSpace.put("lock");
         setPresident(president);
         setOldPresident(-1);
+        _gameSpace.get(new ActualField("lock"));
+
 
         //make dead player list
         ArrayList<Integer> deadPlayers = new ArrayList<Integer>();

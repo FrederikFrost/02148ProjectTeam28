@@ -8,6 +8,8 @@ import java.rmi.activation.ActivationGroupDesc.CommandEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.event.PrintEvent;
+
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -135,6 +137,8 @@ public class SecretHitlerV2 {
     }
 
     public void gameInit() {
+        printDebug("In gameInit()!");
+        System.out.println("Heeeeeey");
         // Keep sending whatever the user types
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
@@ -146,21 +150,25 @@ public class SecretHitlerV2 {
             _userSpace.put("lock", nextUserId+1);
             
         } catch (Exception e) {
+            e.printStackTrace();
             //TODO: handle exception
         }
         try {
             int president;
             int chancellor; 
             int playerCount = -1;
-            while(running){
+            while(true){
                 //event getCard
                 //listen for command
                 //TODO: How do we make sure all have read the command, as it must be removed
                 //  otherwise we risk someone reading an old command and getting stuck somewhere
                 // Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 // CommandType cmd = (CommandType) commands[0];
+                printDebug("In loop, trying to get playerCount");
                 playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
+                printDebug("Seen start!");
                 CommandType cmd = readAndPassCommand(playerCount);
+                printDebug("Read command");
                 switch (cmd) {
                     case Election:
                         election(playerCount);
@@ -225,6 +233,7 @@ public class SecretHitlerV2 {
                             //wait for board update - possibly send keyword here
                         }
                         System.out.println("L_session has happened");
+                        break;
                     case ExecutiveAction:
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
@@ -279,6 +288,7 @@ public class SecretHitlerV2 {
                         }
                         //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
+                        break;
                     default:
                         break;
                 }
@@ -389,6 +399,12 @@ public class SecretHitlerV2 {
             _gameSpace.put(cmd, _user.Id()+1);
         }
         return cmd;
+    }
+
+    private void printDebug(String string) {
+        if (true) {
+            System.out.println(string);
+        }
     }
 
     //  POSSIBLE REAFACTORING

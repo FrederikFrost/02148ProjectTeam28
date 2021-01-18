@@ -390,6 +390,7 @@ public class MenuComponents {
                     }
                 }
             } while (!joinObject[0].equals(ErrorType.NoError));
+            System.out.println("About to call gameInit()!");
             Menu.game.gameInit();
             username = name;
             tcp = IP_Port;

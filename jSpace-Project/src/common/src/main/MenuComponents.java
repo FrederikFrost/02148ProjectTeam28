@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MenuComponents {
     static String guiPath = "gui/";
@@ -33,6 +34,7 @@ public class MenuComponents {
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
     static JButton[] buttons = new JButton[3];
+    static JButton startGameButton;
     static JButton sendMessage;
     static JTextField messageBox;
     static JEditorPane chatBox;
@@ -62,7 +64,7 @@ public class MenuComponents {
             mainPanel.add(b);
             mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
-
+        startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png");
         // Frame
         frame.setBackground(Color.WHITE);
         frame.add(mainPanel);

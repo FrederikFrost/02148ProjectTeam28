@@ -30,6 +30,7 @@ public class MenuComponents {
     static boolean gameHost = false;
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame newFrame = new JFrame();
+    static JPanel gamePanel = new JPanel();
     static JPanel mainPanel = new JPanel();
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
@@ -107,8 +108,20 @@ public class MenuComponents {
     public static void incNumPlayers() {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
-        if (numOfPlayers >= 5) {
-            newFrame.add(startGameButton, BorderLayout.EAST);
+        if (numOfPlayers >= 5 && gameHost) {
+            gamePanel.add(startGameButton, BorderLayout.CENTER);
+            gamePanel.revalidate();
+            newFrame.revalidate(); // MIGHT BE UNNECESSARY
+        }
+    }
+
+    public static void decNumPlayers() {
+        numOfPlayers--;
+        numPlayerLabel.setText("Number of players: " + numOfPlayers);
+        if (numOfPlayers == 4 && gameHost) {
+            gamePanel.remove(startGameButton);
+            gamePanel.revalidate();
+            newFrame.revalidate();
         }
     }
 
@@ -168,7 +181,7 @@ public class MenuComponents {
 
     public static void gameFrame() {
         JPanel chatPanel = chatPanel();
-        JPanel gamePanel = gamePanel();
+        gamePanel = gamePanel();
         newFrame.add(chatPanel);
         newFrame.setLayout(new BorderLayout());
         newFrame.add(gamePanel);
@@ -178,7 +191,6 @@ public class MenuComponents {
         newFrame.setVisible(true);
         addNumOfPlayers();
         welcomeDialogue();
-
     }
 
     static class sendMessageListener implements ActionListener {
@@ -205,10 +217,8 @@ public class MenuComponents {
                 } else if (msg.equals(".tcp")) {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                 } else if (msg.equals(".leave")) {
-                    Menu.game.sendMessage("<ChatBot>: " + username + " has left!", Menu.chatHandler);
                     try {
                         Menu.game.leaveGame();
-                        numOfPlayers--;
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         throw new RuntimeException(e);

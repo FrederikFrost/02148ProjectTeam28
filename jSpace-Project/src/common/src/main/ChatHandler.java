@@ -28,6 +28,7 @@ public class ChatHandler implements Runnable {
                 //handle chat
                 Object[] newUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class), new ActualField(nextUserId));
                 Object[] newChat = _chatSpace.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
+                Object[] leftUser = _userSpace.queryp(new ActualField("leave"), new FormalField(String.class), new FormalField(Integer.class));
                 if (newChat != null) {
                     MenuComponents.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", false);
                     System.out.println(newChat[0] + ": " + newChat[1]);
@@ -38,6 +39,10 @@ public class ChatHandler implements Runnable {
                     MenuComponents.incNumPlayers();
                     System.out.println(newUser[1] + " has joined the game!");
                     nextUserId++;
+                }
+                if (leftUser != null) {
+                    MenuComponents.append(_chatBox,"<" + leftUser[1] + ">: has left the game!\n", true);
+                    MenuComponents.decNumPlayers();
                 }
              } 
          } catch (Exception e) {

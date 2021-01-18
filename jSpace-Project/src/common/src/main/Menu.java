@@ -1,7 +1,5 @@
 package common.src.main;
 
-import java.util.ArrayList;
-
 public class Menu {
     public static SecretHitlerV2 game;
     public static ChatHandler chatHandler;
@@ -12,6 +10,7 @@ public class Menu {
             MenuComponents.menu();
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
             try {
                 game.leaveGame();
             } catch (InterruptedException e1) {

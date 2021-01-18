@@ -33,7 +33,7 @@ public class MenuComponents {
     static JPanel mainPanel = new JPanel();
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
-    static JButton[] buttons = new JButton[3];
+    static JButton[] buttons = new JButton[4];
     static JButton startGameButton;
     static JButton sendMessage;
     static JTextField messageBox;
@@ -60,8 +60,8 @@ public class MenuComponents {
             mainPanel.add(l);
         mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        for (JButton b : buttons) {
-            mainPanel.add(b);
+        for (int i = 0 ; i < 3 ; i++){
+            mainPanel.add(buttons[i]);
             mainPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
         startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png");

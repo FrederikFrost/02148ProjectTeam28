@@ -1,5 +1,6 @@
 package common.src.main;
 
+import java.util.ArrayList;
 
 public class Menu {
     public static SecretHitlerV2 game;

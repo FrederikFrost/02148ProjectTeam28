@@ -23,7 +23,7 @@ public class GameController implements Runnable {
     private int lastChancellor;
     private ArrayList<LegislativeType> deck;
     private boolean veto = false;
-
+    private boolean debug = true;
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
         this._chatSpace = _chatSpace;
@@ -81,6 +81,7 @@ public class GameController implements Runnable {
             Object[] startTuple = _gameSpace.get(new ActualField("start"), new FormalField(Integer.class));
             playerCount = (int) startTuple[1];
             if (playerCount < 5 || 10 < playerCount) throw new IllegalArgumentException("Too few or too many players!");
+            printDebug("Game stated! PlayerCount: " + playerCount);
             //TODO: maybe grap userSpace lock to prevent players from joining a started game
 
             _gameSpace.get(new ActualField("lock"));
@@ -89,6 +90,7 @@ public class GameController implements Runnable {
             AssignRoles();
             
             _gameSpace.put("lock");
+            printDebug("Starting game loop");
             boolean useOldPres = false;
             int electionTracker = 0;
             while(true) {
@@ -225,7 +227,7 @@ public class GameController implements Runnable {
         }
     }
 
-    public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception {  //TODO make test
+    public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception { // TODO make test
         if (legislativeType == LegislativeType.None) throw new IllegalArgumentException("Card cannot be none!");
         _gameSpace.get(new ActualField("lock"));
         Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
@@ -439,6 +441,7 @@ public class GameController implements Runnable {
 
         Collections.shuffle(Arrays.asList(roles));
         _gameSpace.put("roles", roles, playerCount);
+        printDebug("Assigned roles!");
         //TODO show fascist who they are working with
         //  5-6 hitler and fascist know eachother
         //  7-10 fascist know eachother and hitler, hitler doesn't know anything
@@ -457,6 +460,7 @@ public class GameController implements Runnable {
 
         lastPres = -1;
         lastChancellor = -1;
+        printDebug("Assigned president and reset values");
 
     }
 
@@ -494,7 +498,7 @@ public class GameController implements Runnable {
         // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
         _gameSpace.put("drawPile", 17);
         _gameSpace.put("discardPile", 0);
-
+        printDebug(debug, "Created boards and deck - Uploaded boards to _gameSpace");
 
     }
     //#endregion
@@ -565,4 +569,9 @@ public class GameController implements Runnable {
 
     //#endregion
 
+    private void printDebug(String string) {
+        if (debug) {
+            System.out.println(string);
+        }
+    }
 }

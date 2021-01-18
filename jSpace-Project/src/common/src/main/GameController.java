@@ -498,7 +498,7 @@ public class GameController implements Runnable {
         // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
         _gameSpace.put("drawPile", 17);
         _gameSpace.put("discardPile", 0);
-        printDebug(debug, "Created boards and deck - Uploaded boards to _gameSpace");
+        printDebug("Created boards and deck - Uploaded boards to _gameSpace");
 
     }
     //#endregion

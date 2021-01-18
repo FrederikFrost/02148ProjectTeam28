@@ -119,7 +119,9 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            newFrame.remove(startGameButton);
+            gamePanel.remove(startGameButton);
+            gamePanel.revalidate();
+            newFrame.revalidate();
         }
     }
 

@@ -47,6 +47,7 @@ public class ChatHandler implements Runnable {
              } 
          } catch (Exception e) {
          //TODO: make something
+         e.printStackTrace();
          }
 
     }

@@ -20,7 +20,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MenuComponents {
     static String guiPath = "gui/";
@@ -109,7 +108,7 @@ public class MenuComponents {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5) {
-
+            newFrame.add(startGameButton, BorderLayout.EAST);
         }
     }
 
@@ -329,7 +328,6 @@ public class MenuComponents {
                 return;
             }
             Menu.game.setUser(name);
-            
 
             String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
             if (IP_Port == null) {
@@ -353,14 +351,14 @@ public class MenuComponents {
                         frame.setVisible(true);
                         return;
                     }
-                } else if(joinObject[0].equals(ErrorType.GameFull)) {
+                } else if (joinObject[0].equals(ErrorType.GameFull)) {
                     int ok = exitDialogue("The game is full, try another IP.");
                     if (ok == -1) {
                         frame.setVisible(true);
                         return;
                     }
 
-                } else if(joinObject[0].equals(ErrorType.GameStarted)) {
+                } else if (joinObject[0].equals(ErrorType.GameStarted)) {
                     int ok = exitDialogue("The game has started, try another IP.");
                     if (ok == -1) {
                         frame.setVisible(true);
@@ -385,14 +383,14 @@ public class MenuComponents {
 
     public static String getNameInput(String namePrompt) {
         String name = JOptionPane.showInputDialog(frame, namePrompt);
-            if (name == null) {
-                return null;
-            } else if (name.isEmpty() || name.equals("ChatBot")) {
-                do {
-                    name = JOptionPane.showInputDialog(frame, "Name cannot be empty:");
-                } while (name.isEmpty() || name.equals("ChatBot"));
-            }
-            return name;
+        if (name == null) {
+            return null;
+        } else if (name.isEmpty() || name.equals("ChatBot")) {
+            do {
+                name = JOptionPane.showInputDialog(frame, "Name cannot be empty:");
+            } while (name.isEmpty() || name.equals("ChatBot"));
+        }
+        return name;
     }
 
     public static AbstractAction exitAction = new AbstractAction() {
@@ -407,9 +405,28 @@ public class MenuComponents {
                 // TODO Auto-generated catch block
                 throw new RuntimeException(e1);
             }
-                    System.exit(1);
-                }
-            };
+            System.exit(1);
+        }
+    };
+
+    public static AbstractAction startGameAction = new AbstractAction() {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 3963988367577770364L;
+
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Menu.game.getGameSpace().put("start", numOfPlayers);
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            newFrame.remove(startGameButton);
+        }
+    };
+    
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);
     //     mediaPlayer.start();

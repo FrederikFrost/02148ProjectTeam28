@@ -100,7 +100,7 @@ public class SecretHitlerV2 {
             _gameSpace = new RemoteSpace(gameURI);
 
             List<Object[]> players;
-            Object[] gameState = _gameSpace.queryp(new ActualField("start"));
+            Object[] gameState = _gameSpace.queryp(new ActualField("start"), new FormalField(Integer.class));
             if (gameState != null) {
                 returnTriple[0] = ErrorType.GameStarted;
                 return returnTriple;
@@ -345,6 +345,10 @@ public class SecretHitlerV2 {
 
     public User getUser() {
         return _user;
+    }
+
+    public Space getGameSpace() {
+        return _gameSpace;
     }
 
     public SecretHitlerV2() {

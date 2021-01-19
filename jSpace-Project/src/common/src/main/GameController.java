@@ -383,7 +383,7 @@ public class GameController implements Runnable {
         _gameSpace.put("startVote");
         _gameSpace.put("lock");
         
-        int deadPlayers = ((ArrayList<?>) _gameSpace.get(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 
         int numToPass = (playerCount-deadPlayers)/2+1;
@@ -397,10 +397,11 @@ public class GameController implements Runnable {
             //set term-limit
             updateTermLimit(newChancellor);
             setChancellor(newChancellor);
+            printDebug("We wont the war!");
 
             return true;
         }
-        
+        printDebug("We lost the war!");
         return false;
     }
 

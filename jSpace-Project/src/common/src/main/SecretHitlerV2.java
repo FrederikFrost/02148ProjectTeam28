@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.UnknownHostException;
-import java.rmi.activation.ActivationGroupDesc.CommandEnvironment;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.print.event.PrintEvent;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -32,7 +29,6 @@ public class SecretHitlerV2 implements Runnable {
 
     public static User _user;
     public static int nextUserId;
-    public static int electionIndex = 0;
     public static int chatId = 0;
     public static boolean running;
     public static GameController controller;
@@ -314,14 +310,12 @@ public class SecretHitlerV2 implements Runnable {
             ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             int[] eliCands = Helper.convertIntegers(eligibleCands);
 
-            if (electionIndex == 0) {
-                Helper.appendAndSend(_user.Name() + " is President in this round");
-                Helper.appendAndSend("<ChatBot>: The president is suggesting a chancellor");
-            }
+            
+            Helper.appendAndSend(_user.Name() + " is President in this round");
+            Helper.appendAndSend("<ChatBot>: The president is suggesting a chancellor");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             Helper.printArray("Cands", eligibleCands.toArray());
             suggestion = Game.suggest(eliCands);
-            electionIndex++;
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");
@@ -330,7 +324,7 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        VoteType vote = Game.vote(suggestion, electionIndex);
+        VoteType vote = Game.vote(suggestion, pres == _user.Id());
         // Put vote in the gameSpace tuple space.
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));
@@ -353,7 +347,6 @@ public class SecretHitlerV2 implements Runnable {
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
         }
         System.out.println("Election is done!");
-        electionIndex = 0;
     }
 
     public void sendMessage(String msg, ChatHandler chatHandler, boolean chatBot) {

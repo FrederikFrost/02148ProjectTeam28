@@ -262,12 +262,12 @@ public class GameController implements Runnable {
         int index = -1;
         if (legislativeType == LegislativeType.Liberal) {
             index = GetEmptyIndex(liberalBoard);
-            won = (index == 5 ? 1 : 0);
+            won = (index == 4 ? 1 : 0);
             liberalBoard[index] = LegislativeType.Liberal;
             res = ActionType.None;
         } else {
             index = GetEmptyIndex(fascistBoard);
-            won = (index == 6 ? 2 : 0);
+            won = (index == 5 ? 2 : 0);
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }

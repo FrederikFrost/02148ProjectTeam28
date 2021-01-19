@@ -401,6 +401,9 @@ public class GameController implements Runnable {
         printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 
+        _gameSpace.getp(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
+        _gameSpace.getp(new ActualField("suggestion"), new FormalField(Integer.class));
+
         int numToPass = (playerCount-deadPlayers)/2+1;
         int votesChancellor = 0;
         for (VoteType vote : (VoteType[]) votesReturn[1]) {

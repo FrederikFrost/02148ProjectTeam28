@@ -470,6 +470,8 @@ public class GameController implements Runnable {
                 throw new IllegalArgumentException("Player size is wrong");   //maybe refactor this to if statement above
         }
 
+        CreateAndUploadUserArray();
+
         Collections.shuffle(Arrays.asList(roles));
         _gameSpace.put("roles", roles, playerCount);
         printDebug("Assigned roles!");
@@ -496,6 +498,18 @@ public class GameController implements Runnable {
         lastChancellor = -1;
         printDebug("Assigned president and reset values");
 
+    }
+
+    private void CreateAndUploadUserArray() throws Exception {
+        User[] users = new User[playerCount];
+        for (int i = 0; i < playerCount; ++i) {
+            Object[] userTuple = _userSpace.query(new ActualField("join"), new FormalField(String.class), new ActualField(i));
+            users[i] = new User((String) userTuple[1], (int) userTuple[2]);
+        }
+
+        _gameSpace.getp(new ActualField("users"), new FormalField(User[].class));
+        _gameSpace.put("users", users);
+        printDebug("uploaded user array");
     }
 
     public void SetupGame() throws Exception {

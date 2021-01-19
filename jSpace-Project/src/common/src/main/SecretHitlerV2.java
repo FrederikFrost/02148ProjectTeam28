@@ -315,7 +315,7 @@ public class SecretHitlerV2 implements Runnable {
         if (_user.Id() == pres) {
             ArrayList<Integer> eligibleCands = (ArrayList<Integer>) ((ArrayList<Integer>) newElect[2]).clone();
             //ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
-            int[] eliCands = Helper.convertIntegers(eligibleCands);
+            int[] eliCands = Helper.cleanCast(newElect[2]);
 
             
             Helper.appendAndSend(_user.Name() + " is President in this round");

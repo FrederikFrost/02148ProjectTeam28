@@ -12,36 +12,32 @@ import common.src.main.Types.VoteType;
 
 public class Game {
     static Space userSpace = Menu.game.getUserSpace();
+    static Space gameSpace = Menu.game.getGameSpace();
 
     
-    public static int suggest(int[] eligibleCands) {
-            // TODO: make suggestion pop-up list.
-            // String[] choices = new String[eligibleCands.size()];
-            String[] choices = new String[eligibleCands.length];
-            System.out.println(choices.length);
-            // Integer[] eliCands = eligibleCands.toArray(new Integer[eligibleCands.size()]);
-            // for (int cand : eligibleCands) {
-            //     try {
-            //         choices[cand] = (String) userSpace.query(new ActualField("join"),
-            //             new FormalField(String.class), new ActualField(cand))[1];
-            //     } catch (InterruptedException e) {
-            //         e.printStackTrace();}
-            // }
+    public static int suggest(int[] eligibleCands) throws InterruptedException {
+        // TODO: make suggestion pop-up list.
+        String[] choices = new String[eligibleCands.length];
+        User[] users = (User[]) gameSpace.query(new ActualField("users"), new FormalField(User[].class))[1];
 
-            for (int i = 0; i < choices.length; ++i) {
-                try {
-                    choices[i] = (String) userSpace.query(new ActualField("join"),
-                        new FormalField(String.class), new ActualField(eligibleCands[i]))[1];
-                } catch (InterruptedException e) {
-                    e.printStackTrace();}
+        for (int i = 0; i < choices.length; ++i) {
+            choices[i] = users[eligibleCands[i]].Name();
+        }
+        
+        String sugChan;
+        sugChan = MenuComponents.suggestDialogueBox(choices);
+        if (sugChan == null) {
+            do sugChan = MenuComponents.suggestDialogueBox(choices);
+            while (sugChan == null);
+        }
+        int suggestion = -1;
+        for (User user : users) {
+            if (user.Name().equals(sugChan)) {
+                suggestion = user.Id();
+                break;
             }
-            String sugChan;
-            sugChan = MenuComponents.suggestDialogueBox(choices);
-            if (sugChan == null) {
-                do sugChan = MenuComponents.suggestDialogueBox(choices);
-                while (sugChan == null);
-            }
-        int suggestion = Arrays.asList(choices).indexOf(sugChan);
+        }
+
 		return suggestion;
 	}
 

@@ -20,4 +20,9 @@ public class User {
         return Id;
     }
 
+    public User(String name, int id) {
+        Name = name;
+        Id = id;
+    }
+
 }

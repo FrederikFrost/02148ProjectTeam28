@@ -370,10 +370,11 @@ public class GameController implements Runnable {
         if (!deads.contains(pres)) deads.add(pres);
 
         //as 'list.remove(int)' removes index, the list must be in descending order
-        Collections.sort(deads, Collections.reverseOrder());
+        Collections.sort(deads, Collections.reverseOrder());    //might not be needed
 
         for (Integer nonEligible : deads) { //TODO: test when lastPres = lastChancellor = -1 
-            ids.remove(nonEligible.intValue());
+            if (nonEligible != -1)
+                ids.remove(nonEligible.intValue());
         }
 
         return ids;

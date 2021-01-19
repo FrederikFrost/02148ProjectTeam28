@@ -57,8 +57,8 @@ public class MenuComponents {
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistBoardImage;
     static ImageIcon liberalBoardImage;
-    static Board fascistBoard;
-    static Board liberalBoard;
+    static JLabel fascistBoard;
+    static JLabel liberalBoard;
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
@@ -69,9 +69,11 @@ public class MenuComponents {
                 ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
         fascistBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board.png")));
         liberalBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-board.png")));
-        MenuComponents mc = new MenuComponents();
-        fascistBoard = mc.new Board(fascistBoardImage);
-        liberalBoard = mc.new Board(liberalBoardImage);
+        fascistBoard.setIcon(fascistBoardImage);
+        liberalBoard.setIcon(liberalBoardImage);
+        // MenuComponents mc = new MenuComponents();
+        // fascistBoard = mc.new Board(fascistBoardImage);
+        // liberalBoard = mc.new Board(liberalBoardImage);
     }
 
     public static void menu() throws IOException {
@@ -93,7 +95,7 @@ public class MenuComponents {
             menuPanel.add(l);
         menuPanel.add(Box.createRigidArea(new Dimension(30, 30)));
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
-        for (int i = 0 ; i < 3 ; i++){
+        for (int i = 0; i < 3; i++) {
             menuPanel.add(buttons[i]);
             menuPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
@@ -116,13 +118,17 @@ public class MenuComponents {
     // Method for creating buttons
     public static JButton createButton(int index, String path, String hoverPath, ImageIcon io) throws IOException {
         JButton b;
-        if (path!=null) b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + path))));
-        else b = new JButton(io);
+        if (path != null)
+            b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + path))));
+        else
+            b = new JButton(io);
         b.setBorder(BorderFactory.createEmptyBorder());
         b.setContentAreaFilled(false);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
-        if (hoverPath != null) b.setRolloverIcon(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + hoverPath))));
-        if (index != -1) buttons[index] = b;
+        if (hoverPath != null)
+            b.setRolloverIcon(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + hoverPath))));
+        if (index != -1)
+            buttons[index] = b;
         return b;
     }
 
@@ -147,7 +153,7 @@ public class MenuComponents {
             System.out.println("Enough players to start!");
             GridBagConstraints con = new GridBagConstraints();
             con.anchor = GridBagConstraints.CENTER;
-            //con.fill = GridBagConstraints.HORIZONTAL;
+            // con.fill = GridBagConstraints.HORIZONTAL;
             con.gridwidth = 3;
             con.gridheight = 0;
             con.weightx = 0;
@@ -155,7 +161,7 @@ public class MenuComponents {
             con.gridy = 0;
             gamePanel.add(startGameButton, con);
             gamePanel.revalidate();
-            //gamePanel.repaint();
+            // gamePanel.repaint();
         }
     }
 
@@ -169,65 +175,74 @@ public class MenuComponents {
         }
     }
 
-    public static ArrayList<LegislativeType> chooseCards (LegislativeType ... cards) throws IOException {
+    public static void chooseCards(LegislativeType... cards) throws IOException {
         submitted = false;
         legiChoices = new ArrayList<LegislativeType>();
         JPanel choicePanel = new JPanel();
-        choicePanel.setSize(300,400);
+        choicePanel.setSize(300, 400);
         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
         JFrame choiceFrame = new JFrame();
         choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
-        if (cards.length == 3) choiceFrame.setTitle("Choose 2 out of 3 article cards");
-        else choiceFrame.setTitle("Choose 1 out of 2 article cards");
+        if (cards.length == 3)
+            choiceFrame.setTitle("Choose 2 out of 3 article cards");
+        else
+            choiceFrame.setTitle("Choose 1 out of 2 article cards");
         System.out.println(cards.length);
-        for (LegislativeType card : cards){
+        for (LegislativeType card : cards) {
             ImageIcon io, ios;
             if (card == LegislativeType.Fascist) {
                 io = fascistCard;
                 ios = fascistCardSelected;
-            }
-            else  {
+            } else {
                 io = liberalCard;
                 ios = liberalCardSelected;
             }
             JButton cardChoice = createButton(-1, null, null, io);
             choicePanel.add(cardChoice);
             choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
-            cardChoice.addActionListener(new ActionListener(){
-                public void actionPerformed(ActionEvent e){
+            cardChoice.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
                     boolean isSelected = cardChoice.getIcon().equals(ios);
                     boolean valid = false;
-                    if (legiChoices.size() < cards.length-1 && !isSelected ||
-                        legiChoices.size() >= 1 && isSelected) {
+                    if (legiChoices.size() < cards.length - 1 && !isSelected || legiChoices.size() >= 1 && isSelected) {
                         cardChoice.setIcon(isSelected ? io : ios);
                         cardChoice.invalidate(); // might not be needed
                         cardChoice.repaint();
                         isSelected = !isSelected;
                         valid = true;
                     }
-                    if (valid){
+                    if (valid) {
                         if (isSelected) {
-                            if (cardChoice.getIcon().equals(fascistCard) || 
-                                cardChoice.getIcon().equals(fascistCardSelected))
-                                    legiChoices.add(LegislativeType.Fascist);
-                            else legiChoices.add(LegislativeType.Liberal);
-                        }
-                        else {
-                            if (cardChoice.getIcon().equals(fascistCard) || 
-                            cardChoice.getIcon().equals(fascistCardSelected))
+                            if (cardChoice.getIcon().equals(fascistCard)
+                                    || cardChoice.getIcon().equals(fascistCardSelected))
+                                legiChoices.add(LegislativeType.Fascist);
+                            else
+                                legiChoices.add(LegislativeType.Liberal);
+                        } else {
+                            if (cardChoice.getIcon().equals(fascistCard)
+                                    || cardChoice.getIcon().equals(fascistCardSelected))
                                 legiChoices.remove(LegislativeType.Fascist);
-                            else legiChoices.remove(LegislativeType.Liberal);
+                            else
+                                legiChoices.remove(LegislativeType.Liberal);
                         }
-                    System.out.println("Legichoices size = " +legiChoices.size());
+                        System.out.println("Legichoices size = " + legiChoices.size());
                     }
-            }});
+                }
+            });
         }
         JButton submitButton = new JButton("Submit article choices!");
-        submitButton.addActionListener(new ActionListener(){
+        submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (legiChoices.size() == cards.length-1) {
-                    for (LegislativeType choice : legiChoices) System.out.println(choice);
+                if (legiChoices.size() == cards.length - 1) {
+                    for (LegislativeType choice : legiChoices)
+                        System.out.println(choice);
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        Menu.game.getGameSpace().put("legiChoices", legiChoices);
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                     submitted = true;
                 }
                 else System.out.println("You haven't picked the right amount of article cards!");
@@ -240,29 +255,26 @@ public class MenuComponents {
         choiceFrame.pack();
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
-        while (!submitted) {}
-        return legiChoices;
     }
-    public class Board extends JPanel {
-        public final Image image;
-        private static final long serialVersionUID = 1L;
+    // public class Board extends JPanel {
+    //     public final Image image;
+    //     private static final long serialVersionUID = 1L;
 
-        public Board(ImageIcon io){
-            this.image = io.getImage();
-            this.setVisible(true);
-        }
+    //     public Board(ImageIcon io){
+    //         this.image = io.getImage();
+    //     }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(this.image, 0, 0, null);
-            }
-        }
+    //     @Override
+    //     protected void paintComponent(Graphics g) {
+    //         super.paintComponent(g);
+    //         g.drawImage(this.image, 0, 0, this.getWidth(), this.getHeight(), null);
+    //         }
+    //     }
 
     public static void drawBoards(){
         gamePanel.add(fascistBoard);
         gamePanel.add(liberalBoard);
-        gamePanel.revalidate();
+       // gamePanel.revalidate();
 
     }
 
@@ -336,11 +348,7 @@ public class MenuComponents {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
-<<<<<<< HEAD
         //chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
-=======
-        // chooseCards(LegislativeType.Fascist,LegislativeType.Liberal);
->>>>>>> c8e0b001ddcc2f4d57aa8a74fe13debd10a4a269
         // welcomeDialogue();
     }
 

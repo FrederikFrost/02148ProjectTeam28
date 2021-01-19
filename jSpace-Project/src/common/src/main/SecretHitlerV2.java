@@ -330,7 +330,7 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        Boolean Boolvote = Game.vote(suggestion);
+        Boolean Boolvote = Game.vote(suggestion, electionIndex);
         VoteType vote;
         if (Boolvote) {
             vote = VoteType.Ja;

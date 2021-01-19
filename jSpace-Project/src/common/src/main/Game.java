@@ -37,7 +37,7 @@ public class Game {
 		return suggestion;
 	}
 
-	public static Boolean vote(int suggestion) {
+	public static Boolean vote(int suggestion, int electionIndex) {
         // TODO: Make vote pop-up.
         String sugChan = "";
         try {
@@ -47,8 +47,9 @@ public class Game {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        Helper.appendAndSend(sugChan + " was suggested chancellor by the president! "
-        + "Cast your vote now!");
+        if (electionIndex == 0)
+            Helper.appendAndSend(sugChan + " was suggested chancellor by the president! "
+            + "Cast your vote now!");
         // MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " +
         // sugChan + " was suggested chancellor by the president! "
         //     + "Cast your vote now!\n", true);

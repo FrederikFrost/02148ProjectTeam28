@@ -182,6 +182,14 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            String isString;
+                            Object card1 = cards.get(0);
+                            if ( card1 instanceof String) {
+                                isString = "Yes";
+                            } else {
+                                isString = "No";
+                            }
+                            System.out.println("The card was a string?: " + isString);
                             cards = MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
                             //Game.ChooseLegislate(cards);
                             boolean veto = (boolean) cardsTuple[2];

@@ -373,7 +373,7 @@ public class GameController implements Runnable {
         Collections.sort(deads, Collections.reverseOrder());
 
         for (Integer nonEligible : deads) { //TODO: test when lastPres = lastChancellor = -1 
-            ids.remove(nonEligible);
+            ids.remove(nonEligible.intValue());
         }
 
         return ids;

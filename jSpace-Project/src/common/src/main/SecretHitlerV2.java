@@ -169,7 +169,7 @@ public class SecretHitlerV2 implements Runnable {
                 printDebug("Read command");
                 switch (cmd) {
                     case Election:
-                        System.out.println("Handler starting election for :" + _user.Id());
+                        System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
                         election(playerCount);
                         break;
                     case LegislativeSession:
@@ -177,6 +177,7 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         if (_user.Id() == president) {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
@@ -196,8 +197,10 @@ public class SecretHitlerV2 implements Runnable {
                             } else {
                                 //TODO: update board here
                             }
+                            readAndPassKeyWord("endLegislate", playerCount);
 
                         } else if (_user.Id() == chancellor) {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
@@ -227,9 +230,12 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.put("lock");
 
                             //TODO: update board here
+                            readAndPassKeyWord("endLegislate", playerCount);
 
                         } else {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             //wait for board update - possibly send keyword here
+                            readAndPassKeyWord("endLegislate", playerCount);
                         }
                         System.out.println("L_session has happened");
                         break;
@@ -307,8 +313,9 @@ public class SecretHitlerV2 implements Runnable {
         
         int suggestion = -1;
         if (_user.Id() == pres) {
-            ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
-            int[] eliCands = Helper.convertIntegers(eligibleCands);
+            ArrayList<Integer> eligibleCands = (ArrayList<Integer>) ((ArrayList<Integer>) newElect[2]).clone();
+            //ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
+            int[] eliCands = Helper.cleanCast(newElect[2]);
 
             
             Helper.appendAndSend(_user.Name() + " is President in this round");
@@ -339,12 +346,13 @@ public class SecretHitlerV2 implements Runnable {
         System.out.println("I voted with voterId: " + voterId);
         Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
-        electionDone = (voterId == (playerCount - deadPlayers - 1));
+        System.out.println("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
+        electionDone = (voterId == (playerCount - deadPlayers));
         while(!electionDone) {
-            voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+            voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
             Game.updateVotes(votes);
-            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
+            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers));
         }
         System.out.println("Election is done!");
     }

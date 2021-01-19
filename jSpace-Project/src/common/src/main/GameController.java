@@ -124,6 +124,7 @@ public class GameController implements Runnable {
                     elected = Election(suggestedChancellor);
                     electionTracker++;
                 }
+
                 ArrayList<LegislativeType> cards;
                 if (!elected) {
                     electionTracker = 0;
@@ -136,16 +137,22 @@ public class GameController implements Runnable {
                     //executive power is ignored
                     UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
                 } else {
+                    _gameSpace.get(new ActualField("lock"));
+                    _gameSpace.put(CommandType.LegislativeSession, 0);
+                    _gameSpace.put("lock");
+                    
                     electionTracker = 0;
                     //check win
                     cards = GetCardsFromDeck(3);
 
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put("president", cards, veto); //maybe send veto bool here
+                    _gameSpace.put("startLegislate", 0);
                     _gameSpace.put("lock");
 
+
                     cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
-                    if (1 < cards.size()) throw new IllegalArgumentException("To many legislatives left"); 
+                    if (1 < cards.size()) throw new IllegalArgumentException("Too many legislatives left"); 
 
                     ActionType executivePower;
                     if (cards.size() == 1) {
@@ -155,6 +162,9 @@ public class GameController implements Runnable {
                         electionTracker++;
                         executivePower = ActionType.None;
                     }
+
+                    _gameSpace.put("endLegislate", 0);
+                    printDebug("Finished legislative session");
 
                     /** legislative session
                      * Get 3 cards, no preview
@@ -350,7 +360,10 @@ public class GameController implements Runnable {
     public ArrayList<Integer> GetEligibleCandidates() throws Exception {
         // ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"),
         //     new FormalField(ArrayList.class))[1]);
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+
+        int pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
+        Object[] deadsTuple = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
+        ArrayList<Integer> deads = (ArrayList<Integer>) ((ArrayList<Integer>) deadsTuple[1]).clone();
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
             ids.add(i);
@@ -359,12 +372,14 @@ public class GameController implements Runnable {
         //gather all none-eligible in list
         if (!deads.contains(lastPres)) deads.add(lastPres);
         if (!deads.contains(lastChancellor)) deads.add(lastChancellor);
+        if (!deads.contains(pres)) deads.add(pres);
 
         //as 'list.remove(int)' removes index, the list must be in descending order
-        Collections.sort(deads, Collections.reverseOrder());
+        Collections.sort(deads, Collections.reverseOrder());    //might not be needed
 
         for (Integer nonEligible : deads) { //TODO: test when lastPres = lastChancellor = -1 
-            ids.remove(nonEligible);
+            if (nonEligible != -1)
+                ids.remove(nonEligible.intValue());
         }
 
         return ids;
@@ -382,9 +397,17 @@ public class GameController implements Runnable {
         _gameSpace.put("votes", votes, 0); 
         _gameSpace.put("startVote");
         _gameSpace.put("lock");
+
+        Object[] deads = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
+        int deadPlayers = (((ArrayList<Integer>) deads[1])).size();
         
-        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        //int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        Helper.printArray("dead players", ((ArrayList<Integer>) deads[1]).toArray());
+        printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
+
+        _gameSpace.getp(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
+        _gameSpace.getp(new ActualField("suggestion"), new FormalField(Integer.class));
 
         int numToPass = (playerCount-deadPlayers)/2+1;
         int votesChancellor = 0;
@@ -397,7 +420,7 @@ public class GameController implements Runnable {
             //set term-limit
             updateTermLimit(newChancellor);
             setChancellor(newChancellor);
-            printDebug("We wont the war!");
+            printDebug("We won the war!");
 
             return true;
         }
@@ -447,6 +470,8 @@ public class GameController implements Runnable {
                 throw new IllegalArgumentException("Player size is wrong");   //maybe refactor this to if statement above
         }
 
+        CreateAndUploadUserArray();
+
         Collections.shuffle(Arrays.asList(roles));
         _gameSpace.put("roles", roles, playerCount);
         printDebug("Assigned roles!");
@@ -473,6 +498,18 @@ public class GameController implements Runnable {
         lastChancellor = -1;
         printDebug("Assigned president and reset values");
 
+    }
+
+    private void CreateAndUploadUserArray() throws Exception {
+        User[] users = new User[playerCount];
+        for (int i = 0; i < playerCount; ++i) {
+            Object[] userTuple = _userSpace.query(new ActualField("join"), new FormalField(String.class), new ActualField(i));
+            users[i] = new User((String) userTuple[1], (int) userTuple[2]);
+        }
+
+        _gameSpace.getp(new ActualField("users"), new FormalField(User[].class));
+        _gameSpace.put("users", users);
+        printDebug("uploaded user array");
     }
 
     public void SetupGame() throws Exception {

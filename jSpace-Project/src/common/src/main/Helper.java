@@ -2,9 +2,6 @@ package common.src.main;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class Helper {
     public static void printArray(String name, Object[] array, boolean trim) {
@@ -23,7 +20,29 @@ public class Helper {
         printArray(name, array, false);
     }
 
-    public static ArrayList<Integer> cleanCast(Object obj){
+    public static int[] cleanCast(Object obj){
+        // ArrayList<Integer> result = new ArrayList<Integer>();
+        int[] result;
+        if (obj instanceof ArrayList<?>) {
+            ArrayList<?> al = (ArrayList<?>) obj;
+            result = new int[al.size()];
+            if (al.size() > 0) {
+                for (int i = 0; i < al.size(); i++) {
+                    Object o = al.get(i);
+                    if (o instanceof Integer) {
+                        int v = (int) (Integer) o;
+                        result[i] = v;
+                    }  
+                    else if (o instanceof Double) {
+                        int z = (int) ((Double) o).doubleValue();
+                        result[i] = z;
+                    }
+                }
+            }
+            return result;
+        }
+        return new int[1];
+
         // ArrayList<Integer> result = new ArrayList<Integer>();
         // if (obj instanceof ArrayList<?>) {
         //     ArrayList<?> al = (ArrayList<?>) obj;
@@ -34,17 +53,21 @@ public class Helper {
         //                 int v = (int) (Integer) o;
         //                 result.add(v);
         //             }  
+        //             else if (o instanceof Double) {
+        //                 int z = (int) ((Double) o).doubleValue();
+        //                 result.add(z);
+        //             }
         //         }
         //     }
         // }
-        // return result;//
+        // return result;
 
-        ArrayList<Integer> res = new ArrayList<Integer>();
-        for (Object obj1 : (ArrayList<?>) obj) {
-            res.add((int) (double) (Double) obj1);    
-        }
+        // ArrayList<Integer> res = new ArrayList<Integer>();
+        // for (Object obj1 : (ArrayList<?>) obj) {
+        //     res.add((int) (double) (Double) obj1);
+        // }
 
-        return res;
+        // return res;
     }
 
     public static int[] convertIntegers(ArrayList<Integer> integers)

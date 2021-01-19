@@ -20,10 +20,18 @@ public class Game {
             String[] choices = new String[eligibleCands.length];
             System.out.println(choices.length);
             // Integer[] eliCands = eligibleCands.toArray(new Integer[eligibleCands.size()]);
-            for (int cand : eligibleCands) {
+            // for (int cand : eligibleCands) {
+            //     try {
+            //         choices[cand] = (String) userSpace.query(new ActualField("join"),
+            //             new FormalField(String.class), new ActualField(cand))[1];
+            //     } catch (InterruptedException e) {
+            //         e.printStackTrace();}
+            // }
+
+            for (int i = 0; i < choices.length; ++i) {
                 try {
-                    choices[cand] = (String) userSpace.query(new ActualField("join"),
-                        new FormalField(String.class), new ActualField(cand))[1];
+                    choices[i] = (String) userSpace.query(new ActualField("join"),
+                        new FormalField(String.class), new ActualField(eligibleCands[i]))[1];
                 } catch (InterruptedException e) {
                     e.printStackTrace();}
             }

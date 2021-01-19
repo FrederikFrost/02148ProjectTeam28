@@ -63,6 +63,7 @@ public class GameController implements Runnable {
         // boolean enoughPlayers = false;
         // boolean gameStarted = false;
         playerCount = -1;
+        boolean gameStarted = true;
         try {
             // while (!gameStarted) {
             //     if (!enoughPlayers) {
@@ -96,7 +97,7 @@ public class GameController implements Runnable {
             printDebug("Starting game loop");
             boolean useOldPres = false;
             int electionTracker = 0;
-            while(true) {
+            while(gameStarted) {
                 /**
                  * Suggest chancellor
                  * Vote chancellor
@@ -243,6 +244,7 @@ public class GameController implements Runnable {
                 
                 //rotatePresident here - what about executive power?
             }
+            printDebug("Haha! I am stopped ;) ;)");
             
         } catch (Exception e) {
             //possibly put tuble in game space to let players know an error occured

@@ -313,6 +313,7 @@ public class SecretHitlerV2 implements Runnable {
                 }
                 _gameSpace.put(new ActualField("lock"));
             }
+            System.out.println("Haha! I am a weapon of mass destruction: Spaghetti code!");
         } catch (Exception e) {
             //TODO: Player was disconnected, handle this
             e.printStackTrace();

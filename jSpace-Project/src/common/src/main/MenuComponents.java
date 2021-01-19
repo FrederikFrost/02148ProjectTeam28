@@ -15,8 +15,10 @@ import common.src.main.Types.LegislativeType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,18 +48,30 @@ public class MenuComponents {
     static JEditorPane chatBox;
     static JScrollPane scrollPane;
     static JScrollBar scrollBar;
+    static boolean submitted;
 
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
     static ImageIcon fascistCardSelected;
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
+    static ImageIcon fascistBoardImage;
+    static ImageIcon liberalBoardImage;
+    static Board fascistBoard;
+    static Board liberalBoard;
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
         liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card.png")));
-        fascistCardSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
-        liberalCardSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
+        fascistCardSelected = new ImageIcon(
+                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
+        liberalCardSelected = new ImageIcon(
+                ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
+        fascistBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board.png")));
+        liberalBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-board.png")));
+        MenuComponents mc = new MenuComponents();
+        fascistBoard = mc.new Board(fascistBoardImage);
+        liberalBoard = mc.new Board(liberalBoardImage);
     }
 
     public static void menu() throws IOException {
@@ -156,6 +170,7 @@ public class MenuComponents {
     }
 
     public static ArrayList<LegislativeType> chooseCards (LegislativeType ... cards) throws IOException {
+        submitted = false;
         legiChoices = new ArrayList<LegislativeType>();
         JPanel choicePanel = new JPanel();
         choicePanel.setSize(300,400);
@@ -209,10 +224,11 @@ public class MenuComponents {
         }
         JButton submitButton = new JButton("Submit article choices!");
         submitButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 if (legiChoices.size() == cards.length-1) {
                     for (LegislativeType choice : legiChoices) System.out.println(choice);
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    submitted = true;
                 }
                 else System.out.println("You haven't picked the right amount of article cards!");
             }});
@@ -224,7 +240,30 @@ public class MenuComponents {
         choiceFrame.pack();
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
+        while (!submitted) {}
         return legiChoices;
+    }
+    public class Board extends JPanel {
+        public final Image image;
+        private static final long serialVersionUID = 1L;
+
+        public Board(ImageIcon io){
+            this.image = io.getImage();
+            this.setVisible(true);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(this.image, 0, 0, null);
+            }
+        }
+
+    public static void drawBoards(){
+        gamePanel.add(fascistBoard);
+        gamePanel.add(liberalBoard);
+        gamePanel.revalidate();
+
     }
 
     public static JPanel chatPanel() {
@@ -283,6 +322,7 @@ public class MenuComponents {
         mainPanel = new JPanel(new BorderLayout());
         JPanel chatPanel = chatPanel();
         gamePanel = gamePanel();
+        drawBoards();
         mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
         System.out.println("Chat panel width is: " + chatPanel.getWidth());
         System.out.println("Game panel width is: " + gamePanel.getWidth());
@@ -296,7 +336,7 @@ public class MenuComponents {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
-        chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
+        //chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
         // welcomeDialogue();
     }
 

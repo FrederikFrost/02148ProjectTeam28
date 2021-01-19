@@ -259,13 +259,14 @@ public class GameController implements Runnable {
         ActionType[] executivePowers = (ActionType[]) boards[3];
         ActionType res;
         int won = -1; // -1 = error, 0 = continue game, 1 = liberal won, 2 = facist won.
+        int index = -1;
         if (legislativeType == LegislativeType.Liberal) {
-            int index = GetEmptyIndex(liberalBoard);
+            index = GetEmptyIndex(liberalBoard);
             won = (index == 5 ? 1 : 0);
             liberalBoard[index] = LegislativeType.Liberal;
             res = ActionType.None;
         } else {
-            int index = GetEmptyIndex(fascistBoard);
+            index = GetEmptyIndex(fascistBoard);
             won = (index == 6 ? 2 : 0);
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
@@ -278,7 +279,8 @@ public class GameController implements Runnable {
         }
         _gameSpace.put("lock");
 
-        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed!");
+        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
+            + (index + 1) + " of these laws were passed! \n gameState is: " + won + "!");
 
         return res;
     }

@@ -177,6 +177,7 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         if (_user.Id() == president) {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
@@ -196,8 +197,10 @@ public class SecretHitlerV2 implements Runnable {
                             } else {
                                 //TODO: update board here
                             }
+                            readAndPassKeyWord("endLegislate", playerCount);
 
                         } else if (_user.Id() == chancellor) {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
@@ -227,9 +230,12 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.put("lock");
 
                             //TODO: update board here
+                            readAndPassKeyWord("endLegislate", playerCount);
 
                         } else {
+                            readAndPassKeyWord("startLegislate", playerCount);
                             //wait for board update - possibly send keyword here
+                            readAndPassKeyWord("endLegislate", playerCount);
                         }
                         System.out.println("L_session has happened");
                         break;

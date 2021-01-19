@@ -147,7 +147,9 @@ public class GameController implements Runnable {
 
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put("president", cards, veto); //maybe send veto bool here
+                    _gameSpace.put("startLegislate", 0);
                     _gameSpace.put("lock");
+
 
                     cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
                     if (1 < cards.size()) throw new IllegalArgumentException("Too many legislatives left"); 
@@ -160,6 +162,9 @@ public class GameController implements Runnable {
                         electionTracker++;
                         executivePower = ActionType.None;
                     }
+
+                    _gameSpace.put("endLegislate", 0);
+                    printDebug("Finished legislative session");
 
                     /** legislative session
                      * Get 3 cards, no preview

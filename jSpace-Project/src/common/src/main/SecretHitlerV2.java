@@ -330,7 +330,7 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        VoteType vote = Game.vote(suggestion);
+        VoteType vote = Game.vote(suggestion, electionIndex);
         // Put vote in the gameSpace tuple space.
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));

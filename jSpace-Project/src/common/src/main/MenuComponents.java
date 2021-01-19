@@ -56,8 +56,8 @@ public class MenuComponents {
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistBoardImage;
     static ImageIcon liberalBoardImage;
-    static JLabel fascistBoard;
-    static JLabel liberalBoard;
+    static JLabel fascistBoard = new JLabel();
+    static JLabel liberalBoard = new JLabel();
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));

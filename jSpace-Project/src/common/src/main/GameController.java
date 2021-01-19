@@ -260,6 +260,8 @@ public class GameController implements Runnable {
 		_gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.put("lock");
 
+        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed!");
+
         return res;
     }
 

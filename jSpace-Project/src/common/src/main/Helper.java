@@ -41,7 +41,7 @@ public class Helper {
 
         ArrayList<Integer> res = new ArrayList<Integer>();
         for (Object obj1 : (ArrayList<?>) obj) {
-            res.add((int) (double) (Double) obj1);    
+            res.add((int) (double) (Double) obj1);
         }
 
         return res;

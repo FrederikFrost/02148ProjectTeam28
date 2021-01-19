@@ -357,7 +357,8 @@ public class GameController implements Runnable {
         //     new FormalField(ArrayList.class))[1]);
 
         int pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        Object[] deadsTuple = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
+        ArrayList<Integer> deads = (ArrayList<Integer>) ((ArrayList<Integer>) deadsTuple[1]).clone();
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
             ids.add(i);
@@ -390,8 +391,13 @@ public class GameController implements Runnable {
         _gameSpace.put("votes", votes, 0); 
         _gameSpace.put("startVote");
         _gameSpace.put("lock");
+
+        Object[] deads = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
+        int deadPlayers = (((ArrayList<Integer>) deads[1])).size();
         
-        int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        //int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
+        Helper.printArray("dead players", ((ArrayList<Integer>) deads[1]).toArray());
+        printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 
         int numToPass = (playerCount-deadPlayers)/2+1;

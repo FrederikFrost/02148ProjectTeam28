@@ -339,12 +339,12 @@ public class SecretHitlerV2 implements Runnable {
         System.out.println("I voted with voterId: " + voterId);
         Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
-        electionDone = (voterId == (playerCount - deadPlayers - 1));
+        electionDone = (voterId == (playerCount - deadPlayers));
         while(!electionDone) {
             voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
             Game.updateVotes(votes);
-            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
+            electionDone = ((int) voteObj[2] == (playerCount - deadPlayers));
         }
         System.out.println("Election is done!");
     }

@@ -344,7 +344,7 @@ public class GameController implements Runnable {
         _gameSpace.put("lock");
         printDebug("Put suggest thingy");
         //TODO: should a lock be here aswell?
-        return (int) _gameSpace.get(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
+        return (int) _gameSpace.query(new ActualField("suggestion"), new FormalField(Integer.class)) [1];
     }
 
     public ArrayList<Integer> GetEligibleCandidates() throws Exception {

@@ -156,7 +156,7 @@ public class Helper {
     }   
 
     public static void appendAndSend(String msg){
-        //MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: "+ msg + "\n", true);
+        MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: "+ msg + "\n", true);
         Menu.game.sendMessage(msg, Menu.chatHandler, true);
     }
 }

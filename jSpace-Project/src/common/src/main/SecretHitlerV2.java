@@ -151,11 +151,12 @@ public class SecretHitlerV2 implements Runnable {
 
     public void run() {
         System.out.println("Hello mein friends!");
+        boolean gameStarted = true;
         try {
             int president;
             int chancellor; 
             int playerCount = -1;
-            while(true){
+            while(gameStarted){
                 //event getCard
                 //listen for command
                 //TODO: How do we make sure all have read the command, as it must be removed
@@ -176,9 +177,10 @@ public class SecretHitlerV2 implements Runnable {
                         //check locks in this switch
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
+                        readAndPassKeyWord("startLegislate", playerCount);
                         if (_user.Id() == president) {
                             System.out.println("Im president in legislative session!");
-                            readAndPassKeyWord("startLegislate", playerCount);
+                            
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             // ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
@@ -211,10 +213,7 @@ public class SecretHitlerV2 implements Runnable {
                             } else {
                                 //TODO: update board here
                             }
-                            readAndPassKeyWord("endLegislate", playerCount);
-
                         } else if (_user.Id() == chancellor) {
-                            readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
@@ -245,15 +244,13 @@ public class SecretHitlerV2 implements Runnable {
                             
                             _gameSpace.put("chancellorReturn", cards);
                             _gameSpace.put("lock");
-
-                            //TODO: update board here
-                            readAndPassKeyWord("endLegislate", playerCount);
-
-                        } else {
-                            readAndPassKeyWord("startLegislate", playerCount);
-                            //wait for board update - possibly send keyword here
-                            readAndPassKeyWord("endLegislate", playerCount);
                         }
+                        int gameState = readAndPassGameState(playerCount);
+                        if (gameState != 0) {
+                            gameStarted = false;
+                            MenuComponents.gameOverScreen(gameState);
+                        }
+                        readAndPassKeyWord("endLegislate", playerCount);
                         System.out.println("L_session has happened");
                         break;
                     case ExecutiveAction:
@@ -428,6 +425,15 @@ public class SecretHitlerV2 implements Runnable {
             _gameSpace.put(cmd, _user.Id()+1);
         }
         return cmd;
+    }
+
+    private int readAndPassGameState(int playerCount) throws Exception {
+        //TODO: maybe handle dead players
+        int gameState = (int) _gameSpace.get(new ActualField("gameState"), new FormalField(Integer.class), new ActualField(_user.Id()))[1];
+        if (_user.Id() != playerCount-1) {
+            _gameSpace.put("gameState", gameState, _user.Id()+1);
+        }
+        return gameState;
     }
 
     private void printDebug(String string) {

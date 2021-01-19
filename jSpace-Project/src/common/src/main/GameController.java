@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
+import javax.management.RuntimeErrorException;
+
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
@@ -247,17 +249,24 @@ public class GameController implements Runnable {
         LegislativeType[] fascistBoard = (LegislativeType[]) boards[2];
         ActionType[] executivePowers = (ActionType[]) boards[3];
         ActionType res;
+        int won = -1; // -1 = error, 0 = continue game, 1 = liberal won, 2 = facist won.
         if (legislativeType == LegislativeType.Liberal) {
             int index = GetEmptyIndex(liberalBoard);
+            won = (index == 5 ? 1 : 0);
             liberalBoard[index] = LegislativeType.Liberal;
             res = ActionType.None;
         } else {
             int index = GetEmptyIndex(fascistBoard);
+            won = (index == 6 ? 2 : 0);
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }
-
-		_gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        if (won == -1) {
+            throw new RuntimeException("Inconsistent game state, won int = -1");
+        } else {
+            _gameSpace.put("gameState", won, 0);
+        }
         _gameSpace.put("lock");
 
         Helper.appendAndSend("A " + legislativeType.toString() + " law was passed!");

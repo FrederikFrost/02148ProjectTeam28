@@ -613,6 +613,14 @@ public class MenuComponents {
             mainPanel.repaint();
         }
     };
+
+	public static void gameOverScreen(int gameState) {
+        if (gameState == 1) {
+            Helper.appendAndSend("Liberals won!");
+        } else {
+            Helper.appendAndSend("Facists won!");
+        }
+	}
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

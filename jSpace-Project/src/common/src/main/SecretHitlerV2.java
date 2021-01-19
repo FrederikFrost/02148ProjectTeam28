@@ -177,6 +177,7 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         if (_user.Id() == president) {
+                            System.out.println("Im president in legislative session!");
                             readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here

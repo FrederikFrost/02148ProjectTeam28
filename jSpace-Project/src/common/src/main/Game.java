@@ -2,7 +2,6 @@ package common.src.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.jspace.ActualField;
 import org.jspace.FormalField;
@@ -17,7 +16,6 @@ public class Game {
     
     public static int suggest(int[] eligibleCands) {
             // TODO: make suggestion pop-up list.
-            MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: The president is suggesting a chancellor\n", true);
             // String[] choices = new String[eligibleCands.size()];
             String[] choices = new String[eligibleCands.length];
             System.out.println(choices.length);
@@ -49,18 +47,16 @@ public class Game {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        //TODO: MAKE THIS SEND TO ALL PLAYERS
-        MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " +
-        sugChan + " was suggested chancellor by the president!"
-            + "Cast your vote now!\n", true);
-
+        Helper.appendAndSend(sugChan + " was suggested chancellor by the president! "
+        + "Cast your vote now!");
+        // MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " +
+        // sugChan + " was suggested chancellor by the president! "
+        //     + "Cast your vote now!\n", true);
         String vote = null;
         do {
             vote = MenuComponents.voteDialogueBox(sugChan);
         } while (vote == null);
-
-        //MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " + MenuComponents.username + " voted: " + vote, true);
+        Helper.appendAndSend(MenuComponents.username + " voted: " + vote);
 		return true;
 	}
 

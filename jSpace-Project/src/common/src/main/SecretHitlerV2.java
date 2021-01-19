@@ -32,6 +32,7 @@ public class SecretHitlerV2 implements Runnable {
 
     public static User _user;
     public static int nextUserId;
+    public static int electionIndex = 0;
     public static int chatId = 0;
     public static boolean running;
     public static GameController controller;
@@ -310,9 +311,14 @@ public class SecretHitlerV2 implements Runnable {
             ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             int[] eliCands = Helper.convertIntegers(eligibleCands);
 
+            if (electionIndex == 0) {
+                Helper.appendAndSend(_user.Name() + " is President in this round");
+                Helper.appendAndSend("<ChatBot>: The president is suggesting a chancellor");
+            }
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             Helper.printArray("Cands", eligibleCands.toArray());
             suggestion = Game.suggest(eliCands);
+            electionIndex++;
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");
@@ -348,15 +354,17 @@ public class SecretHitlerV2 implements Runnable {
             Game.updateVotes(votes);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
         }
+        electionIndex = 0;
     }
 
-    public void sendMessage(String msg, ChatHandler chatHandler) {
+    public void sendMessage(String msg, ChatHandler chatHandler, boolean chatBot) {
         try {
             Object[] newChat = _chatSpace.get(new ActualField("lock"), new FormalField(Integer.class));
             int newChatId = (int)newChat[1];
             chatHandler.incChatId();
-            _chatSpace.put(_user.Name(), msg, newChatId);
-            System.out.println(_user.Name() + ": " + msg);
+            String sender = chatBot ? "ChatBot" : _user.Name();
+            _chatSpace.put(sender, msg, newChatId);
+            System.out.println(sender + ": " + msg);
             newChatId++;
             _chatSpace.put("lock", newChatId);
         } catch (Exception e) {

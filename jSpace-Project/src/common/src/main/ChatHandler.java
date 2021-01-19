@@ -30,7 +30,8 @@ public class ChatHandler implements Runnable {
                 Object[] newChat = _chatSpace.queryp(new FormalField(String.class), new FormalField(String.class), new ActualField(chatId));
                 //Object[] leftUser = _userSpace.queryp(new ActualField("leave"), new FormalField(String.class), new FormalField(Integer.class));
                 if (newChat != null) {
-                    MenuComponents.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", false);
+                    boolean bold = newChat[0].equals("ChatBot") ? true : false;
+                    MenuComponents.append(_chatBox, "<" + newChat[0] + ">:  " + newChat[1] + "\n", bold);
                     System.out.println(newChat[0] + ": " + newChat[1]);
                     chatId++;
                 }

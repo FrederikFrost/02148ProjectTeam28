@@ -24,6 +24,8 @@ import java.io.IOException;
 public class MenuComponents {
     static String guiPath = "gui/";
     static String appName;
+    static String localtcp = "192.168.0.101";
+    static String port = "9001";
     static String tcp;
     static String username;
     static int numOfPlayers = 0;
@@ -113,12 +115,13 @@ public class MenuComponents {
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
             GridBagConstraints con = new GridBagConstraints();
+            con.anchor = GridBagConstraints.CENTER;
             //con.fill = GridBagConstraints.HORIZONTAL;
-            con.gridwidth = 2;
-            con.gridheight = 1;
-            con.weightx = 0.5;
-            con.gridx = 5;
-            con.gridy = 5;
+            con.gridwidth = 3;
+            con.gridheight = 0;
+            con.weightx = 0;
+            con.gridx = 0;
+            con.gridy = 0;
             gamePanel.add(startGameButton, con);
             gamePanel.revalidate();
             //gamePanel.repaint();
@@ -242,7 +245,7 @@ public class MenuComponents {
                     append(chatBox, "<ChatBot>: Use .help to retrieve list of commands\n", true);
                 } else {
                     append(chatBox, "<" + username + ">:  " + msg + "\n", false);
-                    Menu.game.sendMessage(msg, Menu.chatHandler);
+                    Menu.game.sendMessage(msg, Menu.chatHandler, false);
                 }
                 messageBox.requestFocusInWindow();
                 messageBox.setText("");
@@ -319,14 +322,14 @@ public class MenuComponents {
             username = name;
 
             // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
                     // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -357,14 +360,14 @@ public class MenuComponents {
             Menu.game.setUser(name);
 
             // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
                     // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.50.218:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);

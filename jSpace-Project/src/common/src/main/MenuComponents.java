@@ -48,7 +48,6 @@ public class MenuComponents {
     static JEditorPane chatBox;
     static JScrollPane scrollPane;
     static JScrollBar scrollBar;
-    static boolean submitted;
 
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
@@ -57,8 +56,8 @@ public class MenuComponents {
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistBoardImage;
     static ImageIcon liberalBoardImage;
-    static JLabel fascistBoard;
-    static JLabel liberalBoard;
+    static JLabel fascistBoard = new JLabel();
+    static JLabel liberalBoard = new JLabel();
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
@@ -176,7 +175,6 @@ public class MenuComponents {
     }
 
     public static void chooseCards(LegislativeType... cards) throws IOException {
-        submitted = false;
         legiChoices = new ArrayList<LegislativeType>();
         JPanel choicePanel = new JPanel();
         choicePanel.setSize(300, 400);
@@ -243,7 +241,6 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                    submitted = true;
                 }
                 else System.out.println("You haven't picked the right amount of article cards!");
             }});

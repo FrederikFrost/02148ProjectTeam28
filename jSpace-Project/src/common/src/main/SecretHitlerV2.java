@@ -191,7 +191,9 @@ public class SecretHitlerV2 implements Runnable {
                                 isString = "No";
                             }
                             System.out.println("The card was a string?: " + isString);
-                            cards = MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
+                            MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
+                            Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
+                            cards = Helper.castLegislate(legiChoices[1]);
                             System.out.println("#I have chosen cards!");
                             //Game.ChooseLegislate(cards);
                             boolean veto = (boolean) cardsTuple[2];
@@ -218,7 +220,9 @@ public class SecretHitlerV2 implements Runnable {
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
-                            ArrayList<LegislativeType> tempCards = MenuComponents.chooseCards(cards.get(0), cards.get(1));
+                            MenuComponents.chooseCards(cards.get(0), cards.get(1));
+                            Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
+                            ArrayList<LegislativeType> tempCards = Helper.castLegislate(legiChoices[1]);
                             //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
                             /**
                              * if/else on veto

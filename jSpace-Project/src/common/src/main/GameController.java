@@ -151,7 +151,7 @@ public class GameController implements Runnable {
                     _gameSpace.put("lock");
 
 
-                    cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
+                    cards = Helper.castLegislate(_gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1]);
                     if (1 < cards.size()) throw new IllegalArgumentException("Too many legislatives left"); 
 
                     ActionType executivePower;

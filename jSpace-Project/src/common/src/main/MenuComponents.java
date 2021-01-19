@@ -11,6 +11,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import common.src.main.Types.ErrorType;
+import common.src.main.Types.LegislativeType;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -20,9 +22,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MenuComponents {
-    static String guiPath = "gui/";
     static String appName;
     static String localtcp = "192.168.0.101";
     static String port = "9001";
@@ -37,13 +39,26 @@ public class MenuComponents {
     static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
-    static JButton[] buttons = new JButton[4];
+    static JButton[] buttons = new JButton[10];
     static JButton startGameButton;
     static JButton sendMessage;
     static JTextField messageBox;
     static JEditorPane chatBox;
     static JScrollPane scrollPane;
     static JScrollBar scrollBar;
+
+    static ArrayList<LegislativeType> legiChoices;
+    static ImageIcon fascistCard;
+    static ImageIcon fascistCardSelected;
+    static ImageIcon liberalCard;
+    static ImageIcon liberalCardSelected;
+
+    public static void initializeCards() throws IOException {
+        fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
+        liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card.png")));
+        fascistCardSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
+        liberalCardSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
+    }
 
     public static void menu() throws IOException {
 
@@ -53,9 +68,9 @@ public class MenuComponents {
         createLabel(2, "label_group-name.png");
 
         // Buttons
-        JButton createGameButton = createButton(0, "button_create.png", "button_create_hover.png");
-        JButton joinGameButton = createButton(1, "button_join.png", "button_join_hover.png");
-        JButton exitButton = createButton(2, "button_exit.png", "button_exit_hover.png");
+        JButton createGameButton = createButton(0, "button_create.png", "button_create_hover.png", null);
+        JButton joinGameButton = createButton(1, "button_join.png", "button_join_hover.png", null);
+        JButton exitButton = createButton(2, "button_exit.png", "button_exit_hover.png", null);
 
         // Panel settings
         menuPanel.setBackground(Color.WHITE);
@@ -68,7 +83,7 @@ public class MenuComponents {
             menuPanel.add(buttons[i]);
             menuPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
-        startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png");
+        startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png", null);
         // Frame
         frame.setBackground(Color.WHITE);
         frame.add(menuPanel);
@@ -85,19 +100,21 @@ public class MenuComponents {
     }
 
     // Method for creating buttons
-    public static JButton createButton(int index, String path, String hoverPath) throws IOException {
-        JButton b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+    public static JButton createButton(int index, String path, String hoverPath, ImageIcon io) throws IOException {
+        JButton b;
+        if (path!=null) b = new JButton(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + path))));
+        else b = new JButton(io);
         b.setBorder(BorderFactory.createEmptyBorder());
         b.setContentAreaFilled(false);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
-        b.setRolloverIcon(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + hoverPath))));
-        buttons[index] = b;
+        if (hoverPath != null) b.setRolloverIcon(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/buttons/" + hoverPath))));
+        if (index != -1) buttons[index] = b;
         return b;
     }
 
     // Method for creating labels
     public static void createLabel(int index, String path) throws IOException {
-        JLabel l = new JLabel(new ImageIcon(ImageIO.read(Menu.class.getResource(guiPath + path))));
+        JLabel l = new JLabel(new ImageIcon(ImageIO.read(Menu.class.getResource("gui/labels/" + path))));
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
@@ -136,6 +153,78 @@ public class MenuComponents {
             mainPanel.revalidate();
             mainPanel.repaint();
         }
+    }
+
+    public static ArrayList<LegislativeType> chooseCards (LegislativeType ... cards) throws IOException {
+        legiChoices = new ArrayList<LegislativeType>();
+        JPanel choicePanel = new JPanel();
+        choicePanel.setSize(300,400);
+        choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
+        JFrame choiceFrame = new JFrame();
+        choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+        if (cards.length == 3) choiceFrame.setTitle("Choose 2 out of 3 article cards");
+        else choiceFrame.setTitle("Choose 1 out of 2 article cards");
+        System.out.println(cards.length);
+        for (LegislativeType card : cards){
+            ImageIcon io, ios;
+            if (card == LegislativeType.Fascist) {
+                io = fascistCard;
+                ios = fascistCardSelected;
+            }
+            else  {
+                io = liberalCard;
+                ios = liberalCardSelected;
+            }
+            JButton cardChoice = createButton(-1, null, null, io);
+            choicePanel.add(cardChoice);
+            choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            cardChoice.addActionListener(new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    boolean isSelected = cardChoice.getIcon().equals(ios);
+                    boolean valid = false;
+                    if (legiChoices.size() < cards.length-1 && !isSelected ||
+                        legiChoices.size() >= 1 && isSelected) {
+                        cardChoice.setIcon(isSelected ? io : ios);
+                        cardChoice.invalidate(); // might not be needed
+                        cardChoice.repaint();
+                        isSelected = !isSelected;
+                        valid = true;
+                    }
+                    if (valid){
+                        if (isSelected) {
+                            if (cardChoice.getIcon().equals(fascistCard) || 
+                                cardChoice.getIcon().equals(fascistCardSelected))
+                                    legiChoices.add(LegislativeType.Fascist);
+                            else legiChoices.add(LegislativeType.Liberal);
+                        }
+                        else {
+                            if (cardChoice.getIcon().equals(fascistCard) || 
+                            cardChoice.getIcon().equals(fascistCardSelected))
+                                legiChoices.remove(LegislativeType.Fascist);
+                            else legiChoices.remove(LegislativeType.Liberal);
+                        }
+                    System.out.println("Legichoices size = " +legiChoices.size());
+                    }
+            }});
+        }
+        JButton submitButton = new JButton("Submit article choices!");
+        submitButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if (legiChoices.size() == cards.length-1) {
+                    for (LegislativeType choice : legiChoices) System.out.println(choice);
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                }
+                else System.out.println("You haven't picked the right amount of article cards!");
+            }});
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        choiceFrame.add(choicePanel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        choiceFrame.add(submitButton, BorderLayout.CENTER);
+        choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        choiceFrame.pack();
+        choiceFrame.setLocationRelativeTo(null);
+        choiceFrame.setVisible(true);
+        return legiChoices;
     }
 
     public static JPanel chatPanel() {
@@ -189,9 +278,9 @@ public class MenuComponents {
         return gamePanel;
     }
 
-    public static void gameFrame() {
+    public static void gameFrame() throws IOException {
+        initializeCards();
         mainPanel = new JPanel(new BorderLayout());
-        
         JPanel chatPanel = chatPanel();
         gamePanel = gamePanel();
         mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
@@ -207,6 +296,7 @@ public class MenuComponents {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
+        chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
         // welcomeDialogue();
     }
 
@@ -339,7 +429,12 @@ public class MenuComponents {
             Menu.game.gameCreate(IP_Port);
             Menu.game.chatSetup();
             
-            gameFrame();
+            try {
+                gameFrame();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             Menu.chatHandler = new ChatHandler(Menu.game.getUserSpace(), Menu.game.getChatSpace(),
                     Menu.game.getChatId(), Menu.game.getUser().Id(), chatBox);
             new Thread(Menu.chatHandler).start();
@@ -408,7 +503,12 @@ public class MenuComponents {
             Menu.game.chatSetup();
 
             newFrame.setTitle("Secret Hitler  |  " + hostName + "'s Room  |  tcp: " + tcp);
-            gameFrame();
+            try {
+                gameFrame();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             Menu.chatHandler = new ChatHandler(Menu.game.getUserSpace(), Menu.game.getChatSpace(),
                     Menu.game.getChatId(), Menu.game.getUser().Id(), chatBox);
             new Thread(Menu.chatHandler).start();

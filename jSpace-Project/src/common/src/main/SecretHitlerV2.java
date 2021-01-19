@@ -169,7 +169,7 @@ public class SecretHitlerV2 implements Runnable {
                 printDebug("Read command");
                 switch (cmd) {
                     case Election:
-                        System.out.println("Handler starting election for :" + _user.Id());
+                        System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
                         election(playerCount);
                         break;
                     case LegislativeSession:

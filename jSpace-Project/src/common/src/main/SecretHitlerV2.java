@@ -330,15 +330,14 @@ public class SecretHitlerV2 implements Runnable {
         
         int suggestion = -1;
         if (_user.Id() == pres) {
-            ArrayList<Integer> eligibleCands = (ArrayList<Integer>) ((ArrayList<Integer>) newElect[2]).clone();
+            // ArrayList<Integer> eligibleCands = (ArrayList<Integer>) ((ArrayList<Integer>) newElect[2]).clone();
             //ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
-            int[] eliCands = Helper.cleanCast(newElect[2]);
-
+            int[] eliCands = Helper.castIntArray(newElect[2]);
             
             Helper.appendAndSend(_user.Name() + " is President in this round");
             Helper.appendAndSend("<ChatBot>: The president is suggesting a chancellor");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
-            Helper.printArray("Cands", eligibleCands.toArray());
+            // Helper.printArray("Cands", eligibleCands.toArray());
             suggestion = Game.suggest(eliCands);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);

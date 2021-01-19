@@ -182,9 +182,12 @@ public class GameController implements Runnable {
                     //TODO: put executetive power up in gamespace
                     switch (executivePower) {
                         case Peek:
+                            printDebug("Controller started peeking!");
                             cards = GetCardsFromDeck(3, true);
+                            printDebug("Controller got 3 cards!");
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
+                            _gameSpace.put("lock");
                             // _gameSpace.query("")
                             //get 3 cards on top
                             //pass to president

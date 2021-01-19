@@ -124,6 +124,7 @@ public class GameController implements Runnable {
                     elected = Election(suggestedChancellor);
                     electionTracker++;
                 }
+
                 ArrayList<LegislativeType> cards;
                 if (!elected) {
                     electionTracker = 0;
@@ -136,6 +137,10 @@ public class GameController implements Runnable {
                     //executive power is ignored
                     UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
                 } else {
+                    _gameSpace.get(new ActualField("lock"));
+                    _gameSpace.put(CommandType.LegislativeSession, 0);
+                    _gameSpace.put("lock");
+                    
                     electionTracker = 0;
                     //check win
                     cards = GetCardsFromDeck(3);
@@ -350,6 +355,8 @@ public class GameController implements Runnable {
     public ArrayList<Integer> GetEligibleCandidates() throws Exception {
         // ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"),
         //     new FormalField(ArrayList.class))[1]);
+
+        int pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
         ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
@@ -359,6 +366,7 @@ public class GameController implements Runnable {
         //gather all none-eligible in list
         if (!deads.contains(lastPres)) deads.add(lastPres);
         if (!deads.contains(lastChancellor)) deads.add(lastChancellor);
+        if (!deads.contains(pres)) deads.add(pres);
 
         //as 'list.remove(int)' removes index, the list must be in descending order
         Collections.sort(deads, Collections.reverseOrder());

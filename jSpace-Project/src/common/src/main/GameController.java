@@ -138,7 +138,10 @@ public class GameController implements Runnable {
                     ResetTermLimits();
                     //executive power is ignored
                     UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+                    //win check
+                    useOldPres = rotatePresident(useOldPres);
                 } else {
+                    //win check (chancellor has been chosen)
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
                     _gameSpace.put("lock");
@@ -160,6 +163,7 @@ public class GameController implements Runnable {
                     if (cards.size() == 1) {
                         LegislativeType finalCard = cards.get(0); //take the chosen card
                         executivePower = UpdateBoards(finalCard);
+                        //win check
                     } else {    //in case of veto
                         electionTracker++;
                         executivePower = ActionType.None;
@@ -210,7 +214,7 @@ public class GameController implements Runnable {
                              *  TODO should prevent normal election of president somehow  
                              * 
                              */
-                            
+                            // useOldPres = rotatePresident(useOldPres, newPres);
                             break;
                             
                         case Veto:
@@ -225,6 +229,8 @@ public class GameController implements Runnable {
 
                             break;
                     }
+
+                    if (executivePower != ActionType.S_Election) useOldPres = rotatePresident(useOldPres);
                     //executive power is in else statement as this is the case where it is NOT ignored
                     /** executive power
                      * check for executive power
@@ -344,7 +350,7 @@ public class GameController implements Runnable {
         // }
 
         // ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
         int newPres = pres;
         do {
             newPres = (newPres+1) % playerCount;
@@ -374,7 +380,7 @@ public class GameController implements Runnable {
 
         int pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
         Object[] deadsTuple = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
-        ArrayList<Integer> deads = (ArrayList<Integer>) ((ArrayList<Integer>) deadsTuple[1]).clone();
+        ArrayList<Integer> deads = Helper.castIntArrayList(deadsTuple[1]);
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
             ids.add(i);
@@ -410,10 +416,10 @@ public class GameController implements Runnable {
         _gameSpace.put("lock");
 
         Object[] deads = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
-        int deadPlayers = (((ArrayList<Integer>) deads[1])).size();
+        int deadPlayers = (Helper.castIntArrayList(deads[1])).size();
         
         //int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
-        Helper.printArray("dead players", ((ArrayList<Integer>) deads[1]).toArray());
+        Helper.printArray("dead players", (Helper.castIntArrayList(deads[1])).toArray());
         printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 

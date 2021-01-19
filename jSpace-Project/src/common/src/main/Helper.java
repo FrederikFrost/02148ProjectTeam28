@@ -22,7 +22,29 @@ public class Helper {
         printArray(name, array, false);
     }
 
-    public static int[] cleanCast(Object obj){
+    public static ArrayList<Integer> castIntArrayList(Object obj) {
+        
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        if (obj instanceof ArrayList<?>) {
+            ArrayList<?> al = (ArrayList<?>) obj;
+            if (al.size() > 0) {
+                for (int i = 0; i < al.size(); i++) {
+                    Object o = al.get(i);
+                    if (o instanceof Integer) {
+                        int v = ((Integer) o).intValue();
+                        result.add(v);
+                    }  
+                    else if (o instanceof Double) {
+                        int z = (int) ((Double) o).doubleValue();
+                        result.add(z);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static int[] castIntArray(Object obj){
         // ArrayList<Integer> result = new ArrayList<Integer>();
         int[] result;
         if (obj instanceof ArrayList<?>) {

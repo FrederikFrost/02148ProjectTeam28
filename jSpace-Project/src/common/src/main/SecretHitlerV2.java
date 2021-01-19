@@ -181,7 +181,8 @@ public class SecretHitlerV2 implements Runnable {
                             readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
-                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            // ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             String isString;
                             Object card1 = cards.get(0);
                             if ( card1 instanceof String) {
@@ -191,6 +192,7 @@ public class SecretHitlerV2 implements Runnable {
                             }
                             System.out.println("The card was a string?: " + isString);
                             cards = MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
+                            System.out.println("#I have chosen cards!");
                             //Game.ChooseLegislate(cards);
                             boolean veto = (boolean) cardsTuple[2];
                             _gameSpace.put("chancellor", cards, veto);
@@ -214,7 +216,7 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
-                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
                             ArrayList<LegislativeType> tempCards = MenuComponents.chooseCards(cards.get(0), cards.get(1));
                             //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards

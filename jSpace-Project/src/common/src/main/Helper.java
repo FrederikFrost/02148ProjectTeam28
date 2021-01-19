@@ -32,7 +32,7 @@ public class Helper {
                 for (int i = 0; i < al.size(); i++) {
                     Object o = al.get(i);
                     if (o instanceof Integer) {
-                        int v = (int) (Integer) o;
+                        int v = ((Integer) o).intValue();
                         result[i] = v;
                     }  
                     else if (o instanceof Double) {
@@ -72,7 +72,7 @@ public class Helper {
         // return res;
     }
 
-    public ArrayList<LegislativeType> castLegislate(Object obj) {
+    public static ArrayList<LegislativeType> castLegislate(Object obj) {
         ArrayList<LegislativeType> result = new ArrayList<LegislativeType>();
         if (obj instanceof ArrayList<?>) {
             ArrayList<?> al = (ArrayList<?>) obj;

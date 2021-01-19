@@ -402,6 +402,7 @@ public class SecretHitlerV2 implements Runnable {
         if (_user.Id() != playerCount-1) {
             _gameSpace.put(string, _user.Id()+1);
         }
+        System.out.println("Read keyword:" + string);
     }
 
     private CommandType readAndPassCommand(int playerCount) throws Exception {

@@ -113,7 +113,7 @@ public class SecretHitlerV2 implements Runnable {
             players = _userSpace.queryAll(new ActualField("join"), new FormalField(String.class), new FormalField(Integer.class));
             for (Object[] player : players) if (player[1].equals(_user.Name())) {returnTriple[0] = ErrorType.NameTaken; return returnTriple;}
             if (players.size() == 10) {
-                returnTriple[0] = ErrorType.GameFull;;
+                returnTriple[0] = ErrorType.GameFull;
                 return returnTriple;
             }
             returnTriple[1] = players.size();
@@ -136,8 +136,7 @@ public class SecretHitlerV2 implements Runnable {
 
     }
 
-    public void run() {
-        System.out.println("Hello mein friends!");
+    public void chatSetup() {
         // Keep sending whatever the user types
         try {
             Object[] user = _userSpace.get(new ActualField("lock"), new FormalField(Integer.class));
@@ -152,6 +151,10 @@ public class SecretHitlerV2 implements Runnable {
             e.printStackTrace();
             //TODO: handle exception
         }
+    }
+
+    public void run() {
+        System.out.println("Hello mein friends!");
         try {
             int president;
             int chancellor; 

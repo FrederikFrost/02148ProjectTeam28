@@ -313,7 +313,8 @@ public class SecretHitlerV2 implements Runnable {
         
         int suggestion = -1;
         if (_user.Id() == pres) {
-            ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
+            ArrayList<Integer> eligibleCands = (ArrayList<Integer>) ((ArrayList<Integer>) newElect[2]).clone();
+            //ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             int[] eliCands = Helper.convertIntegers(eligibleCands);
 
             

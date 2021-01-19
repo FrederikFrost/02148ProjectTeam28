@@ -351,7 +351,6 @@ public class SecretHitlerV2 implements Runnable {
             voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
             Game.updateVotes(votes);
-            System.out.println("number passed: " + (int) voteObj[2]);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers));
         }
         System.out.println("Election is done!");

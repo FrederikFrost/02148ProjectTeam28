@@ -145,7 +145,7 @@ public class GameController implements Runnable {
                     _gameSpace.put("lock");
 
                     cards = (ArrayList<LegislativeType>) _gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1];
-                    if (1 < cards.size()) throw new IllegalArgumentException("To many legislatives left"); 
+                    if (1 < cards.size()) throw new IllegalArgumentException("Too many legislatives left"); 
 
                     ActionType executivePower;
                     if (cards.size() == 1) {
@@ -397,7 +397,7 @@ public class GameController implements Runnable {
             //set term-limit
             updateTermLimit(newChancellor);
             setChancellor(newChancellor);
-            printDebug("We wont the war!");
+            printDebug("We won the war!");
 
             return true;
         }

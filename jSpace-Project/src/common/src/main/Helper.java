@@ -3,6 +3,8 @@ package common.src.main;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import common.src.main.Types.LegislativeType;
+
 public class Helper {
     public static void printArray(String name, Object[] array, boolean trim) {
         System.out.print(name.equals("")? "" : name + ": ");
@@ -30,7 +32,7 @@ public class Helper {
                 for (int i = 0; i < al.size(); i++) {
                     Object o = al.get(i);
                     if (o instanceof Integer) {
-                        int v = (int) (Integer) o;
+                        int v = ((Integer) o).intValue();
                         result[i] = v;
                     }  
                     else if (o instanceof Double) {
@@ -68,6 +70,32 @@ public class Helper {
         // }
 
         // return res;
+    }
+
+    public static ArrayList<LegislativeType> castLegislate(Object obj) {
+        ArrayList<LegislativeType> result = new ArrayList<LegislativeType>();
+        if (obj instanceof ArrayList<?>) {
+            ArrayList<?> al = (ArrayList<?>) obj;
+            result = new ArrayList<LegislativeType>(al.size());
+            if (al.size() > 0) {
+                for (int i = 0; i < al.size(); i++) {
+                    Object o = al.get(i);
+                    if (o instanceof LegislativeType) {
+                        result.add((LegislativeType) o);
+                    }  
+                    else if (o instanceof String) {
+                        System.out.println("### Helper sees LegiType as string!");
+                        String str = (String) o;
+                        if (str.equals("Fascist")) result.add(LegislativeType.Fascist);
+                        else if (str.equals("Liberal")) result.add(LegislativeType.Liberal);
+                        else System.out.println("String is " + str);
+                    }
+                }
+            }
+            return result;
+            
+        }
+        return null;
     }
 
     public static int[] convertIntegers(ArrayList<Integer> integers)
@@ -128,7 +156,7 @@ public class Helper {
     }   
 
     public static void appendAndSend(String msg){
-        MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: "+ msg + "\n", true);
+        //MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: "+ msg + "\n", true);
         Menu.game.sendMessage(msg, Menu.chatHandler, true);
     }
 }

@@ -336,7 +336,11 @@ public class MenuComponents {
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
         addNumOfPlayers();
+<<<<<<< HEAD
         //chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
+=======
+        // chooseCards(LegislativeType.Fascist,LegislativeType.Liberal);
+>>>>>>> c8e0b001ddcc2f4d57aa8a74fe13debd10a4a269
         // welcomeDialogue();
     }
 

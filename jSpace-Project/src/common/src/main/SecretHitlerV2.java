@@ -177,11 +177,23 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         if (_user.Id() == president) {
+                            System.out.println("Im president in legislative session!");
                             readAndPassKeyWord("startLegislate", playerCount);
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
-                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
-                            cards = Game.ChooseLegislate(cards);
+                            // ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
+                            String isString;
+                            Object card1 = cards.get(0);
+                            if ( card1 instanceof String) {
+                                isString = "Yes";
+                            } else {
+                                isString = "No";
+                            }
+                            System.out.println("The card was a string?: " + isString);
+                            cards = MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
+                            System.out.println("#I have chosen cards!");
+                            //Game.ChooseLegislate(cards);
                             boolean veto = (boolean) cardsTuple[2];
                             _gameSpace.put("chancellor", cards, veto);
                             _gameSpace.put("lock");
@@ -204,9 +216,10 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.query(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
-                            ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
+                            ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
-                            ArrayList<LegislativeType> tempCards = Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
+                            ArrayList<LegislativeType> tempCards = MenuComponents.chooseCards(cards.get(0), cards.get(1));
+                            //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
                             /**
                              * if/else on veto
                              * send veto to pres
@@ -401,6 +414,7 @@ public class SecretHitlerV2 implements Runnable {
         if (_user.Id() != playerCount-1) {
             _gameSpace.put(string, _user.Id()+1);
         }
+        System.out.println("Read keyword:" + string);
     }
 
     private CommandType readAndPassCommand(int playerCount) throws Exception {

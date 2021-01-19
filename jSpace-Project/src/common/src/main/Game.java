@@ -37,7 +37,7 @@ public class Game {
 		return suggestion;
 	}
 
-	public static Boolean vote(int suggestion) {
+	public static VoteType vote(int suggestion) {
         // TODO: Make vote pop-up.
         String sugChan = "";
         try {
@@ -57,7 +57,11 @@ public class Game {
             vote = MenuComponents.voteDialogueBox(sugChan);
         } while (vote == null);
         Helper.appendAndSend(MenuComponents.username + " voted: " + vote);
-		return true;
+        if (vote.equals("Ja")) {
+            return VoteType.Ja;
+        } else {
+            return VoteType.Nein;
+        }
 	}
 
 	public static void updateVotes(VoteType[] votes) {

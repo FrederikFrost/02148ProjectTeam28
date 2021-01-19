@@ -330,24 +330,19 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        Boolean Boolvote = Game.vote(suggestion);
-        VoteType vote;
-        if (Boolvote) {
-            vote = VoteType.Ja;
-        } else {
-            vote = VoteType.Nein;
-        }
+        VoteType vote = Game.vote(suggestion);
         // Put vote in the gameSpace tuple space.
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));
         _gameSpace.get(new ActualField("lock"));
         // BIG CHANCE OF ERROR HERE! What the fuck is an Array.class?
-        Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(Array.class), new FormalField(Integer.class));
+        Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
         VoteType[] votes = (VoteType[]) voteObj[1];
         int voterId = (int) voteObj[2] + 1;
         votes[_user.Id()] = vote;
         _gameSpace.put("votes", votes, voterId);
         _gameSpace.put("lock");
+        System.out.println("I voted with voterId: " + voterId);
         Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
         electionDone = (voterId == (playerCount - deadPlayers - 1));
@@ -357,6 +352,7 @@ public class SecretHitlerV2 implements Runnable {
             Game.updateVotes(votes);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers - 1));
         }
+        System.out.println("Election is done!");
         electionIndex = 0;
     }
 

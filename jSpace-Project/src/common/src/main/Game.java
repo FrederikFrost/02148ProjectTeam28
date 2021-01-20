@@ -15,7 +15,7 @@ public class Game {
     static Space gameSpace = Menu.game.getGameSpace();
 
     
-    public static int suggest(int[] eligibleCands) throws InterruptedException {
+    public static int suggest(int[] eligibleCands, String suggestMsg) throws InterruptedException {
         // TODO: make suggestion pop-up list.
         String[] choices = new String[eligibleCands.length];
         User[] users = (User[]) gameSpace.query(new ActualField("users"), new FormalField(User[].class))[1];
@@ -25,9 +25,9 @@ public class Game {
         }
         
         String sugChan;
-        sugChan = MenuComponents.suggestDialogueBox(choices);
+        sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
         if (sugChan == null) {
-            do sugChan = MenuComponents.suggestDialogueBox(choices);
+            do sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
             while (sugChan == null);
         }
         int suggestion = -1;

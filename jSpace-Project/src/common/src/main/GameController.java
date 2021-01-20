@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
-import javax.management.RuntimeErrorException;
-
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;
@@ -179,7 +177,15 @@ public class GameController implements Runnable {
                      * veto logic should be here
                      * else update board with returned legislate
                     */
-                    _gameSpace.put("executivePower", executivePower);
+
+                    _gameSpace.get(new ActualField("lock"));
+                    _gameSpace.put(CommandType.ExecutiveAction, 0);
+                    _gameSpace.put("lock");
+
+                    _gameSpace.put("executivePower", executivePower, 0);
+                    ArrayList<Integer> cands = GetAllCands();
+                    _gameSpace.put("allCands", cands);
+
                     //TODO: put executetive power up in gamespace
                     switch (executivePower) {
                         case Peek:
@@ -203,12 +209,17 @@ public class GameController implements Runnable {
                              * pass list to president
                              * president looks in 'roles' tuple for info
                              */
+                            
+
+                            // _gameSpace.query(new ActualField("finishInvestigate"));
                             break;
                         case Kill:
                             /** a player is killed
                              *      - pass list to president
                              *      - president return person to kill
                              */
+
+
                             break;
                             
                         case S_Election:
@@ -218,7 +229,10 @@ public class GameController implements Runnable {
                              *  TODO should prevent normal election of president somehow  
                              * 
                              */
+
                             // useOldPres = rotatePresident(useOldPres, newPres);
+
+
                             break;
                             
                         case Veto:
@@ -227,6 +241,7 @@ public class GameController implements Runnable {
                              *      - president return person to kill
                              * veto = true
                             */
+
                             veto = true;
                             break;
                         default:    //default to None?
@@ -250,6 +265,16 @@ public class GameController implements Runnable {
             //possibly put tuble in game space to let players know an error occured
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<Integer> GetAllCands() throws Exception, InterruptedException {
+        int president = getPresident();
+        ArrayList<Integer> cands = new ArrayList<>();
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        for (int i = 0; i < playerCount; ++i) {
+            if (!deads.contains((Integer) i) && i != president) cands.add(i);
+        }
+        return cands;
     }
 
     public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception { // TODO make test

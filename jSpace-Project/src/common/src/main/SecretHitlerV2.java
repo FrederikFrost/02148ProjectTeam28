@@ -2,7 +2,6 @@ package common.src.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -257,53 +256,66 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         
-                        ActionType executivePower = (ActionType) _gameSpace.query(new ActualField("executivePower"), new FormalField(ActionType.class))[1];
-
-                        switch (executivePower) {
-                            case Peek:
-                                
-                                //get 3 cards on top
-                                //pass to president
-                                break;
-                            case Investigate:
-                                /**
-                                 * pass list to president
-                                 * president return person
-                                 * controller return info
-                                 * 
-                                 * alternatively:
-                                 * pass list to president
-                                 * president looks in 'roles' tuple for info
-                                 */
-                                break;
-                            case Kill:
-                                /** a player is killed
-                                 *      - pass list to president
-                                 *      - president return person to kill
-                                 */
-                                break;
-                                
-                            case S_Election:
-                                /** pass list to president
-                                 *  president returns person
-                                 *  use rotatePresident to choose new president
-                                 *  TODO should prevent normal election of president somehow  
-                                 * 
-                                 */
-                                
-                                break;
-                                
-                            case Veto:
-                                /** a player is killed
-                                 *      - pass list to president
-                                 *      - president return person to kill
-                                 * veto = true
-                                */
-                                
-                                break;
-                            default:    //default to None?
-    
-                                break;
+                        // ActionType executivePower = (ActionType) _gameSpace.query(new ActualField("executivePower"), new FormalField(ActionType.class))[1];
+                        ActionType executivePower = readAndPassAction(playerCount); //maybe only pass to president
+                        
+                        if (president == _user.Id()) {
+                            int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class)));
+                            int choice = -1;
+                            String suggestMsg = "";
+                            switch (executivePower) {
+                                case Peek:
+                                    
+                                    //get 3 cards on top
+                                    //pass to president
+                                    break;
+                                case Investigate:
+                                    /**
+                                     * pass list to president
+                                     * president return person
+                                     * controller return info
+                                     * 
+                                     * alternatively:
+                                     * pass list to president
+                                     * president looks in 'roles' tuple for info
+                                     */
+                                    suggestMsg = "Who do you want to investigate?";
+                                    choice = Game.suggest(cands, suggestMsg);
+                                    
+                                    break;
+                                case Kill:
+                                    /** a player is killed
+                                     *      - pass list to president
+                                     *      - president return person to kill
+                                     */
+                                    suggestMsg = "Who do you want to kill?";
+                                    choice = Game.suggest(cands, suggestMsg);
+                                    break;
+                                    
+                                case S_Election:
+                                    /** pass list to president
+                                     *  president returns person
+                                     *  use rotatePresident to choose new president
+                                     *  TODO should prevent normal election of president somehow  
+                                     * 
+                                     */
+                                    suggestMsg = "Who do you want to elect as the next president?";
+                                    choice = Game.suggest(cands, suggestMsg);
+                                    break;
+                                    
+                                case Veto:
+                                    /** a player is killed
+                                     *      - pass list to president
+                                     *      - president return person to kill
+                                     * veto = true
+                                    */
+                                    suggestMsg = "Who do you want to kill?";
+                                    choice = Game.suggest(cands, suggestMsg);
+                                    break;
+                                default:    //default to None?
+        
+                                    break;
+                            }
                         }
                         //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
@@ -311,7 +323,8 @@ public class SecretHitlerV2 implements Runnable {
                     default:
                         break;
                 }
-                _gameSpace.put(new ActualField("lock"));
+                _gameSpace.put(new ActualField("lock")); //TODO: determine why this lock is not breaking the game
+                //maybe OUTCOMMENT
             }
             System.out.println("Haha! I am a weapon of mass destruction: Spaghetti code!");
         } catch (Exception e) {
@@ -336,7 +349,8 @@ public class SecretHitlerV2 implements Runnable {
             Helper.appendAndSend("The president is suggesting a chancellor");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             // Helper.printArray("Cands", eligibleCands.toArray());
-            suggestion = Game.suggest(eliCands);
+            String suggestMsg = "Who should be suggested chancellor?";
+            suggestion = Game.suggest(eliCands, suggestMsg);
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");
@@ -425,6 +439,15 @@ public class SecretHitlerV2 implements Runnable {
             _gameSpace.put(cmd, _user.Id()+1);
         }
         return cmd;
+    }
+
+    private ActionType readAndPassAction(int playerCount) throws Exception {
+        //TODO: maybe handle dead players
+        ActionType power = (ActionType) _gameSpace.get(new ActualField("executivePower"), new FormalField(ActionType.class), new ActualField(_user.Id()))[1];
+        if (_user.Id() != playerCount-1) {
+            _gameSpace.put(power, _user.Id()+1);
+        }
+        return power;
     }
 
     private int readAndPassGameState(int playerCount) throws Exception {

@@ -147,9 +147,14 @@ public class GameController implements Runnable {
                     useOldPres = rotatePresident(useOldPres);
                 } else {
                     //win check (chancellor has been chosen)
-                    if (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) {
-                        //put gameState
-                    }           
+                    /*Gamestate is 3 if fascist win by electing hitler, otherwise 4 to continue game*/
+                    int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 3 : 4;
+                    _gameSpace.put("gameState", gameState, 0);
+                    if (gameState == 3) {
+                        Helper.appendAndSend("Hitler was elected chancellor with 3 fascist laws passed. Fascists win!");
+                        gameStarted = false;
+                        break;
+                    }     
 
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
@@ -295,31 +300,37 @@ public class GameController implements Runnable {
         // ActionType[] executivePowers = (ActionType[]) boards[3];
         
         ActionType res;
-        int won = -1; // -1 = error, 0 = continue game, 1 = liberal won, 2 = facist won.
+        int gameState = -1; // -1 = error, 0 = liberal law - continue, 1 = fascist law - continue, 2 = liberal win, 3 = fascist win.
         int index = -1;
         if (legislativeType == LegislativeType.Liberal) {
             index = GetEmptyIndex(liberalBoard);
-            won = (index == 4 ? 1 : 0);
+            gameState = (index == 4 ? 2 : 0);
             liberalBoard[index] = LegislativeType.Liberal;
             res = ActionType.None;
         } else {
             index = GetEmptyIndex(fascistBoard);
-            won = (index == 5 ? 2 : 0);
+            gameState = (index == 5 ? 3 : 1);
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }
+        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
+            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!");
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.get(new ActualField("lock"));
-        if (won == -1) {
-            throw new RuntimeException("Inconsistent game state, won int = -1");
-        } else {
-            _gameSpace.put("gameState", won, 0);
+        switch (gameState) {
+            case -1:
+                throw new RuntimeException("Inconsistent game state = -1!");
+            case 2:
+                Helper.appendAndSend("Liberals won by passing 5 laws!");
+                break;
+            case 3:
+                Helper.appendAndSend("Fascists won by passing 6 laws!");
+                break;
+            default:
+                break;
         }
+        _gameSpace.put("gameState", gameState, 0);
         _gameSpace.put("lock");
-
-        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
-            + (index + 1) + " of these laws were passed! \n gameState is: " + won + "!");
-
         return res;
     }
 

@@ -36,7 +36,7 @@ public class MenuComponents {
     static int numOfPlayers = 0;
     static boolean gameHost = false;
     static JFrame frame = new JFrame("Secret Hitler");
-    static JFrame newFrame = new JFrame();
+    static JFrame gameFrame = new JFrame();
     static JPanel gamePanel = new JPanel();
     static JPanel menuPanel = new JPanel();
     static JPanel chatPanel;
@@ -198,7 +198,7 @@ public class MenuComponents {
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
             waiting.setText("Waiting for host to start game!");
-            // gamePanel.add(startGameButton);
+
             innerIDPanel.remove(numPlayerLabel);
             innerIDPanel.remove(ra1);
             innerIDPanel.add(ra3);
@@ -206,7 +206,6 @@ public class MenuComponents {
             innerIDPanel.add(ra4);
             innerIDPanel.add(numPlayerLabel);
             gamePanel.revalidate();
-            // gamePanel.repaint();
         }
     }
 
@@ -214,7 +213,6 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            // gamePanel.remove(startGameButton);
             innerIDPanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
@@ -619,14 +617,15 @@ public class MenuComponents {
         membershipCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         membershipCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
 
-
         roleCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         roleCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+
         innerIDPanel.add(nameLabel);
         innerIDPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         innerIDPanel.add(membershipCard);
         innerIDPanel.add(Box.createRigidArea(new Dimension(15,0)));
         innerIDPanel.add(roleCard);
+
         ra1 = Box.createRigidArea(new Dimension(400, 0));
         innerIDPanel.add(ra1);
         innerIDPanel.add(numPlayerLabel);
@@ -640,47 +639,7 @@ public class MenuComponents {
         gamePanel.add(IDPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        /* ATTEMPT AT JLAYEREDPANE FROM 3 AM IN THE NIGHT.. WILL PROBABLY BE NECESSARY
-
-        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-        gamePanel.setSize(900,700);
-        //JPanel boardPanel = new JPanel();
-        //fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fascistBoard.setBounds(900,0,fascistBoardImage.getIconWidth(),fascistBoardImage.getIconHeight());
-        //liberalBoard.setBounds(50,50,200,100);
-        JLayeredPane fascistBoardPane = new JLayeredPane();
-        fascistBoardPane.setPreferredSize(fascistBoard.getSize());
-        fascistBoardPane.add(fascistBoard, 1);
-        fascistBoardPane.add(new JLabel(fascistCard), 2);
-        // JLayeredPane liberalBoardPane = new JLayeredPane();
-        // liberalBoardPane.add(liberalBoard, 1);
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(null);
-        System.out.println(fascistBoard.getWidth());
-        System.out.println(fascistBoard.getLocation());
-        fascistBoardPane.setBounds(0, 0, fascistBoard.getWidth(), fascistBoard.getHeight());
-        //liberalBoardPane.setBounds(0, 0, liberalBoard.getWidth(), liberalBoard.getHeight());
-        boardPanel.add(fascistBoardPane);
-        //boardPanel.add(liberalBoardPane);
-        
-        */
-
-
-
-        // gamePanel.setSize(1200, 800);
-        // gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.X_AXIS));
-        // gameBox.add(Box.createRigidArea(new Dimension(10, 10)));
-        // fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // gameBox.add(fascistBoard);
-        // gameBox.add(Box.createRigidArea(new Dimension(10, 10)));
-        // liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // gameBox.add(liberalBoard);
-        // membershipCard.setHorizontalAlignment(JLabel.LEFT);
-        // membershipCard.setVerticalAlignment(JLabel.BOTTOM);
-        // gamePanel.add(membershipCard);
-        // gamePanel.add(Box.createRigidArea(new Dimension(50, 50)));
-        // gamePanel.add(gameBox);
+       
 
     }
 
@@ -688,25 +647,21 @@ public class MenuComponents {
         initGameCards();
         initChatPanel();
         initGamePanel();
+
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 1000);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        //chatPanel.setAlignmentY(Component.LEFT_ALIGNMENT);
-        System.out.println("Chat panel width is: " + chatPanel.getWidth());
-        System.out.println("Game panel width is: " + gamePanel.getWidth());
-        //mainPanel.add(chatPanel, BorderLayout.WEST);
         mainPanel.add(chatPanel);
         mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
         mainPanel.add(gamePanel);
         mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
-        //mainPanel.setLayout(new BorderLayout());
-        // mainPanel.add(gamePanel, BorderLayout.CENTER);
-        newFrame.add(mainPanel);
-        newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        newFrame.setSize(mainPanel.getSize());
-        //newFrame.pack();
-        newFrame.setLocationRelativeTo(null);
-        newFrame.setVisible(true);
+
+        gameFrame.add(mainPanel);
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setSize(mainPanel.getSize());
+        gameFrame.setLocationRelativeTo(null);
+        gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        gameFrame.setVisible(true);
         // welcomeDialogue();
     }
 
@@ -838,7 +793,7 @@ public class MenuComponents {
             frame.setVisible(false);
             tcp = IP_Port;
             gameHost = true;
-            newFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
+            gameFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             Menu.game.gameCreate(IP_Port);
             Menu.game.chatSetup();
             
@@ -915,7 +870,7 @@ public class MenuComponents {
 
             Menu.game.chatSetup();
 
-            newFrame.setTitle("Secret Hitler  |  " + hostName + "'s Room  |  tcp: " + tcp);
+            gameFrame.setTitle("Secret Hitler  |  " + hostName + "'s Room  |  tcp: " + tcp);
             try {
                 gameFrame();
             } catch (IOException e1) {
@@ -976,9 +931,9 @@ public class MenuComponents {
     };
 
     public static void setGameBoard(int playerCount){
-        gamePanel.remove(waiting);
         gamePanel.remove(ra2);
         gamePanel.remove(joinedPlayers);
+        gamePanel.remove(waiting);
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
             fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
         liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);

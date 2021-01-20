@@ -60,6 +60,8 @@ public class Helper {
                     else if (o instanceof Double) {
                         int z = (int) ((Double) o).doubleValue();
                         result[i] = z;
+                    } else {
+                        System.out.println("###Fucking shit cast" + o.getClass().toString());
                     }
                 }
             }

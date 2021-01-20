@@ -269,6 +269,11 @@ public class SecretHitlerV2 implements Runnable {
                         
                         if (president == _user.Id()) {
                             int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class)));
+                            System.out.print("CANDS in pres: [");
+                            for (int i = 0; i < cands.length; ++i) {
+                                System.out.print(cands[i] + ", ");
+                            }
+                            System.out.println("]");
                             int choice = -1;
                             String suggestMsg = "";
                             switch (executivePower) {

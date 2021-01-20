@@ -286,8 +286,8 @@ public class SecretHitlerV2 implements Runnable {
                             switch (executivePower) {
                                 case Peek:
                                     Object[] deckTuple = _gameSpace.get(new ActualField("peek"), new FormalField(ArrayList.class));
-                                    LegislativeType[] deckTop = (LegislativeType[]) Helper.castLegislate(deckTuple[1]).toArray();
-                                    MenuComponents.showTopCards(deckTop);
+                                    ArrayList<LegislativeType> deckTop = Helper.castLegislate(deckTuple[1]);
+                                    MenuComponents.showTopCards(deckTop.get(0), deckTop.get(1), deckTop.get(2));
                                     _gameSpace.get(new ActualField("iPeekedCards"));
                                     _gameSpace.put("presPeekedDeck");
                                     //get 3 cards on top

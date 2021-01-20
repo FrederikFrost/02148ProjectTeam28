@@ -466,7 +466,7 @@ public class MenuComponents {
         showFrame.setVisible(true);
     }
 
-    public static void showTopCards(LegislativeType[] deckTop) throws IOException {
+    public static void showTopCards(LegislativeType... deckTop) throws IOException {
         JFrame showFrame = new JFrame();
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
         showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

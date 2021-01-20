@@ -621,11 +621,11 @@ public class GameController implements Runnable {
                 break;     
             case 7:
             case 8:
-                executivePowers = new ActionType[] {ActionType.None, ActionType.Investigate, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
+                executivePowers = new ActionType[] {ActionType.None, ActionType.Investigate, ActionType.S_Election, ActionType.Kill, ActionType.Veto, ActionType.None};
                 break;
             case 9:
             case 10:
-                executivePowers = new ActionType[] {ActionType.Investigate, ActionType.Investigate, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
+                executivePowers = new ActionType[] {ActionType.Investigate, ActionType.Investigate, ActionType.S_Election, ActionType.Kill, ActionType.Veto, ActionType.None};
                 break;
             default:
                 executivePowers = new ActionType[6];

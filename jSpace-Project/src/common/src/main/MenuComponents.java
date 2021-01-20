@@ -485,9 +485,9 @@ public class MenuComponents {
         return JOptionPane.showOptionDialog(frame, errorMessage, "Error", 0, 1, null, null, null);
     }
 
-    public static String suggestDialogueBox(String[] choices) {
+    public static String suggestDialogueBox(String[] choices, String suggestMsg) {
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Who should be suggested chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+                question, JOptionPane.QUESTION_MESSAGE, null, // Use
                 // default
                 // icon
                 choices, // Array of choices
@@ -675,6 +675,14 @@ public class MenuComponents {
             mainPanel.repaint();
         }
     };
+
+	public static void gameOverScreen(int gameState) {
+        if (gameState == 1) {
+            Helper.appendAndSend("Liberals won!");
+        } else {
+            Helper.appendAndSend("Facists won!");
+        }
+	}
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

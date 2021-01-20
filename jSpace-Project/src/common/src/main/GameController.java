@@ -61,6 +61,7 @@ public class GameController implements Runnable {
         // boolean enoughPlayers = false;
         // boolean gameStarted = false;
         playerCount = -1;
+        boolean gameStarted = true;
         try {
             // while (!gameStarted) {
             //     if (!enoughPlayers) {
@@ -94,7 +95,7 @@ public class GameController implements Runnable {
             printDebug("Starting game loop");
             boolean useOldPres = false;
             int electionTracker = 0;
-            while(true) {
+            while(gameStarted) {
                 /**
                  * Suggest chancellor
                  * Vote chancellor
@@ -136,7 +137,10 @@ public class GameController implements Runnable {
                     ResetTermLimits();
                     //executive power is ignored
                     UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+                    //win check
+                    useOldPres = rotatePresident(useOldPres);
                 } else {
+                    //win check (chancellor has been chosen)
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
                     _gameSpace.put("lock");
@@ -158,6 +162,7 @@ public class GameController implements Runnable {
                     if (cards.size() == 1) {
                         LegislativeType finalCard = cards.get(0); //take the chosen card
                         executivePower = UpdateBoards(finalCard);
+                        //win check
                     } else {    //in case of veto
                         electionTracker++;
                         executivePower = ActionType.None;
@@ -172,13 +177,24 @@ public class GameController implements Runnable {
                      * veto logic should be here
                      * else update board with returned legislate
                     */
-                    _gameSpace.put("executivePower", executivePower);
+
+                    _gameSpace.get(new ActualField("lock"));
+                    _gameSpace.put(CommandType.ExecutiveAction, 0);
+                    _gameSpace.put("lock");
+
+                    _gameSpace.put("executivePower", executivePower, 0);
+                    ArrayList<Integer> cands = GetAllCands();
+                    _gameSpace.put("allCands", cands);
+
                     //TODO: put executetive power up in gamespace
                     switch (executivePower) {
                         case Peek:
+                            printDebug("Controller started peeking!");
                             cards = GetCardsFromDeck(3, true);
+                            printDebug("Controller got 3 cards!");
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
+                            _gameSpace.put("lock");
                             // _gameSpace.query("")
                             //get 3 cards on top
                             //pass to president
@@ -193,12 +209,17 @@ public class GameController implements Runnable {
                              * pass list to president
                              * president looks in 'roles' tuple for info
                              */
+                            
+
+                            // _gameSpace.query(new ActualField("finishInvestigate"));
                             break;
                         case Kill:
                             /** a player is killed
                              *      - pass list to president
                              *      - president return person to kill
                              */
+
+
                             break;
                             
                         case S_Election:
@@ -208,7 +229,10 @@ public class GameController implements Runnable {
                              *  TODO should prevent normal election of president somehow  
                              * 
                              */
-                            
+
+                            // useOldPres = rotatePresident(useOldPres, newPres);
+
+
                             break;
                             
                         case Veto:
@@ -217,12 +241,15 @@ public class GameController implements Runnable {
                              *      - president return person to kill
                              * veto = true
                             */
+
                             veto = true;
                             break;
                         default:    //default to None?
 
                             break;
                     }
+
+                    if (executivePower != ActionType.S_Election) useOldPres = rotatePresident(useOldPres);
                     //executive power is in else statement as this is the case where it is NOT ignored
                     /** executive power
                      * check for executive power
@@ -232,11 +259,22 @@ public class GameController implements Runnable {
                 
                 //rotatePresident here - what about executive power?
             }
+            printDebug("Haha! I am stopped ;) ;)");
             
         } catch (Exception e) {
             //possibly put tuble in game space to let players know an error occured
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<Integer> GetAllCands() throws Exception, InterruptedException {
+        int president = getPresident();
+        ArrayList<Integer> cands = new ArrayList<>();
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        for (int i = 0; i < playerCount; ++i) {
+            if (!deads.contains((Integer) i) && i != president) cands.add(i);
+        }
+        return cands;
     }
 
     public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception { // TODO make test
@@ -247,20 +285,29 @@ public class GameController implements Runnable {
         LegislativeType[] fascistBoard = (LegislativeType[]) boards[2];
         ActionType[] executivePowers = (ActionType[]) boards[3];
         ActionType res;
+        int won = -1; // -1 = error, 0 = continue game, 1 = liberal won, 2 = facist won.
+        int index = -1;
         if (legislativeType == LegislativeType.Liberal) {
-            int index = GetEmptyIndex(liberalBoard);
+            index = GetEmptyIndex(liberalBoard);
+            won = (index == 4 ? 1 : 0);
             liberalBoard[index] = LegislativeType.Liberal;
             res = ActionType.None;
         } else {
-            int index = GetEmptyIndex(fascistBoard);
+            index = GetEmptyIndex(fascistBoard);
+            won = (index == 5 ? 2 : 0);
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }
-
-		_gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        if (won == -1) {
+            throw new RuntimeException("Inconsistent game state, won int = -1");
+        } else {
+            _gameSpace.put("gameState", won, 0);
+        }
         _gameSpace.put("lock");
 
-        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed!");
+        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
+            + (index + 1) + " of these laws were passed! \n gameState is: " + won + "!");
 
         return res;
     }
@@ -335,7 +382,7 @@ public class GameController implements Runnable {
         // }
 
         // ArrayList<Integer> deads = Helper.cleanCast(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
-        ArrayList<Integer> deads = (ArrayList<Integer>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1];
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
         int newPres = pres;
         do {
             newPres = (newPres+1) % playerCount;
@@ -365,7 +412,7 @@ public class GameController implements Runnable {
 
         int pres = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
         Object[] deadsTuple = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
-        ArrayList<Integer> deads = (ArrayList<Integer>) ((ArrayList<Integer>) deadsTuple[1]).clone();
+        ArrayList<Integer> deads = Helper.castIntArrayList(deadsTuple[1]);
         ArrayList<Integer> ids = new ArrayList<Integer>(playerCount);
         for(int i = 0; i < playerCount; i++){
             ids.add(i);
@@ -401,10 +448,10 @@ public class GameController implements Runnable {
         _gameSpace.put("lock");
 
         Object[] deads = _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class));
-        int deadPlayers = (((ArrayList<Integer>) deads[1])).size();
+        int deadPlayers = (Helper.castIntArrayList(deads[1])).size();
         
         //int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
-        Helper.printArray("dead players", ((ArrayList<Integer>) deads[1]).toArray());
+        Helper.printArray("dead players", (Helper.castIntArrayList(deads[1])).toArray());
         printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
 

@@ -199,6 +199,7 @@ public class GameController implements Runnable {
 
                     _gameSpace.put("executivePower", executivePower, 0);
                     ArrayList<Integer> cands = GetAllCands();
+                    Helper.printArray("cands", cands.toArray());
                     _gameSpace.put("allCands", cands);
 
                     //TODO: put executetive power up in gamespace
@@ -292,8 +293,10 @@ public class GameController implements Runnable {
         int president = getPresident();
         ArrayList<Integer> cands = new ArrayList<>();
         ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        Helper.printArray("In GetAllCands: deads", deads.toArray());
         for (int i = 0; i < playerCount; ++i) {
-            if (!deads.contains((Integer) i) && i != president) cands.add(i);
+            if (!deads.contains((Integer) i) && i != president)
+                cands.add(i);
         }
         return cands;
     }

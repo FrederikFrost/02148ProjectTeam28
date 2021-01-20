@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JToggleButton.ToggleButtonModel;
+
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -152,6 +154,7 @@ public class SecretHitlerV2 implements Runnable {
     public void run() {
         System.out.println("Hello mein friends!");
         boolean gameStarted = true;
+        boolean imDead = false;
         try {
             int president;
             int chancellor; 
@@ -181,7 +184,8 @@ public class SecretHitlerV2 implements Runnable {
                 switch (cmd) {
                     case Election:
                         System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
-                        election(playerCount);
+                        if (!imDead)
+                            election(playerCount);
                         gameStarted = checkGameState(playerCount);
                         break;
                     case LegislativeSession:
@@ -189,6 +193,7 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         readAndPassKeyWord("startLegislate", playerCount);
+                        
                         if (_user.Id() == president) {
                             System.out.println("Im president in legislative session!");
                             
@@ -196,14 +201,14 @@ public class SecretHitlerV2 implements Runnable {
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             // ArrayList<LegislativeType> cards = (ArrayList<LegislativeType>) cardsTuple[1];
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
-                            String isString;
-                            Object card1 = cards.get(0);
-                            if ( card1 instanceof String) {
-                                isString = "Yes";
-                            } else {
-                                isString = "No";
-                            }
-                            System.out.println("The card was a string?: " + isString);
+                            // String isString;
+                            // Object card1 = cards.get(0);
+                            // if ( card1 instanceof String) {
+                            //     isString = "Yes";
+                            // } else {
+                            //     isString = "No";
+                            // }
+                            // System.out.println("The card was a string?: " + isString);
                             MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             cards = Helper.castLegislate(legiChoices[1]);
@@ -333,6 +338,7 @@ public class SecretHitlerV2 implements Runnable {
                             }
                         }
                         readAndPassWithController("endExecutive", playerCount);
+                        imDead = CheckDeathStatus();
                         //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
                         break;
@@ -347,6 +353,11 @@ public class SecretHitlerV2 implements Runnable {
             //TODO: Player was disconnected, handle this
             e.printStackTrace();
         }
+    }
+
+    private boolean CheckDeathStatus() throws Exception {
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        return deads.contains(_user.Id());
     }
 
     private PlayerRole[] GetKnownAllies(int playerCount, int id, Role[] roles, User[] users) {
@@ -440,14 +451,14 @@ public class SecretHitlerV2 implements Runnable {
         _gameSpace.put("votes", votes, voterId);
         _gameSpace.put("lock");
         System.out.println("I voted with voterId: " + voterId);
-        Game.updateVotes(votes);
+        // Game.updateVotes(votes);
         int deadPlayers = ((ArrayList<?>) _gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]).size();
         System.out.println("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         electionDone = (voterId == (playerCount - deadPlayers));
         while(!electionDone) {
             voteObj = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
             votes = (VoteType[]) voteObj[1];
-            Game.updateVotes(votes);
+            // Game.updateVotes(votes);
             electionDone = ((int) voteObj[2] == (playerCount - deadPlayers));
         }
         System.out.println("Election is done!");

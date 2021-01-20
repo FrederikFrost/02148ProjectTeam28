@@ -880,11 +880,12 @@ public class MenuComponents {
 
 	public static void incLibArticles() {
         System.out.println("I AM INCREMENTING LIBERAL ARTICLES!!!!!!!!!!!");
+        loop:
         for (int i = 0 ; i < 6 ; i++) {
             for (int j = 0 ; j < 5 ; j++) {
                 if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){
                     liberalBoard.setIcon(liberalBoardImageMatrix[i+1][j]);
-                    break;
+                    break loop;
                 }
             }
         }

@@ -215,6 +215,7 @@ public class GameController implements Runnable {
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
                             _gameSpace.put("lock");
+                            _gameSpace.get(new ActualField("presPeekedDeck"));
                             // _gameSpace.query("")
                             //get 3 cards on top
                             //pass to president
@@ -229,7 +230,7 @@ public class GameController implements Runnable {
                              * pass list to president
                              * president looks in 'roles' tuple for info
                              */
-                            
+                            _gameSpace.get(new ActualField("investigatedReturn"));
 
                             // _gameSpace.query(new ActualField("finishInvestigate"));
                             break;
@@ -238,7 +239,8 @@ public class GameController implements Runnable {
                              *      - pass list to president
                              *      - president return person to kill
                              */
-
+                            int killedPlayer = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
+                            ExecutePlayer(killedPlayer);
 
                             break;
                             
@@ -249,9 +251,8 @@ public class GameController implements Runnable {
                              *  TODO should prevent normal election of president somehow  
                              * 
                              */
-
-                            // useOldPres = rotatePresident(useOldPres, newPres);
-
+                            int specialPres = (int) _gameSpace.get(new ActualField("specialPres"), new FormalField(Integer.class))[1];
+                            useOldPres = rotatePresident(useOldPres, specialPres);
 
                             break;
                             
@@ -261,7 +262,8 @@ public class GameController implements Runnable {
                              *      - president return person to kill
                              * veto = true
                             */
-
+                            int killedPlayer2 = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
+                            ExecutePlayer(killedPlayer2);
                             veto = true;
                             break;
                         default:    //default to None?
@@ -288,7 +290,15 @@ public class GameController implements Runnable {
         }
     }
 
-    private void passAndWaitForReturn(String string) throws Exception{
+    private void ExecutePlayer(int killedPlayer) throws Exception {
+        _gameSpace.get(new ActualField("lock"));
+        ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.get(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        deads.add(killedPlayer);
+        _gameSpace.put("deadPlayers", deads);
+        _gameSpace.put("lock");
+    }
+
+    private void passAndWaitForReturn(String string) throws Exception {
         _gameSpace.put(string, 0);
         _gameSpace.get(new ActualField(string + "ReturnToCon"));
     }

@@ -193,7 +193,7 @@ public class SecretHitlerV2 implements Runnable {
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         readAndPassKeyWord("startLegislate", playerCount);
-                        
+
                         if (_user.Id() == president) {
                             System.out.println("Im president in legislative session!");
                             
@@ -301,7 +301,12 @@ public class SecretHitlerV2 implements Runnable {
                                      */
                                     suggestMsg = "Who do you want to investigate?";
                                     choice = Game.suggest(cands, suggestMsg);
+                                    //TODO: get name and party
                                     
+                                    MenuComponents.investigatePlayer(users[choice].Name(), roles[choice].getPartyMembership());
+                                    _gameSpace.get(new ActualField("investigated"));
+                                    _gameSpace.put("investigatedReturn");
+
                                     break;
                                 case Kill:
                                     /** a player is killed
@@ -310,6 +315,7 @@ public class SecretHitlerV2 implements Runnable {
                                      */
                                     suggestMsg = "Who do you want to kill?";
                                     choice = Game.suggest(cands, suggestMsg);
+                                    _gameSpace.put("dead", choice);
                                     break;
                                     
                                 case S_Election:
@@ -321,6 +327,7 @@ public class SecretHitlerV2 implements Runnable {
                                      */
                                     suggestMsg = "Who do you want to elect as the next president?";
                                     choice = Game.suggest(cands, suggestMsg);
+                                    _gameSpace.put("specialPres", choice);
                                     break;
                                     
                                 case Veto:
@@ -331,6 +338,8 @@ public class SecretHitlerV2 implements Runnable {
                                     */
                                     suggestMsg = "Who do you want to kill?";
                                     choice = Game.suggest(cands, suggestMsg);
+                                    _gameSpace.put("dead", choice);
+
                                     break;
                                 default:    //default to None?
         
@@ -339,7 +348,7 @@ public class SecretHitlerV2 implements Runnable {
                         }
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
-                        //TODO: switch depending on executive power
+                        //TODO: if dead show on screen
                         System.out.println("Executive action has happened");
                         break;
                     default:

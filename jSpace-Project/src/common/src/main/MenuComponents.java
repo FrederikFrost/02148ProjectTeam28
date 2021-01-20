@@ -891,11 +891,12 @@ public class MenuComponents {
     }
     
     public static void incLibFails(){
+        loop:
         for (int i = 0 ; i < 6 ; i++) {
             for (int j = 0 ; j < 5 ; j++) {
                 if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){
                     liberalBoard.setIcon(liberalBoardImageMatrix[i][j+1]);
-                    break;
+                    break loop;
                 }
             }
         }

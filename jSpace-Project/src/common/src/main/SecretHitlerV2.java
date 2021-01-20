@@ -350,6 +350,7 @@ public class SecretHitlerV2 implements Runnable {
                                     break;
                             }
                         }
+                        gameStarted = checkGameState(playerCount);
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
                         //TODO: if dead show on screen

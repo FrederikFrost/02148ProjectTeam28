@@ -207,6 +207,7 @@ public class GameController implements Runnable {
                     _gameSpace.put("allCands", cands);
 
                     //TODO: put executetive power up in gamespace
+                    int killedPlayer = -1;
                     switch (executivePower) {
                         case Peek:
                             printDebug("Controller started peeking!");
@@ -239,8 +240,9 @@ public class GameController implements Runnable {
                              *      - pass list to president
                              *      - president return person to kill
                              */
-                            int killedPlayer = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
+                            killedPlayer = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
                             ExecutePlayer(killedPlayer);
+                            
 
                             break;
                             
@@ -262,13 +264,20 @@ public class GameController implements Runnable {
                              *      - president return person to kill
                              * veto = true
                             */
-                            int killedPlayer2 = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
-                            ExecutePlayer(killedPlayer2);
+                            killedPlayer = (int) _gameSpace.get(new ActualField("dead"), new FormalField(Integer.class))[1];
+                            ExecutePlayer(killedPlayer);
                             veto = true;
                             break;
                         default:    //default to None?
 
                             break;
+                    }
+                    if (roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
+                        _gameSpace.put("gameState", 2, 0);
+                        gameStarted = false;
+                        Helper.appendAndSend("Hitler was executed. Liberals win!");
+                    } else {
+                        _gameSpace.put("gameState", 0, 0);
                     }
 
                     passAndWaitForReturn("endExecutive");

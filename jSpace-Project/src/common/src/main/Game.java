@@ -24,6 +24,7 @@ public class Game {
             choices[i] = users[eligibleCands[i]].Name();
         }
         
+        Helper.printArray("choices", choices);
         String sugChan;
         sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
         if (sugChan == null) {

@@ -199,6 +199,7 @@ public class GameController implements Runnable {
 
                     _gameSpace.put("executivePower", executivePower, 0);
                     ArrayList<Integer> cands = GetAllCands();
+                    Helper.printArray("cands", cands.toArray());
                     _gameSpace.put("allCands", cands);
 
                     //TODO: put executetive power up in gamespace
@@ -263,7 +264,8 @@ public class GameController implements Runnable {
 
                             break;
                     }
-                    _gameSpace.put("endExecutive", 0);
+
+                    passAndWaitForReturn("endExecutive");
                     if (executivePower != ActionType.S_Election) useOldPres = rotatePresident(useOldPres);
                     //executive power is in else statement as this is the case where it is NOT ignored
                     /** executive power
@@ -282,12 +284,19 @@ public class GameController implements Runnable {
         }
     }
 
+    private void passAndWaitForReturn(String string) throws Exception{
+        _gameSpace.put(string, 0);
+        _gameSpace.get(new ActualField(string + "ReturnToCon"));
+    }
+
     private ArrayList<Integer> GetAllCands() throws Exception, InterruptedException {
         int president = getPresident();
         ArrayList<Integer> cands = new ArrayList<>();
         ArrayList<Integer> deads = Helper.castIntArrayList(_gameSpace.query(new ActualField("deadPlayers"), new FormalField(ArrayList.class))[1]);
+        Helper.printArray("In GetAllCands: deads", deads.toArray());
         for (int i = 0; i < playerCount; ++i) {
-            if (!deads.contains((Integer) i) && i != president) cands.add(i);
+            if (!deads.contains((Integer) i) && i != president)
+                cands.add(i);
         }
         return cands;
     }

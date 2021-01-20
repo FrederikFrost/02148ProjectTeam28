@@ -325,7 +325,7 @@ public class SecretHitlerV2 implements Runnable {
                                     break;
                             }
                         }
-                        readAndPassKeyWord("endExecutive", playerCount);
+                        readAndPassWithController("endExecutive", playerCount);
                         //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
                         break;
@@ -493,6 +493,16 @@ public class SecretHitlerV2 implements Runnable {
             _gameSpace.put("rolesChecked");
         }
         System.out.println("Read keyword: checkRoles");
+    }
+
+    private void readAndPassWithController(String string,int playerCount) throws Exception {
+        _gameSpace.get(new ActualField(string), new ActualField(_user.Id()));
+        if (_user.Id() < playerCount - 1) {
+            _gameSpace.put(string, _user.Id()+1);
+        } else {
+            _gameSpace.put(string + "ReturnToCon");
+        }
+        System.out.println("Read keyword: " + string);
     }
 
     private CommandType readAndPassCommand(int playerCount) throws Exception {

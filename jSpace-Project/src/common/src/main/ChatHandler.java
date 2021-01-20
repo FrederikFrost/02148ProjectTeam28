@@ -12,14 +12,25 @@ public class ChatHandler implements Runnable {
     private int chatId;
     private int nextUserId;
     private JEditorPane _chatBox;
-    
+
     public ChatHandler(Space userSpace, Space chatSpace, int chatId, int nextUserId, JEditorPane chatBox) {
         this._userSpace = userSpace;
         this._chatSpace = chatSpace;
         this.chatId = chatId;
         this.nextUserId = nextUserId;
         this._chatBox = chatBox;
+        for (int i = 0; i < nextUserId; i++) {
+            try {
+                Object[] joinedUser = _userSpace.queryp(new ActualField("join"), new FormalField(String.class),
+                        new ActualField(i));
+                MenuComponents.addJoinedPlayer((String) joinedUser[1]);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
+
     
     @Override
     public void run() {
@@ -39,6 +50,7 @@ public class ChatHandler implements Runnable {
                     MenuComponents.append(_chatBox,"<" + newUser[1] + ">: has joined the game!\n", true);
                     MenuComponents.incNumPlayers();
                     System.out.println(newUser[1] + " has joined the game!");
+                    MenuComponents.addJoinedPlayer((String) newUser[1]);
                     nextUserId++;
                 }
                 /*

@@ -5,10 +5,13 @@ import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.LegislativeType;
 import common.src.main.Types.RoleType;
@@ -43,6 +46,7 @@ public class MenuComponents {
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
     static JLabel waiting;
+    static JTextPane joinedPlayers;
     static JButton[] buttons = new JButton[10];
     static JButton startGameButton;
     static JButton sendMessage;
@@ -50,6 +54,10 @@ public class MenuComponents {
     static JEditorPane chatBox;
     static JScrollPane scrollPane;
     static JScrollBar scrollBar;
+
+    static Component ra1, ra2;
+    static Component ra3 = Box.createRigidArea(new Dimension(150,0));
+    static Component ra4 = Box.createRigidArea(new Dimension(150,0));
 
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
@@ -175,6 +183,14 @@ public class MenuComponents {
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
+    public static void addJoinedPlayer(String user){
+        StyledDocument doc = joinedPlayers.getStyledDocument();
+        try {
+            doc.insertString(doc.getLength(), "\n" + user, null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void incNumPlayers() {
         numOfPlayers++;
@@ -184,7 +200,10 @@ public class MenuComponents {
             waiting.setText("Waiting for host to start game!");
             // gamePanel.add(startGameButton);
             innerIDPanel.remove(numPlayerLabel);
+            innerIDPanel.remove(ra1);
+            innerIDPanel.add(ra3);
             innerIDPanel.add(startGameButton);
+            innerIDPanel.add(ra4);
             innerIDPanel.add(numPlayerLabel);
             gamePanel.revalidate();
             // gamePanel.repaint();
@@ -472,8 +491,27 @@ public class MenuComponents {
         waiting = new JLabel("Waiting for players...");
         waiting.setFont(new Font("SansSerif",Font.BOLD, 40));
         waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        joinedPlayers = new JTextPane();
+        joinedPlayers.setFont(new Font("SansSerif",Font.PLAIN, 35));
+        joinedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        joinedPlayers.setBorder(BorderFactory.createCompoundBorder(border,
+            BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+
+        StyledDocument doc = joinedPlayers.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        try {
+            doc.insertString(0, "Joined players:\n", null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
         gamePanel.setSize(900,1000);
+
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
         fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -487,27 +525,40 @@ public class MenuComponents {
         innerIDPanel.setLayout(new BoxLayout(innerIDPanel, BoxLayout.X_AXIS));
         IDPanel.setLayout(new BorderLayout());
         //membershipCard.setHorizontalAlignment(JLabel.LEFT);
+
+        JLabel nameLabel = new JLabel(username);
+        nameLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        nameLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        nameLabel.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+
         numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
         numPlayerLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         numPlayerLabel.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
-        //numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
-        //numPlayerLabel.setVerticalAlignment(JLabel.BOTTOM);
+
         numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         membershipCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         membershipCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
-        //roleCard.setHorizontalAlignment(JLabel.LEFT);
+
+
         roleCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         roleCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+        innerIDPanel.add(nameLabel);
+        innerIDPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         innerIDPanel.add(membershipCard);
-        innerIDPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        innerIDPanel.add(Box.createRigidArea(new Dimension(15,0)));
         innerIDPanel.add(roleCard);
-        innerIDPanel.add(Box.createRigidArea(new Dimension(400, 0)));
+        ra1 = Box.createRigidArea(new Dimension(400, 0));
+        innerIDPanel.add(ra1);
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
         gamePanel.add(waiting);
+        ra2 = Box.createRigidArea(new Dimension(0, 200));
+        gamePanel.add(ra2);
+        gamePanel.add(joinedPlayers);
         gamePanel.add(boardPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(30, 30)));
         gamePanel.add(IDPanel);
+        gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         /* ATTEMPT AT JLAYEREDPANE FROM 3 AM IN THE NIGHT.. WILL PROBABLY BE NECESSARY
 
@@ -634,6 +685,7 @@ public class MenuComponents {
         } catch (BadLocationException exc) {
             exc.printStackTrace();
         }
+        scrollBar.setValue(scrollBar.getMaximum());
     }
 
     private static SimpleAttributeSet bold() {
@@ -692,15 +744,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -737,15 +789,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -845,6 +897,8 @@ public class MenuComponents {
 
     public static void setGameBoard(int playerCount){
         gamePanel.remove(waiting);
+        gamePanel.remove(ra2);
+        gamePanel.remove(joinedPlayers);
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
             fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
         liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);

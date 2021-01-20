@@ -1,7 +1,6 @@
 package common.src.main;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
@@ -56,12 +55,65 @@ public class MenuComponents {
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
     static ImageIcon fascistCardSelected;
-    static ImageIcon fascistBoardImage5to6;
-    static ImageIcon fascistBoardImage7to8;
-    static ImageIcon fascistBoardImage9to10;
+
+    static ImageIcon fascistBoardImage5to6_0articles;
+    static ImageIcon fascistBoardImage5to6_1article;
+    static ImageIcon fascistBoardImage5to6_2articles;
+    static ImageIcon fascistBoardImage5to6_3articles;
+    static ImageIcon fascistBoardImage5to6_4articles;
+    static ImageIcon fascistBoardImage5to6_5articles;
+    static ImageIcon fascistBoardImage5to6_6articles;
+
+    static ImageIcon fascistBoardImage7to8_0articles;
+    static ImageIcon fascistBoardImage7to8_1article;
+    static ImageIcon fascistBoardImage7to8_2articles;
+    static ImageIcon fascistBoardImage7to8_3articles;
+    static ImageIcon fascistBoardImage7to8_4articles;
+    static ImageIcon fascistBoardImage7to8_5articles;
+    static ImageIcon fascistBoardImage7to8_6articles;
+
+    static ImageIcon fascistBoardImage9to10_0articles;
+    static ImageIcon fascistBoardImage9to10_1article;
+    static ImageIcon fascistBoardImage9to10_2articles;
+    static ImageIcon fascistBoardImage9to10_3articles;
+    static ImageIcon fascistBoardImage9to10_4articles;
+    static ImageIcon fascistBoardImage9to10_5articles;
+    static ImageIcon fascistBoardImage9to10_6articles;
+
+    static ImageIcon liberalBoardImage_0articles_0fails;
+    static ImageIcon liberalBoardImage_0articles_1fail;
+    static ImageIcon liberalBoardImage_0articles_2fails;
+    static ImageIcon liberalBoardImage_0articles_3fails;
+    static ImageIcon liberalBoardImage_0articles_4fails;
+
+    static ImageIcon liberalBoardImage_1article_0fails;
+    static ImageIcon liberalBoardImage_1article_1fail;
+    static ImageIcon liberalBoardImage_1article_2fails;
+    static ImageIcon liberalBoardImage_1article_3fails;
+    static ImageIcon liberalBoardImage_1article_4fails;
+
+    static ImageIcon liberalBoardImage_2articles_0fails;
+    static ImageIcon liberalBoardImage_2articles_1fail;
+    static ImageIcon liberalBoardImage_2articles_2fails;
+    static ImageIcon liberalBoardImage_2articles_3fails;
+    static ImageIcon liberalBoardImage_2articles_4fails;
+
+    static ImageIcon liberalBoardImage_3articles_0fails;
+    static ImageIcon liberalBoardImage_3articles_1fail;
+    static ImageIcon liberalBoardImage_3articles_2fails;
+    static ImageIcon liberalBoardImage_3articles_3fails;
+    static ImageIcon liberalBoardImage_3articles_4fails;
+
+    static ImageIcon liberalBoardImage_4articles_0fails;
+    static ImageIcon liberalBoardImage_4articles_1fail;
+    static ImageIcon liberalBoardImage_4articles_2fails;
+    static ImageIcon liberalBoardImage_4articles_3fails;
+    static ImageIcon liberalBoardImage_4articles_4fails;
+
+    static ImageIcon liberalBoardImage_5articles;
+
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
-    static ImageIcon liberalBoardImage;
     static ImageIcon fascistMembership;
     static ImageIcon liberalMembership;
     static ImageIcon fascistRole;
@@ -71,23 +123,89 @@ public class MenuComponents {
     static JLabel liberalBoard = new JLabel();
     static JLabel membershipCard = new JLabel();
     static JLabel roleCard = new JLabel();
+    static int fascistArticles = 0;
+    static int liberalArticles = 0;
 
-    public static void initializeCards() throws IOException {
-        fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
-        liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card.png")));
+    public static void initGameCards() throws IOException {
+
+        //Boards
+        fascistBoardImage5to6_0articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/0-articles.png")));
+        fascistBoardImage5to6_1article = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/1-article.png")));
+        fascistBoardImage5to6_2articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/2-articles.png")));
+        fascistBoardImage5to6_3articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/3-articles.png")));
+        fascistBoardImage5to6_4articles= new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/4-articles.png")));
+        fascistBoardImage5to6_5articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/5-articles.png")));
+        fascistBoardImage5to6_6articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/5to6/6-articles.png")));
+        
+        fascistBoardImage7to8_0articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/0-articles.png")));
+        fascistBoardImage7to8_1article = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/1-article.png")));
+        fascistBoardImage7to8_2articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/2-articles.png")));
+        fascistBoardImage7to8_3articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/3-articles.png")));
+        fascistBoardImage7to8_4articles= new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/4-articles.png")));
+        fascistBoardImage7to8_5articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/5-articles.png")));
+        fascistBoardImage7to8_6articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/7to8/6-articles.png")));
+
+        fascistBoardImage9to10_0articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/0-articles.png")));
+        fascistBoardImage9to10_1article = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/1-article.png")));
+        fascistBoardImage9to10_2articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/2-articles.png")));
+        fascistBoardImage9to10_3articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/3-articles.png")));
+        fascistBoardImage9to10_4articles= new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/4-articles.png")));
+        fascistBoardImage9to10_5articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/5-articles.png")));
+        fascistBoardImage9to10_6articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/9to10/6-articles.png")));
+
+        liberalBoardImage_0articles_0fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/0 articles/0-fails.png")));
+        liberalBoardImage_0articles_1fail = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/0 articles/1-fail.png")));
+        liberalBoardImage_0articles_2fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/0 articles/2-fails.png")));
+        liberalBoardImage_0articles_3fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/0 articles/3-fails.png")));
+        liberalBoardImage_0articles_4fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/0 articles/4-fails.png")));
+
+        liberalBoardImage_1article_0fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/1 article/0-fails.png")));
+        liberalBoardImage_1article_1fail = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/1 article/1-fail.png")));
+        liberalBoardImage_1article_2fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/1 article/2-fails.png")));
+        liberalBoardImage_1article_3fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/1 article/3-fails.png")));
+        liberalBoardImage_1article_4fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/1 article/4-fails.png")));
+        
+        liberalBoardImage_2articles_0fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/2 articles/0-fails.png")));
+        liberalBoardImage_2articles_1fail = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/2 articles/1-fail.png")));
+        liberalBoardImage_2articles_2fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/2 articles/2-fails.png")));
+        liberalBoardImage_2articles_3fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/2 articles/3-fails.png")));
+        liberalBoardImage_2articles_4fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/2 articles/4-fails.png")));
+
+        liberalBoardImage_3articles_0fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/3 articles/0-fails.png")));
+        liberalBoardImage_3articles_1fail = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/3 articles/1-fail.png")));
+        liberalBoardImage_3articles_2fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/3 articles/2-fails.png")));
+        liberalBoardImage_3articles_3fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/3 articles/3-fails.png")));
+        liberalBoardImage_3articles_4fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/3 articles/4-fails.png")));
+
+        liberalBoardImage_4articles_0fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/4 articles/0-fails.png")));
+        liberalBoardImage_4articles_1fail = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/4 articles/1-fail.png")));
+        liberalBoardImage_4articles_2fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/4 articles/2-fails.png")));
+        liberalBoardImage_4articles_3fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/4 articles/3-fails.png")));
+        liberalBoardImage_4articles_4fails = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/4 articles/4-fails.png")));
+
+        liberalBoardImage_5articles = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/5 articles/0-fails.png")));
+
+        fascistBoard.setIcon(fascistBoardImage5to6_0articles);
+        liberalBoard.setIcon(liberalBoardImage_0articles_0fails);
+
+        // Membership and role cards
+        fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/membership.png")));
+        liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/membership.png")));
+        membershipCard.setIcon(liberalMembership);
+        fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
+        liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
+        hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
+        roleCard.setIcon(hitlerRole);
+
+        // Article cards
+        fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/article.png")));
+        liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article.png")));
         fascistCardSelected = new ImageIcon(
-                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
+                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/article-selected.png")));
         liberalCardSelected = new ImageIcon(
-                ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
-        fascistBoardImage5to6 = new ImageIcon(
-                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-5to6.png")));
-        fascistBoardImage7to8 = new ImageIcon(
-                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-7to8.png")));
-        fascistBoardImage9to10 = new ImageIcon(
-                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-9to10.png")));
-        liberalBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-board.png")));
-        fascistBoard.setIcon(fascistBoardImage9to10);
-        liberalBoard.setIcon(liberalBoardImage);
+                ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article-selected.png")));
+        fascistBoard.setIcon(fascistBoardImage5to6_0articles);
+        liberalBoard.setIcon(liberalBoardImage_0articles_0fails);
         fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-membership.png")));
         liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-membership.png")));
         membershipCard.setIcon(liberalMembership);
@@ -265,6 +383,18 @@ public class MenuComponents {
         choiceFrame.pack();
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
+    }
+
+    public static void incArticles(String party){
+        if (party.equals("Fascist")) fascistArticles++;
+        else liberalArticles++;
+    }
+
+    public static void setBoard(){
+        fascistBoard.setIcon(fascistBoardImage5to6_1article);
+        // HERE YOU CAN IMPLEMENT THE CHANGING OF THE BOARD, BASED UPON THE NUMBER OF ARTICLES
+        // liberalArticles = number of articles on liberal board
+        // fascistArticles = number of articles on fascist board
     }
 
     public static void showRole(RoleType secretRole) throws IOException {
@@ -481,7 +611,7 @@ public class MenuComponents {
     }
 
     public static void gameFrame() throws IOException {
-        initializeCards();
+        initGameCards();
         initChatPanel();
         initGamePanel();
         mainPanel = new JPanel(new BorderLayout());
@@ -503,7 +633,6 @@ public class MenuComponents {
         //newFrame.pack();
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
-
         // welcomeDialogue();
     }
 
@@ -530,6 +659,9 @@ public class MenuComponents {
                     append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
                 } else if (msg.equals(".tcp")) {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
+                } else if (msg.equals(".increment")){
+                    setBoard();
+                    append(chatBox, "<ChatBot>: The board was updated!\n", true);
                 } else if (msg.equals(".leave")) {
                     try {
                         Menu.game.leaveGame();

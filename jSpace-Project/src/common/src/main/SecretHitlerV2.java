@@ -155,6 +155,13 @@ public class SecretHitlerV2 implements Runnable {
             int president;
             int chancellor; 
             int playerCount = -1;
+            playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
+            printDebug("Seen start!");
+            Object[] rolesObj = _gameSpace.query(new ActualField("roles"), new FormalField(Role[].class));
+
+            MenuComponents.showRole( ((Role[]) rolesObj[1])[_user.Id()].getSecretRole());
+            _gameSpace.get(new ActualField("checkedMyRole"), new ActualField(_user.Id()));
+            readAndPassRoleCheck(playerCount);
             while(gameStarted){
                 //event getCard
                 //listen for command
@@ -162,11 +169,9 @@ public class SecretHitlerV2 implements Runnable {
                 //  otherwise we risk someone reading an old command and getting stuck somewhere
                 // Object[] commands = _gameSpace.query(new ActualField(CommandType.class));
                 // CommandType cmd = (CommandType) commands[0];
-                printDebug("In loop, trying to get playerCount");
-                playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
-                printDebug("Seen start!");
                 CommandType cmd = readAndPassCommand(playerCount);
                 printDebug("Read command: " + cmd.toString());
+
                 switch (cmd) {
                     case Election:
                         System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
@@ -367,7 +372,6 @@ public class SecretHitlerV2 implements Runnable {
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));
         _gameSpace.get(new ActualField("lock"));
-        // BIG CHANCE OF ERROR HERE! What the fuck is an Array.class?
         Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
         VoteType[] votes = (VoteType[]) voteObj[1];
         int voterId = (int) voteObj[2] + 1;
@@ -433,6 +437,16 @@ public class SecretHitlerV2 implements Runnable {
             _gameSpace.put(string, _user.Id()+1);
         }
         System.out.println("Read keyword:" + string);
+    }
+
+    private void readAndPassRoleCheck(int playerCount) throws Exception {
+        _gameSpace.get(new ActualField("checkRoles"), new ActualField(_user.Id()));
+        if (_user.Id() < playerCount - 1) {
+            _gameSpace.put("checkRoles", _user.Id()+1);
+        } else {
+            _gameSpace.put("rolesChecked");
+        }
+        System.out.println("Read keyword: checkRoles");
     }
 
     private CommandType readAndPassCommand(int playerCount) throws Exception {

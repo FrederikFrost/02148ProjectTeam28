@@ -268,7 +268,7 @@ public class SecretHitlerV2 implements Runnable {
                         printDebug("After readAndPassAction");
                         
                         if (president == _user.Id()) {
-                            int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class)));
+                            int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class))[1]);
                             System.out.print("CANDS in pres: [");
                             for (int i = 0; i < cands.length; ++i) {
                                 System.out.print(cands[i] + ", ");

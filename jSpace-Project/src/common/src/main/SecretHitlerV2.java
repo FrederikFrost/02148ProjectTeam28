@@ -166,7 +166,7 @@ public class SecretHitlerV2 implements Runnable {
                 playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
                 printDebug("Seen start!");
                 CommandType cmd = readAndPassCommand(playerCount);
-                printDebug("Read command");
+                printDebug("Read command: " + cmd.toString());
                 switch (cmd) {
                     case Election:
                         System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
@@ -257,7 +257,9 @@ public class SecretHitlerV2 implements Runnable {
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
                         
                         // ActionType executivePower = (ActionType) _gameSpace.query(new ActualField("executivePower"), new FormalField(ActionType.class))[1];
+                        printDebug("Before readAndPassAction");
                         ActionType executivePower = readAndPassAction(playerCount); //maybe only pass to president
+                        printDebug("After readAndPassAction");
                         
                         if (president == _user.Id()) {
                             int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class)));
@@ -323,7 +325,7 @@ public class SecretHitlerV2 implements Runnable {
                     default:
                         break;
                 }
-                _gameSpace.put(new ActualField("lock")); //TODO: determine why this lock is not breaking the game
+                //_gameSpace.put(new ActualField("lock")); //TODO: determine why this lock is not breaking the game
                 //maybe OUTCOMMENT
             }
             System.out.println("Haha! I am a weapon of mass destruction: Spaghetti code!");
@@ -445,7 +447,7 @@ public class SecretHitlerV2 implements Runnable {
         //TODO: maybe handle dead players
         ActionType power = (ActionType) _gameSpace.get(new ActualField("executivePower"), new FormalField(ActionType.class), new ActualField(_user.Id()))[1];
         if (_user.Id() != playerCount-1) {
-            _gameSpace.put(power, _user.Id()+1);
+            _gameSpace.put("executivePower", power, _user.Id()+1);
         }
         return power;
     }

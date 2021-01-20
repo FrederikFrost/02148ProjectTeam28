@@ -864,7 +864,7 @@ public class MenuComponents {
         if (gameState == 1) {
             Helper.appendAndSend("Liberals won!");
         } else {
-            Helper.appendAndSend("Facists won!");
+            Helper.appendAndSend("Fascists won!");
         }
 	}
 

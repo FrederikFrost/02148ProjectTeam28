@@ -143,6 +143,7 @@ public class GameController implements Runnable {
                     useOldPres = rotatePresident(useOldPres);
                 } else {
                     //win check (chancellor has been chosen)
+
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
                     _gameSpace.put("lock");
@@ -300,16 +301,24 @@ public class GameController implements Runnable {
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }
+        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
+            + (index + 1) + " of these laws were passed! \n gameState is: " + won + "!");
         _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         if (won == -1) {
             throw new RuntimeException("Inconsistent game state, won int = -1");
         } else {
             _gameSpace.put("gameState", won, 0);
+            if (won == 1) {
+                Helper.appendAndSend("Liberals won by passing 5 laws!");
+            } else if (won == 2) {
+                Helper.appendAndSend("Fascists won by passing 6 laws!");
+            }
         }
         _gameSpace.put("lock");
 
-        Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
-            + (index + 1) + " of these laws were passed! \n gameState is: " + won + "!");
+        
+
+        
 
         return res;
     }

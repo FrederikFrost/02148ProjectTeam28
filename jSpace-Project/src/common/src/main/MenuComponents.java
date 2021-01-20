@@ -57,8 +57,15 @@ public class MenuComponents {
     static ImageIcon fascistCardSelected;
 
     static ImageIcon[][] fascistBoardImageMatrix = new ImageIcon[3][7];
-    static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][5];
+    static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][4];
+
+    
     static int fascistBoardIndex = 0;
+    static int fascistArticles = 0;
+    static int liberalArticles = 0;
+    static int liberalFails = 0;
+    static JLabel fascistBoard = new JLabel();
+    static JLabel liberalBoard = new JLabel();
 
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
@@ -67,12 +74,8 @@ public class MenuComponents {
     static ImageIcon fascistRole;
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
-    static JLabel fascistBoard = new JLabel();
-    static JLabel liberalBoard = new JLabel();
     static JLabel membershipCard = new JLabel();
     static JLabel roleCard = new JLabel();
-    static int fascistArticles = 0;
-    static int liberalArticles = 0;
 
     public static void initGameCards() throws IOException {
 
@@ -86,13 +89,15 @@ public class MenuComponents {
         }
 
         for (int i = 0 ; i < 6 ; i++) {
-            for (int j = 0 ; j < 5 ; j++) {
+            for (int j = 0 ; j < 4 ; j++) {
                 liberalBoardImageMatrix[i][j] = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/" +
                     i + " articles/"+j+"-fails.png")));
                 if (i == 5) break;
             }
         }
 
+        fascistBoard.setIcon(fascistBoardImageMatrix[0][0]);
+        liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
         // Article cards
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/article.png")));
         liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article.png")));
@@ -104,11 +109,15 @@ public class MenuComponents {
         // Membership cards
         fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/membership.png")));
         liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/membership.png")));
+        membershipCard.setIcon(fascistMembership);
+        membershipCard.setVisible(false);
 
         // Role cards
         fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
         liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
         hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
+        roleCard.setIcon(fascistRole);
+        roleCard.setVisible(false);
     }
 
     public static void menu() throws IOException {
@@ -135,6 +144,8 @@ public class MenuComponents {
             menuPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         }
         startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png", null);
+        startGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        startGameButton.setVisible(false);
         // Frame
         frame.setBackground(Color.WHITE);
         frame.add(menuPanel);
@@ -179,7 +190,7 @@ public class MenuComponents {
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
-            // gamePanel.add(startGameButton);
+            waiting.setText("Enough players!\n Waiting for host to start game!");
             innerIDPanel.remove(numPlayerLabel);
             innerIDPanel.add(startGameButton);
             innerIDPanel.add(numPlayerLabel);
@@ -192,7 +203,6 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            // gamePanel.remove(startGameButton);
             innerIDPanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
@@ -467,7 +477,7 @@ public class MenuComponents {
 
     public static void initGamePanel() {
         waiting = new JLabel("Waiting for players...");
-        waiting.setFont(new Font("SansSerif",Font.BOLD, 50));
+        waiting.setFont(new Font("SansSerif",Font.BOLD, 40));
         waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
         gamePanel.setSize(900,1000);
@@ -498,7 +508,9 @@ public class MenuComponents {
         innerIDPanel.add(membershipCard);
         innerIDPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         innerIDPanel.add(roleCard);
-        innerIDPanel.add(Box.createRigidArea(new Dimension(400, 0)));
+        innerIDPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+        innerIDPanel.add(startGameButton);
+        innerIDPanel.add(Box.createRigidArea(new Dimension(250, 0)));
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
         gamePanel.add(waiting);
@@ -689,15 +701,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -734,15 +746,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -845,6 +857,8 @@ public class MenuComponents {
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
             fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
         liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
+        fascistBoard.setVisible(true);
+        liberalBoard.setVisible(true);
     }
 
     public static void setCards(RoleType rt){
@@ -870,38 +884,40 @@ public class MenuComponents {
 	}
 
 	public static void incFascArticles() {
-        for (int j = 0 ; j < 7 ; j++ ){
-            if (fascistBoard.getIcon().equals(fascistBoardImageMatrix[fascistBoardIndex][j])) {
-                fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][j+1]);
-                break;
-            }
-        }
+        fascistArticles++;
+        fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][fascistArticles]);
+        resetLibFails();
     }
 
 	public static void incLibArticles() {
-        System.out.println("I AM INCREMENTING LIBERAL ARTICLES!!!!!!!!!!!");
-        loop:
-        for (int i = 0 ; i < 6 ; i++) {
-            for (int j = 0 ; j < 5 ; j++) {
-                if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){
-                    liberalBoard.setIcon(liberalBoardImageMatrix[i+1][j]);
-                    break loop;
-                }
-            }
-        }
+        liberalArticles++;
+        liberalFails = 0;
+        liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
     
     public static void incLibFails(){
-        loop:
-        for (int i = 0 ; i < 6 ; i++) {
-            for (int j = 0 ; j < 5 ; j++) {
-                if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){
-                    liberalBoard.setIcon(liberalBoardImageMatrix[i][j+1]);
-                    break loop;
-                }
-            }
-        }
+        liberalFails++;
+        liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
+
+    public static void resetLibFails(){
+        liberalFails=0;
+        liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
+    }
+
+    // public static void resetLibFails(){
+    //     loop:
+    //         for (int i = 0 ; i < 6 ; i++) {
+    //             for (int j = 0 ; j < 5 ; j++) {
+    //                 if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){
+    //                     liberalBoard.setIcon(liberalBoardImageMatrix[i][j+1]);
+    //                     break loop;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
+    // }
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

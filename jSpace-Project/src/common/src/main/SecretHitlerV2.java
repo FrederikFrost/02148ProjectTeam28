@@ -460,6 +460,7 @@ public class SecretHitlerV2 implements Runnable {
         Object[] voteObj = _gameSpace.get(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class));
         VoteType[] votes = (VoteType[]) voteObj[1];
         int voterId = (int) voteObj[2] + 1;
+        System.out.println("I read voterId:"+((int) voteObj[2]));
         votes[_user.Id()] = vote;
         _gameSpace.put("votes", votes, voterId);
         _gameSpace.put("lock");

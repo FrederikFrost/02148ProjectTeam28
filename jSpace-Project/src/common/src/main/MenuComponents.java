@@ -265,7 +265,7 @@ public class MenuComponents {
         choiceFrame.setVisible(true);
     }
 
-    public static void showMembership(RoleType secretRole) throws IOException {
+    public static void showRole(RoleType secretRole) throws IOException {
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
@@ -277,13 +277,13 @@ public class MenuComponents {
         ImageIcon ioMem, ioSecret;
         if (secretRole == RoleType.Liberal) {
             ioMem = liberalMembership;
-            ioSecret = null;    //TODO
+            ioSecret = liberalRole;    //TODO
         } else if (secretRole == RoleType.Fascist){
             ioMem = fascistMembership;
-            ioSecret = null;    //TODO
+            ioSecret = fascistRole;    //TODO
         } else {
             ioMem = fascistMembership;
-            ioSecret = null;    //TODO
+            ioSecret = hitlerRole;    //TODO
         }
 
         JLabel membership = new JLabel(ioMem);

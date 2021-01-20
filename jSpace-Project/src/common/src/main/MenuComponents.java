@@ -364,11 +364,18 @@ public class MenuComponents {
         JFrame showFrame = new JFrame();
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
         showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        showFrame.setTitle("ALLIES");
+        showFrame.setTitle("Allies");
 
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
+
+        JLabel allyLabel = new JLabel("These players are your allies!");
+        JLabel noteLabel = new JLabel("(Make a mental note in your head!)");
+        allyLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        allyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        allyLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         
         ImageIcon ioSecret;
         String name;
@@ -383,10 +390,15 @@ public class MenuComponents {
             allyPanel.setLayout(new BoxLayout(allyPanel, BoxLayout.Y_AXIS));
             JLabel allyRole = new JLabel(ioSecret);
             JLabel allyName = new JLabel(name);
+            allyName.setFont(new Font("SansSerif", Font.BOLD, 14));
             allyName.setAlignmentX(Component.CENTER_ALIGNMENT);
+            allyRole.setAlignmentX(Component.CENTER_ALIGNMENT);
             allyPanel.add(allyName);
             allyPanel.add(Box.createRigidArea(new Dimension(10, 10)));
             allyPanel.add(allyRole);
+            Border border = BorderFactory.createLineBorder(Color.BLACK);
+            allyPanel.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
             showPanel.add(allyPanel);
         }
@@ -404,10 +416,15 @@ public class MenuComponents {
                     }
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        showFrame.add(allyLabel);
+        showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
+        showFrame.add(noteLabel);
+        showFrame.add(Box.createRigidArea(new Dimension(0, 40)));
         showFrame.add(showPanel);
-        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         showFrame.add(submitButton, BorderLayout.CENTER);
-        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.pack();
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
@@ -417,7 +434,7 @@ public class MenuComponents {
         JFrame showFrame = new JFrame();
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
         showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        showFrame.setTitle("INVESTIGATE");
+        showFrame.setTitle("Investigate");
 
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
@@ -437,12 +454,12 @@ public class MenuComponents {
         JLabel playerParty = new JLabel(ioMem);
         JLabel playerName = new JLabel(name);
         playerName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        playerParty.setAlignmentX(Component.CENTER_ALIGNMENT);
         investigatePanel.add(playerName);
         investigatePanel.add(Box.createRigidArea(new Dimension(10, 10)));
         investigatePanel.add(playerParty);
         showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         showPanel.add(investigatePanel);
-        
         showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 
         JButton submitButton = new JButton("I got it");
@@ -662,6 +679,8 @@ public class MenuComponents {
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         gameFrame.setVisible(true);
+        //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        //investigatePlayer("Elias", RoleType.Liberal);
         // welcomeDialogue();
     }
 

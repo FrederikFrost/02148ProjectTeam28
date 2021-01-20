@@ -330,26 +330,8 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                    // try {
-                    //     Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
-                    // } catch (InterruptedException e1) {
-                    //     // TODO Auto-generated catch block
-                    //     e1.printStackTrace();
-                    // }
                 }
 
-                // if (legiChoices.size() == cards.length - 1) {
-                //     for (LegislativeType choice : legiChoices)
-                //         System.out.println(choice);
-                //     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                //     try {
-                //         Menu.game.getGameSpace().put("legiChoices", legiChoices);
-                //     } catch (InterruptedException e1) {
-                //         // TODO Auto-generated catch block
-                //         e1.printStackTrace();
-                //     }
-                // }
-                // else System.out.println("You haven't picked the right amount of article cards!");
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(showPanel);
@@ -403,19 +385,6 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-
-                // if (legiChoices.size() == cards.length - 1) {
-                //     for (LegislativeType choice : legiChoices)
-                //         System.out.println(choice);
-                //     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                //     try {
-                //         Menu.game.getGameSpace().put("legiChoices", legiChoices);
-                //     } catch (InterruptedException e1) {
-                //         // TODO Auto-generated catch block
-                //         e1.printStackTrace();
-                //     }
-                // }
-                // else System.out.println("You haven't picked the right amount of article cards!");
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(showPanel);
@@ -469,19 +438,63 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
+            }});
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFrame.add(showPanel);
+        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(submitButton, BorderLayout.CENTER);
+        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.pack();
+        showFrame.setLocationRelativeTo(null);
+        showFrame.setVisible(true);
+    }
 
-                // if (legiChoices.size() == cards.length - 1) {
-                //     for (LegislativeType choice : legiChoices)
-                //         System.out.println(choice);
-                //     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                //     try {
-                //         Menu.game.getGameSpace().put("legiChoices", legiChoices);
-                //     } catch (InterruptedException e1) {
-                //         // TODO Auto-generated catch block
-                //         e1.printStackTrace();
-                //     }
-                // }
-                // else System.out.println("You haven't picked the right amount of article cards!");
+    public static void showTopCards(LegislativeType[] deckTop) throws IOException {
+        JFrame showFrame = new JFrame();
+        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
+        showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        showFrame.setTitle("Showing top 3 cards in deck");
+
+        JPanel showPanel = new JPanel();
+        showPanel.setSize(300, 400);
+        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
+        
+        ImageIcon cardIcon;
+        String cardName;
+        for (int i = 0; i < 3; i++) {
+            
+            if (deckTop[i].equals(LegislativeType.Fascist)) {
+                cardIcon = fascistCard;
+            } else {
+                cardIcon = liberalCard;
+            }
+            JPanel peekPanel = new JPanel();
+            peekPanel.setLayout(new BoxLayout(peekPanel, BoxLayout.Y_AXIS));
+            JLabel cardIconLabel = new JLabel(cardIcon);
+            if (i == 0) {
+                cardName = "Top card:";
+                JLabel cardNameLabel = new JLabel(cardName);
+                cardNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                peekPanel.add(cardNameLabel);
+            }
+            peekPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            peekPanel.add(cardIconLabel);
+            showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            showPanel.add(peekPanel);
+        }
+        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+
+        JButton submitButton = new JButton("I got it");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        Menu.game.getGameSpace().put("iPeekedCards");
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(showPanel);

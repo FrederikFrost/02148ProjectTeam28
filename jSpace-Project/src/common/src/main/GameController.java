@@ -25,6 +25,10 @@ public class GameController implements Runnable {
     private ArrayList<LegislativeType> deck;
     private boolean veto = false;
     private boolean debug = true;
+    private LegislativeType[] liberalBoard;
+    private LegislativeType[] fascistBoard;
+    ActionType[] executivePowers;
+    Role[] roles;
 
     public GameController(Space _chatSpace, Space _userSpace,Space _gameSpace) {
         this._chatSpace = _chatSpace;
@@ -143,6 +147,10 @@ public class GameController implements Runnable {
                     useOldPres = rotatePresident(useOldPres);
                 } else {
                     //win check (chancellor has been chosen)
+                    if (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) {
+                        //put gameState
+                    }           
+
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
                     _gameSpace.put("lock");
@@ -281,11 +289,11 @@ public class GameController implements Runnable {
 
     public ActionType UpdateBoards(LegislativeType legislativeType) throws Exception { // TODO make test
         if (legislativeType == LegislativeType.None) throw new IllegalArgumentException("Card cannot be none!");
-        _gameSpace.get(new ActualField("lock"));
-        Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
-        LegislativeType[] liberalBoard = (LegislativeType[]) boards[1];
-        LegislativeType[] fascistBoard = (LegislativeType[]) boards[2];
-        ActionType[] executivePowers = (ActionType[]) boards[3];
+        // Object[] boards = _gameSpace.get(new ActualField("boards"), new FormalField(LegislativeType[].class), new FormalField(LegislativeType[].class), new FormalField(ActionType[].class));
+        // liberalBoard = (LegislativeType[]) boards[1];
+        // fascistBoard = (LegislativeType[]) boards[2];
+        // ActionType[] executivePowers = (ActionType[]) boards[3];
+        
         ActionType res;
         int won = -1; // -1 = error, 0 = continue game, 1 = liberal won, 2 = facist won.
         int index = -1;
@@ -300,7 +308,8 @@ public class GameController implements Runnable {
             fascistBoard[index] = LegislativeType.Fascist;
             res = executivePowers[index];
         }
-        _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        _gameSpace.get(new ActualField("lock"));
         if (won == -1) {
             throw new RuntimeException("Inconsistent game state, won int = -1");
         } else {
@@ -497,7 +506,6 @@ public class GameController implements Runnable {
         Role fascist = new Role(RoleType.Fascist, RoleType.Fascist);
         Role hitler = new Role(RoleType.Fascist, RoleType.Hitler);
 
-        Role[] roles;
         switch (playerCount) {
             case 5:
                 roles = new Role[] {liberal, liberal, liberal, fascist, hitler};
@@ -566,13 +574,12 @@ public class GameController implements Runnable {
     public void SetupGame() throws Exception {
         if (playerCount < 5) throw new IllegalArgumentException("Player count cannot be less than 5." + (playerCount==-1? "PlayerCount was not set":""));
 
-        LegislativeType[] liberalBoard = new LegislativeType[5];
-        LegislativeType[] fascistBoard = new LegislativeType[6];
+        liberalBoard = new LegislativeType[5];
+        fascistBoard = new LegislativeType[6];
         Arrays.fill(liberalBoard, LegislativeType.None);
         Arrays.fill(fascistBoard, LegislativeType.None);
 
         //set presedential powers
-        ActionType[] executivePowers; 
         switch (playerCount) {
             case 5:
             case 6:
@@ -593,7 +600,7 @@ public class GameController implements Runnable {
 
         deck = GetShuffledDeck();
 
-        _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
+        // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented
         _gameSpace.put("drawPile", 17);
         _gameSpace.put("discardPile", 0);

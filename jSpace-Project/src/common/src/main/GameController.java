@@ -90,6 +90,8 @@ public class GameController implements Runnable {
             
             SetupGame();
             AssignRoles();
+            _gameSpace.put("checkRoles", 0);
+            _gameSpace.get(new ActualField("rolesChecked"));
             
             _gameSpace.put("lock");
             printDebug("Starting game loop");
@@ -522,7 +524,7 @@ public class GameController implements Runnable {
         CreateAndUploadUserArray();
 
         Collections.shuffle(Arrays.asList(roles));
-        _gameSpace.put("roles", roles, playerCount);
+        _gameSpace.put("roles", roles);
         printDebug("Assigned roles!");
         //TODO show fascist who they are working with
         //  5-6 hitler and fascist know eachother

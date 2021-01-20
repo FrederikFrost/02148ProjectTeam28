@@ -379,13 +379,9 @@ public class SecretHitlerV2 implements Runnable {
         switch (gameState) {
             case 0:
                 MenuComponents.incLibArticles();
-                Thread.sleep(1000);
-                MenuComponents.resetLibFails();
                 break;
             case 1:
                 MenuComponents.incFascArticles();
-                Thread.sleep(1000);
-                MenuComponents.resetLibFails();
                 break;
             case 2:
             case 3:

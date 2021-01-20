@@ -165,6 +165,7 @@ public class SecretHitlerV2 implements Runnable {
             PlayerRole[] knownAllies = GetKnownAllies(playerCount, _user.Id(), roles, users);
             RoleType secretRole = (roles[_user.Id()].getSecretRole());
             MenuComponents.showRole(secretRole, knownAllies);
+            MenuComponents.setCards(secretRole);
             _gameSpace.get(new ActualField("checkedMyRole"), new ActualField(_user.Id()));
             readAndPassRoleCheck(playerCount);
             while(gameStarted){

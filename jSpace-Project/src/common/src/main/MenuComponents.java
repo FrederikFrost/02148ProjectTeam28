@@ -43,6 +43,7 @@ public class MenuComponents {
     static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
+    static JLabel waiting;
     static JButton[] buttons = new JButton[10];
     static JButton startGameButton;
     static JButton sendMessage;
@@ -92,9 +93,6 @@ public class MenuComponents {
             }
         }
 
-        fascistBoard.setIcon(fascistBoardImageMatrix[0][0]);
-        liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
-
         // Article cards
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/article.png")));
         liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article.png")));
@@ -106,13 +104,11 @@ public class MenuComponents {
         // Membership cards
         fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/membership.png")));
         liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/membership.png")));
-        membershipCard.setIcon(liberalMembership);
 
         // Role cards
         fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
         liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
         hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
-        roleCard.setIcon(hitlerRole);
     }
 
     public static void menu() throws IOException {
@@ -385,6 +381,7 @@ public class MenuComponents {
             allyPanel.setLayout(new BoxLayout(allyPanel, BoxLayout.Y_AXIS));
             JLabel allyRole = new JLabel(ioSecret);
             JLabel allyName = new JLabel(name);
+            allyName.setAlignmentX(Component.CENTER_ALIGNMENT);
             allyPanel.add(allyName);
             allyPanel.add(Box.createRigidArea(new Dimension(10, 10)));
             allyPanel.add(allyRole);
@@ -425,28 +422,6 @@ public class MenuComponents {
         showFrame.pack();
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
-    }
-
-
-    // public class Board extends JPanel {
-    //     public final Image image;
-    //     private static final long serialVersionUID = 1L;
-
-    //     public Board(ImageIcon io){
-    //         this.image = io.getImage();
-    //     }
-
-    //     @Override
-    //     protected void paintComponent(Graphics g) {
-    //         super.paintComponent(g);
-    //         g.drawImage(this.image, 0, 0, this.getWidth(), this.getHeight(), null);
-    //         }
-    //     }
-    public static void setBoardSize(JLabel board, Point loc, Dimension d){
-        board.setLocation(loc);
-        board.setMinimumSize(d);
-        board.setPreferredSize(d);
-        board.setMaximumSize(d);
     }
 
     public static void initChatPanel() {
@@ -491,6 +466,9 @@ public class MenuComponents {
     }
 
     public static void initGamePanel() {
+        waiting = new JLabel("Waiting for players...");
+        waiting.setFont(new Font("SansSerif",Font.BOLD, 50));
+        waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
         gamePanel.setSize(900,1000);
         JPanel boardPanel = new JPanel();
@@ -523,6 +501,7 @@ public class MenuComponents {
         innerIDPanel.add(Box.createRigidArea(new Dimension(400, 0)));
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
+        gamePanel.add(waiting);
         gamePanel.add(boardPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(30, 30)));
         gamePanel.add(IDPanel);
@@ -862,8 +841,24 @@ public class MenuComponents {
     };
 
     public static void setGameBoard(int playerCount){
+        gamePanel.remove(waiting);
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
             fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
+        liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
+    }
+
+    public static void setCards(RoleType rt){
+        ImageIcon role, party;
+        if (rt == RoleType.Fascist || rt == RoleType.Hitler) {
+            party = fascistMembership;
+            if (rt == RoleType.Hitler) role = hitlerRole;
+            else role = fascistRole;
+        } else {
+            role = liberalRole;
+            party = liberalMembership;
+        }
+        membershipCard.setIcon(party);
+        roleCard.setIcon(role);
     }
 
 	public static void gameOverScreen(int gameState) {

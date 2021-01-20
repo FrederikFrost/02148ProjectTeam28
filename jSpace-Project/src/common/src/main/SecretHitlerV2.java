@@ -255,7 +255,7 @@ public class SecretHitlerV2 implements Runnable {
                     case ExecutiveAction:
                         president = (int) _gameSpace.query(new ActualField("president"), new FormalField(Integer.class))[1];
                         chancellor = (int) _gameSpace.query(new ActualField("chancellor"), new FormalField(Integer.class))[1];
-                        
+                        printDebug("Before readAndPassAction");
                         // ActionType executivePower = (ActionType) _gameSpace.query(new ActualField("executivePower"), new FormalField(ActionType.class))[1];
                         printDebug("Before readAndPassAction");
                         ActionType executivePower = readAndPassAction(playerCount); //maybe only pass to president
@@ -319,6 +319,7 @@ public class SecretHitlerV2 implements Runnable {
                                     break;
                             }
                         }
+                        readAndPassKeyWord("endExecutive", playerCount);
                         //TODO: switch depending on executive power
                         System.out.println("Executive action has happened");
                         break;

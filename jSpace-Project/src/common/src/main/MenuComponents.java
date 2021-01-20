@@ -13,6 +13,7 @@ import javax.swing.text.StyleConstants;
 
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.LegislativeType;
+import common.src.main.Types.RoleType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -254,6 +255,65 @@ public class MenuComponents {
         choiceFrame.pack();
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
+    }
+
+    public static void showMembership(RoleType secretRole) throws IOException {
+        JPanel showPanel = new JPanel();
+        showPanel.setSize(300, 400);
+        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
+        JFrame showFrame = new JFrame();
+        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
+        showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        showFrame.setTitle("Your membership and your secret role");
+        
+        ImageIcon ioMem, ioSecret;
+        if (secretRole == RoleType.Liberal) {
+            ioMem = liberalMembership;
+            ioSecret = null;    //TODO
+        } else if (secretRole == RoleType.Fascist){
+            ioMem = fascistMembership;
+            ioSecret = null;    //TODO
+        } else {
+            ioMem = fascistMembership;
+            ioSecret = null;    //TODO
+        }
+
+        JLabel membership = new JLabel(ioMem);
+        showPanel.add(membership);
+        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        JLabel secret = new JLabel(ioSecret);
+        showPanel.add(secret);
+        
+        JButton submitButton = new JButton("I got it");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (secretRole == RoleType.Liberal) {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                } else {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                }
+
+                // if (legiChoices.size() == cards.length - 1) {
+                //     for (LegislativeType choice : legiChoices)
+                //         System.out.println(choice);
+                //     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                //     try {
+                //         Menu.game.getGameSpace().put("legiChoices", legiChoices);
+                //     } catch (InterruptedException e1) {
+                //         // TODO Auto-generated catch block
+                //         e1.printStackTrace();
+                //     }
+                // }
+                // else System.out.println("You haven't picked the right amount of article cards!");
+            }});
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFrame.add(showPanel);
+        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(submitButton, BorderLayout.CENTER);
+        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.pack();
+        showFrame.setLocationRelativeTo(null);
+        showFrame.setVisible(true);
     }
     // public class Board extends JPanel {
     //     public final Image image;

@@ -13,7 +13,6 @@ import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
-import common.src.main.Role.PlayerRole;
 import common.src.main.Types.ActionType;
 import common.src.main.Types.CommandType;
 import common.src.main.Types.LegislativeType;
@@ -359,7 +358,7 @@ public class SecretHitlerV2 implements Runnable {
             return res;
         }
     }
-    
+
     private boolean checkGameState(int playerCount) throws Exception {
         /*Function to check the incoming game state. Returns false if the game is over, and true otherwise
         0 = liberal law passed - game continues

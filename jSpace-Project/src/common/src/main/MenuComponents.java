@@ -9,8 +9,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
-import common.src.main.Role.PlayerRole;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.LegislativeType;
 import common.src.main.Types.RoleType;
@@ -207,12 +205,12 @@ public class MenuComponents {
                 ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article-selected.png")));
         fascistBoard.setIcon(fascistBoardImage5to6_0articles);
         liberalBoard.setIcon(liberalBoardImage_0articles_0fails);
-        fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-membership.png")));
-        liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-membership.png")));
+        fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/membership.png")));
+        liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/membership.png")));
         membershipCard.setIcon(liberalMembership);
-        fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-role.png")));
-        liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-role.png")));
-        hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/hitler-role.png")));
+        fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
+        liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
+        hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
         roleCard.setIcon(hitlerRole);
     }
 
@@ -426,6 +424,12 @@ public class MenuComponents {
                     }
                 } else {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        showAllyRoles(allies);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                     // try {
                     //     Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
                     // } catch (InterruptedException e1) {
@@ -458,13 +462,14 @@ public class MenuComponents {
     }
 
     public static void showAllyRoles(PlayerRole[] allies) throws IOException {
-        JPanel showPanel = new JPanel();
-        showPanel.setSize(300, 400);
-        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
         JFrame showFrame = new JFrame();
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
         showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         showFrame.setTitle("Your membership and your secret role");
+
+        JPanel showPanel = new JPanel();
+        showPanel.setSize(300, 400);
+        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
         
         ImageIcon ioSecret;
         String name;
@@ -475,19 +480,21 @@ public class MenuComponents {
             } else {
                 ioSecret = hitlerRole;
             }
-    
-            JLabel membership = new JLabel(ioMem);
-            showPanel.add(membership);
+            JPanel allyPanel = new JPanel();
+            allyPanel.setLayout(new BoxLayout(allyPanel, BoxLayout.Y_AXIS));
+            JLabel allyRole = new JLabel(ioSecret);
+            JLabel allyName = new JLabel(name);
+            allyPanel.add(allyName);
+            allyPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            allyPanel.add(allyRole);
             showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
-            JLabel secret = new JLabel(ioSecret);
-            showPanel.add(secret);
-            
+            showPanel.add(allyPanel);
         }
+        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 
         JButton submitButton = new JButton("I got it");
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (secretRole == RoleType.Liberal || allies == null) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     try {
                         Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
@@ -495,15 +502,6 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                } else {
-                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                    // try {
-                    //     Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
-                    // } catch (InterruptedException e1) {
-                    //     // TODO Auto-generated catch block
-                    //     e1.printStackTrace();
-                    // }
-                }
 
                 // if (legiChoices.size() == cards.length - 1) {
                 //     for (LegislativeType choice : legiChoices)

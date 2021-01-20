@@ -157,6 +157,7 @@ public class SecretHitlerV2 implements Runnable {
             int chancellor; 
             int playerCount = -1;
             playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
+            MenuComponents.setGameBoard(playerCount);
             printDebug("Seen start!");
             Role[] roles = (Role[]) _gameSpace.query(new ActualField("roles"), new FormalField(Role[].class))[1];
             User[] users = (User[]) _gameSpace.query(new ActualField("users"), new FormalField(User[].class))[1];

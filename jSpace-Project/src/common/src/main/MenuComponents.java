@@ -57,6 +57,7 @@ public class MenuComponents {
 
     static ImageIcon[][] fascistBoardImageMatrix = new ImageIcon[3][7];
     static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][5];
+    static int fascistBoardIndex = 0;
 
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
@@ -860,6 +861,11 @@ public class MenuComponents {
         }
     };
 
+    public static void setGameBoard(int playerCount){
+        fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
+            fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
+    }
+
 	public static void gameOverScreen(int gameState) {
         if (gameState == 1) {
             Helper.appendAndSend("Liberals won!");
@@ -869,12 +875,10 @@ public class MenuComponents {
 	}
 
 	public static void incFascArticles() {
-        for (int i = 0 ; i < 3 ; i++) {
-            for (int j = 0 ; j < 7 ; j++ ){
-                if (fascistBoard.getIcon().equals(fascistBoardImageMatrix[i][j])) {
-                    fascistBoard.setIcon(fascistBoardImageMatrix[i][j+1]);
-                    break;
-                }
+        for (int j = 0 ; j < 7 ; j++ ){
+            if (fascistBoard.getIcon().equals(fascistBoardImageMatrix[fascistBoardIndex][j])) {
+                fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][j+1]);
+                break;
             }
         }
     }

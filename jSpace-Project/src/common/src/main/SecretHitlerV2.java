@@ -369,10 +369,10 @@ public class SecretHitlerV2 implements Runnable {
         int gameState = readAndPassGameState(playerCount);
         switch (gameState) {
             case 0:
-                MenuComponents.incLib();
+                MenuComponents.incLibArticles();
                 break;
             case 1:
-                MenuComponents.incFasc();
+                MenuComponents.incFascArticles();
                 break;
             case 2:
             case 3:

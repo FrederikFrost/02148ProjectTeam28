@@ -11,6 +11,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import common.src.main.Role.PlayerRole;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.LegislativeType;
 import common.src.main.Types.RoleType;
@@ -267,7 +268,7 @@ public class MenuComponents {
         choiceFrame.setVisible(true);
     }
 
-    public static void showRole(RoleType secretRole) throws IOException {
+    public static void showRole(RoleType secretRole, PlayerRole[] allies) throws IOException {
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
@@ -297,7 +298,7 @@ public class MenuComponents {
         JButton submitButton = new JButton("I got it");
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (secretRole == RoleType.Liberal) {
+                if (secretRole == RoleType.Liberal || allies == null) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     try {
                         Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
@@ -307,12 +308,12 @@ public class MenuComponents {
                     }
                 } else {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                    try {
-                        Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
-                    } catch (InterruptedException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+                    // try {
+                    //     Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                    // } catch (InterruptedException e1) {
+                    //     // TODO Auto-generated catch block
+                    //     e1.printStackTrace();
+                    // }
                 }
 
                 // if (legiChoices.size() == cards.length - 1) {
@@ -337,6 +338,78 @@ public class MenuComponents {
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
     }
+
+    public static void showAllyRoles(PlayerRole[] allies) throws IOException {
+        JPanel showPanel = new JPanel();
+        showPanel.setSize(300, 400);
+        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
+        JFrame showFrame = new JFrame();
+        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
+        showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        showFrame.setTitle("Your membership and your secret role");
+        
+        ImageIcon ioSecret;
+        String name;
+        for (PlayerRole playerRole : allies) {
+            name = playerRole.Name;
+            if (playerRole.SecretRole == RoleType.Fascist) {
+                ioSecret = fascistRole;
+            } else {
+                ioSecret = hitlerRole;
+            }
+    
+            JLabel membership = new JLabel(ioMem);
+            showPanel.add(membership);
+            showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            JLabel secret = new JLabel(ioSecret);
+            showPanel.add(secret);
+            
+        }
+
+        JButton submitButton = new JButton("I got it");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (secretRole == RoleType.Liberal || allies == null) {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                } else {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    // try {
+                    //     Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                    // } catch (InterruptedException e1) {
+                    //     // TODO Auto-generated catch block
+                    //     e1.printStackTrace();
+                    // }
+                }
+
+                // if (legiChoices.size() == cards.length - 1) {
+                //     for (LegislativeType choice : legiChoices)
+                //         System.out.println(choice);
+                //     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                //     try {
+                //         Menu.game.getGameSpace().put("legiChoices", legiChoices);
+                //     } catch (InterruptedException e1) {
+                //         // TODO Auto-generated catch block
+                //         e1.printStackTrace();
+                //     }
+                // }
+                // else System.out.println("You haven't picked the right amount of article cards!");
+            }});
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFrame.add(showPanel);
+        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(submitButton, BorderLayout.CENTER);
+        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.pack();
+        showFrame.setLocationRelativeTo(null);
+        showFrame.setVisible(true);
+    }
+
     // public class Board extends JPanel {
     //     public final Image image;
     //     private static final long serialVersionUID = 1L;
@@ -503,7 +576,7 @@ public class MenuComponents {
         //newFrame.pack();
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
-
+        showRole(RoleType.Hitler);
         // welcomeDialogue();
     }
 

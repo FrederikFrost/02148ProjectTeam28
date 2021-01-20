@@ -13,9 +13,11 @@ import org.jspace.SequentialSpace;
 import org.jspace.Space;
 import org.jspace.SpaceRepository;
 
+import common.src.main.Role.PlayerRole;
 import common.src.main.Types.ActionType;
 import common.src.main.Types.CommandType;
 import common.src.main.Types.LegislativeType;
+import common.src.main.Types.RoleType;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.VoteType;
 
@@ -157,9 +159,12 @@ public class SecretHitlerV2 implements Runnable {
             int playerCount = -1;
             playerCount = (int) _gameSpace.query(new ActualField("start"), new FormalField(Integer.class))[1];
             printDebug("Seen start!");
-            Object[] rolesObj = _gameSpace.query(new ActualField("roles"), new FormalField(Role[].class));
+            Role[] roles = (Role[]) _gameSpace.query(new ActualField("roles"), new FormalField(Role[].class))[1];
+            User[] users = (User[]) _gameSpace.query(new ActualField("users"), new FormalField(User[].class))[1];
 
-            MenuComponents.showRole( ((Role[]) rolesObj[1])[_user.Id()].getSecretRole());
+            PlayerRole[] knownAllies = GetKnownAllies(playerCount, _user.Id(), roles, users);
+            RoleType secretRole = (roles[_user.Id()].getSecretRole());
+            MenuComponents.showRole(secretRole, knownAllies);
             _gameSpace.get(new ActualField("checkedMyRole"), new ActualField(_user.Id()));
             readAndPassRoleCheck(playerCount);
             while(gameStarted){
@@ -338,6 +343,23 @@ public class SecretHitlerV2 implements Runnable {
         } catch (Exception e) {
             //TODO: Player was disconnected, handle this
             e.printStackTrace();
+        }
+    }
+
+    private PlayerRole[] GetKnownAllies(int playerCount, int id, Role[] roles, User[] users) {
+        if (roles[id].getSecretRole() == RoleType.Liberal) return null;
+        else if (6 < playerCount && roles[id].getSecretRole() == RoleType.Hitler) return null;
+        else {
+            int length = playerCount < 7? 1 : playerCount < 9? 2: 3;
+            PlayerRole[] res = new PlayerRole[length];
+            int j = 0;
+            for (int i = 0; i < playerCount; ++i) {
+                if (roles[i].getPartyMembership() == RoleType.Fascist && i != id) {
+                    PlayerRole pr = new PlayerRole(users[i].Name(), roles[i].getSecretRole());
+                    res[j++] = pr;
+                }
+            }
+            return res;
         }
     }
 

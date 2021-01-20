@@ -487,7 +487,7 @@ public class MenuComponents {
 
     public static String suggestDialogueBox(String[] choices, String suggestMsg) {
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                question, JOptionPane.QUESTION_MESSAGE, null, // Use
+                suggestMsg, JOptionPane.QUESTION_MESSAGE, null, // Use
                 // default
                 // icon
                 choices, // Array of choices

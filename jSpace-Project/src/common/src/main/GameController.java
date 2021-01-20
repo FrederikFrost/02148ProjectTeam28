@@ -272,7 +272,7 @@ public class GameController implements Runnable {
 
                             break;
                     }
-                    if (roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
+                    if (killedPlayer != -1 && roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
                         _gameSpace.put("gameState", 2, 0);
                         gameStarted = false;
                         Helper.appendAndSend("Hitler was executed. Liberals win!");

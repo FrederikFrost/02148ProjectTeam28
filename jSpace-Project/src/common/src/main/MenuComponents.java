@@ -572,6 +572,7 @@ public class MenuComponents {
         waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         joinedPlayers = new JTextPane();
+        joinedPlayers.setEditable(false);
         joinedPlayers.setFont(new Font("SansSerif",Font.PLAIN, 35));
         joinedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
         Border border = BorderFactory.createLineBorder(Color.BLACK);
@@ -635,7 +636,7 @@ public class MenuComponents {
         gamePanel.add(ra2);
         gamePanel.add(joinedPlayers);
         gamePanel.add(boardPanel);
-        gamePanel.add(Box.createRigidArea(new Dimension(30, 30)));
+        gamePanel.add(Box.createRigidArea(new Dimension(0, 30)));
         gamePanel.add(IDPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 

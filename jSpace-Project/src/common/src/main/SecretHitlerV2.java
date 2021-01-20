@@ -384,7 +384,10 @@ public class SecretHitlerV2 implements Runnable {
                 MenuComponents.incFascArticles();
                 break;
             case 2:
+                MenuComponents.incLibArticles();
+                return false;
             case 3:
+                MenuComponents.incFascArticles();
                 return false;
 
             case 4:

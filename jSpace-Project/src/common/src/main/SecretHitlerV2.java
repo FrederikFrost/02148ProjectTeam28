@@ -176,6 +176,7 @@ public class SecretHitlerV2 implements Runnable {
                     case Election:
                         System.out.println("Handler starting election for :" + _user.Id() + ", " + _user.Name());
                         election(playerCount);
+                        gameStarted = checkGameState(playerCount);
                         break;
                     case LegislativeSession:
                         //check locks in this switch
@@ -249,11 +250,7 @@ public class SecretHitlerV2 implements Runnable {
                             _gameSpace.put("chancellorReturn", cards);
                             _gameSpace.put("lock");
                         }
-                        int gameState = readAndPassGameState(playerCount);
-                        if (gameState != 0) {
-                            gameStarted = false;
-                            MenuComponents.gameOverScreen(gameState);
-                        }
+                        gameStarted = checkGameState(playerCount);
                         readAndPassKeyWord("endLegislate", playerCount);
                         System.out.println("L_session has happened");
                         break;
@@ -339,6 +336,34 @@ public class SecretHitlerV2 implements Runnable {
             //TODO: Player was disconnected, handle this
             e.printStackTrace();
         }
+    }
+
+    private boolean checkGameState(int playerCount) throws Exception {
+        /*Function to check the incoming game state. Returns false if the game is over, and true otherwise
+        0 = liberal law passed - game continues
+        1 = fascist law passed - game continues
+        2 = liberal win (either by passing law, or assassinating Hitler)
+        3 = fascist win (either by passing law, or hitler elected chancellor)
+        4 = game continues (not hitler elected, someone else executed)*/
+        int gameState = readAndPassGameState(playerCount);
+        switch (gameState) {
+            case 0:
+                MenuComponents.incLib();
+                break;
+            case 1:
+                MenuComponents.incFasc();
+                break;
+            case 2:
+            case 3:
+                return false;
+
+            case 4:
+                break;
+
+            default:
+                throw new RuntimeException("Something went wrong checking gamestate. Gamestate is: " + gameState);
+        }
+        return true;
     }
 
     private static void election(int playerCount) throws InterruptedException {

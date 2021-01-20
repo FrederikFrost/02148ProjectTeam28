@@ -776,6 +776,12 @@ public class MenuComponents {
             Helper.appendAndSend("Facists won!");
         }
 	}
+
+	public static void incFasc() {
+	}
+
+	public static void incLib() {
+	}
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

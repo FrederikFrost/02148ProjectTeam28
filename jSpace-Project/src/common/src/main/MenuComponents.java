@@ -62,11 +62,15 @@ public class MenuComponents {
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
     static ImageIcon liberalBoardImage;
-    static JLabel fascistBoard = new JLabel();
-    static JLabel liberalBoard = new JLabel();
     static ImageIcon fascistMembership;
     static ImageIcon liberalMembership;
+    static ImageIcon fascistRole;
+    static ImageIcon liberalRole;
+    static ImageIcon hitlerRole;
+    static JLabel fascistBoard = new JLabel();
+    static JLabel liberalBoard = new JLabel();
     static JLabel membershipCard = new JLabel();
+    static JLabel roleCard = new JLabel();
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
@@ -84,6 +88,10 @@ public class MenuComponents {
         fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-membership.png")));
         liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-membership.png")));
         membershipCard.setIcon(liberalMembership);
+        fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-role.png")));
+        liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-role.png")));
+        hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/hitler-role.png")));
+        roleCard.setIcon(hitlerRole);
     }
 
     public static void menu() throws IOException {
@@ -257,7 +265,7 @@ public class MenuComponents {
         choiceFrame.setVisible(true);
     }
 
-    public static void showMembership(RoleType secretRole) throws IOException {
+    public static void showRole(RoleType secretRole) throws IOException {
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
@@ -269,13 +277,13 @@ public class MenuComponents {
         ImageIcon ioMem, ioSecret;
         if (secretRole == RoleType.Liberal) {
             ioMem = liberalMembership;
-            ioSecret = null;    //TODO
+            ioSecret = liberalRole;    //TODO
         } else if (secretRole == RoleType.Fascist){
             ioMem = fascistMembership;
-            ioSecret = null;    //TODO
+            ioSecret = fascistRole;    //TODO
         } else {
             ioMem = fascistMembership;
-            ioSecret = null;    //TODO
+            ioSecret = hitlerRole;    //TODO
         }
 
         JLabel membership = new JLabel(ioMem);
@@ -389,14 +397,25 @@ public class MenuComponents {
         boardPanel.add(liberalBoard);
         IDPanel = new JPanel();
         innerIDPanel = new JPanel();
-        innerIDPanel.setLayout(new GridLayout(1,1));
+        //innerIDPanel.setLayout(new GridLayout(1,0));
+        innerIDPanel.setLayout(new BoxLayout(innerIDPanel, BoxLayout.X_AXIS));
         IDPanel.setLayout(new BorderLayout());
-        membershipCard.setHorizontalAlignment(JLabel.LEFT);
+        //membershipCard.setHorizontalAlignment(JLabel.LEFT);
         numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
-        numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
-        numPlayerLabel.setVerticalAlignment(JLabel.BOTTOM);
+        numPlayerLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        numPlayerLabel.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+        //numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
+        //numPlayerLabel.setVerticalAlignment(JLabel.BOTTOM);
         numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        membershipCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        membershipCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+        //roleCard.setHorizontalAlignment(JLabel.LEFT);
+        roleCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        roleCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
         innerIDPanel.add(membershipCard);
+        innerIDPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        innerIDPanel.add(roleCard);
+        innerIDPanel.add(Box.createRigidArea(new Dimension(400, 0)));
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
         gamePanel.add(boardPanel);

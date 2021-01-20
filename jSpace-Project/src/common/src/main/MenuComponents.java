@@ -79,9 +79,12 @@ public class MenuComponents {
                 ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
         liberalCardSelected = new ImageIcon(
                 ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
-        fascistBoardImage5to6 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-5to6.png")));
-        fascistBoardImage7to8 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-7to8.png")));
-        fascistBoardImage9to10 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-9to10.png")));
+        fascistBoardImage5to6 = new ImageIcon(
+                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-5to6.png")));
+        fascistBoardImage7to8 = new ImageIcon(
+                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-7to8.png")));
+        fascistBoardImage9to10 = new ImageIcon(
+                ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-9to10.png")));
         liberalBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-board.png")));
         fascistBoard.setIcon(fascistBoardImage9to10);
         liberalBoard.setIcon(liberalBoardImage);
@@ -162,7 +165,7 @@ public class MenuComponents {
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
-            //gamePanel.add(startGameButton);
+            // gamePanel.add(startGameButton);
             innerIDPanel.remove(numPlayerLabel);
             innerIDPanel.add(startGameButton);
             innerIDPanel.add(numPlayerLabel);
@@ -175,14 +178,12 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            //gamePanel.remove(startGameButton);
+            // gamePanel.remove(startGameButton);
             innerIDPanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }
     }
-
-
 
     public static void chooseCards(LegislativeType... cards) throws IOException {
         legiChoices = new ArrayList<LegislativeType>();
@@ -252,9 +253,10 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                }
-                else System.out.println("You haven't picked the right amount of article cards!");
-            }});
+                } else
+                    System.out.println("You haven't picked the right amount of article cards!");
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         choiceFrame.add(choicePanel);
         choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
@@ -273,17 +275,17 @@ public class MenuComponents {
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
         showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         showFrame.setTitle("Your membership and your secret role");
-        
+
         ImageIcon ioMem, ioSecret;
         if (secretRole == RoleType.Liberal) {
             ioMem = liberalMembership;
-            ioSecret = liberalRole;    //TODO
-        } else if (secretRole == RoleType.Fascist){
+            ioSecret = liberalRole; // TODO
+        } else if (secretRole == RoleType.Fascist) {
             ioMem = fascistMembership;
-            ioSecret = fascistRole;    //TODO
+            ioSecret = fascistRole; // TODO
         } else {
             ioMem = fascistMembership;
-            ioSecret = hitlerRole;    //TODO
+            ioSecret = hitlerRole; // TODO
         }
 
         JLabel membership = new JLabel(ioMem);
@@ -291,14 +293,26 @@ public class MenuComponents {
         showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
         JLabel secret = new JLabel(ioSecret);
         showPanel.add(secret);
-        
+
         JButton submitButton = new JButton("I got it");
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (secretRole == RoleType.Liberal) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 } else {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    try {
+                        Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 }
 
                 // if (legiChoices.size() == cards.length - 1) {

@@ -285,7 +285,11 @@ public class SecretHitlerV2 implements Runnable {
                             String suggestMsg = "";
                             switch (executivePower) {
                                 case Peek:
-                                    
+                                    Object[] deckTuple = _gameSpace.get(new ActualField("peek"), new FormalField(ArrayList.class));
+                                    LegislativeType[] deckTop = (LegislativeType[]) Helper.castLegislate(deckTuple[1]).toArray();
+                                    MenuComponents.showTopCards(deckTop);
+                                    _gameSpace.get(new ActualField("iPeekedCards"));
+                                    _gameSpace.put("presPeekedDeck");
                                     //get 3 cards on top
                                     //pass to president
                                     break;

@@ -215,6 +215,7 @@ public class GameController implements Runnable {
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
                             _gameSpace.put("lock");
+                            _gameSpace.get(new ActualField("presPeekedDeck"));
                             // _gameSpace.query("")
                             //get 3 cards on top
                             //pass to president

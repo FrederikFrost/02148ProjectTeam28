@@ -324,6 +324,7 @@ public class SecretHitlerV2 implements Runnable {
         
                                     break;
                             }
+                            _gameSpace.put("executiveReturn");
                         }
                         readAndPassKeyWord("endExecutive", playerCount);
                         //TODO: switch depending on executive power

@@ -264,6 +264,7 @@ public class GameController implements Runnable {
                             break;
                     }
                     _gameSpace.put("endExecutive", 0);
+                    _gameSpace.get(new ActualField("executiveReturn"));
                     if (executivePower != ActionType.S_Election) useOldPres = rotatePresident(useOldPres);
                     //executive power is in else statement as this is the case where it is NOT ignored
                     /** executive power

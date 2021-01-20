@@ -774,7 +774,7 @@ public class MenuComponents {
                 // default
                 // icon
                 choices, // Array of choices
-                choices[1]); // Initial choice
+                choices[0]); // Initial choice
         return input;
     }
 

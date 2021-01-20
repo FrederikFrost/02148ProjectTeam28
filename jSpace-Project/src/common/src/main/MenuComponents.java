@@ -879,6 +879,7 @@ public class MenuComponents {
     }
 
 	public static void incLibArticles() {
+        System.out.println("I AM INCREMENTING LIBERAL ARTICLES!!!!!!!!!!!");
         for (int i = 0 ; i < 6 ; i++) {
             for (int j = 0 ; j < 5 ; j++) {
                 if (liberalBoard.getIcon().equals(liberalBoardImageMatrix[i][j])){

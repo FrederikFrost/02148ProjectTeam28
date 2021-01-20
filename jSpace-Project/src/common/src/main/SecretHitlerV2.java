@@ -336,7 +336,7 @@ public class SecretHitlerV2 implements Runnable {
 
             
             Helper.appendAndSend(_user.Name() + " is President in this round");
-            Helper.appendAndSend("<ChatBot>: The president is suggesting a chancellor");
+            Helper.appendAndSend("The president is suggesting a chancellor");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             Helper.printArray("Cands", eligibleCands.toArray());
             suggestion = Game.suggest(eliCands);

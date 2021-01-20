@@ -1,6 +1,7 @@
 package common.src.main;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
@@ -15,10 +16,9 @@ import common.src.main.Types.LegislativeType;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -38,6 +38,9 @@ public class MenuComponents {
     static JFrame newFrame = new JFrame();
     static JPanel gamePanel = new JPanel();
     static JPanel menuPanel = new JPanel();
+    static JPanel chatPanel;
+    static JPanel IDPanel;
+    static JPanel innerIDPanel;
     static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
@@ -52,12 +55,17 @@ public class MenuComponents {
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
     static ImageIcon fascistCardSelected;
+    static ImageIcon fascistBoardImage5to6;
+    static ImageIcon fascistBoardImage7to8;
+    static ImageIcon fascistBoardImage9to10;
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
-    static ImageIcon fascistBoardImage;
     static ImageIcon liberalBoardImage;
     static JLabel fascistBoard = new JLabel();
     static JLabel liberalBoard = new JLabel();
+    static ImageIcon fascistMembership;
+    static ImageIcon liberalMembership;
+    static JLabel membershipCard = new JLabel();
 
     public static void initializeCards() throws IOException {
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card.png")));
@@ -66,13 +74,15 @@ public class MenuComponents {
                 ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-card-selected.png")));
         liberalCardSelected = new ImageIcon(
                 ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-card-selected.png")));
-        fascistBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board.png")));
+        fascistBoardImage5to6 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-5to6.png")));
+        fascistBoardImage7to8 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-7to8.png")));
+        fascistBoardImage9to10 = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-board-9to10.png")));
         liberalBoardImage = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-board.png")));
-        fascistBoard.setIcon(fascistBoardImage);
+        fascistBoard.setIcon(fascistBoardImage9to10);
         liberalBoard.setIcon(liberalBoardImage);
-        // MenuComponents mc = new MenuComponents();
-        // fascistBoard = mc.new Board(fascistBoardImage);
-        // liberalBoard = mc.new Board(liberalBoardImage);
+        fascistMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist-membership.png")));
+        liberalMembership = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal-membership.png")));
+        membershipCard.setIcon(liberalMembership);
     }
 
     public static void menu() throws IOException {
@@ -138,27 +148,15 @@ public class MenuComponents {
         labels[index] = l;
     }
 
-    public static void addNumOfPlayers() {
-        numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
-        numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
-        numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 25));
-        mainPanel.add(numPlayerLabel, BorderLayout.SOUTH);
-    }
-
     public static void incNumPlayers() {
         numOfPlayers++;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
-            GridBagConstraints con = new GridBagConstraints();
-            con.anchor = GridBagConstraints.CENTER;
-            // con.fill = GridBagConstraints.HORIZONTAL;
-            con.gridwidth = 3;
-            con.gridheight = 0;
-            con.weightx = 0;
-            con.gridx = 0;
-            con.gridy = 0;
-            gamePanel.add(startGameButton, con);
+            //gamePanel.add(startGameButton);
+            innerIDPanel.remove(numPlayerLabel);
+            innerIDPanel.add(startGameButton);
+            innerIDPanel.add(numPlayerLabel);
             gamePanel.revalidate();
             // gamePanel.repaint();
         }
@@ -168,11 +166,14 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            gamePanel.remove(startGameButton);
+            //gamePanel.remove(startGameButton);
+            innerIDPanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }
     }
+
+
 
     public static void chooseCards(LegislativeType... cards) throws IOException {
         legiChoices = new ArrayList<LegislativeType>();
@@ -181,6 +182,7 @@ public class MenuComponents {
         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
         JFrame choiceFrame = new JFrame();
         choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+        choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         if (cards.length == 3)
             choiceFrame.setTitle("Choose 2 out of 3 article cards");
         else
@@ -267,16 +269,15 @@ public class MenuComponents {
     //         g.drawImage(this.image, 0, 0, this.getWidth(), this.getHeight(), null);
     //         }
     //     }
-
-    public static void drawBoards(){
-        gamePanel.add(fascistBoard);
-        gamePanel.add(liberalBoard);
-       // gamePanel.revalidate();
-
+    public static void setBoardSize(JLabel board, Point loc, Dimension d){
+        board.setLocation(loc);
+        board.setMinimumSize(d);
+        board.setPreferredSize(d);
+        board.setMaximumSize(d);
     }
 
-    public static JPanel chatPanel() {
-        JPanel chatPanel = new JPanel();
+    public static void initChatPanel() {
+        chatPanel = new JPanel();
         chatPanel.setLayout(new BorderLayout());
 
         JPanel southPanel = new JPanel();
@@ -313,39 +314,103 @@ public class MenuComponents {
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
         chatPanel.add(BorderLayout.SOUTH, southPanel);
-        chatPanel.setSize(400, 760);
-        return chatPanel;
+        chatPanel.setSize(400,1000);
     }
 
-    public static JPanel gamePanel() {
-        JPanel gamePanel = new JPanel(new GridBagLayout());
-        gamePanel.setLocation(400, 0);
-        gamePanel.setSize(1200, 800);
+    public static void initGamePanel() {
+        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
+        gamePanel.setSize(900,1000);
+        JPanel boardPanel = new JPanel();
+        boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
+        fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boardPanel.add(fascistBoard);
+        boardPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boardPanel.add(liberalBoard);
+        IDPanel = new JPanel();
+        innerIDPanel = new JPanel();
+        innerIDPanel.setLayout(new GridLayout(1,1));
+        IDPanel.setLayout(new BorderLayout());
+        membershipCard.setHorizontalAlignment(JLabel.LEFT);
+        numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
+        numPlayerLabel.setHorizontalAlignment(JLabel.RIGHT);
+        numPlayerLabel.setVerticalAlignment(JLabel.BOTTOM);
+        numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        innerIDPanel.add(membershipCard);
+        innerIDPanel.add(numPlayerLabel);
+        IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
+        gamePanel.add(boardPanel);
+        gamePanel.add(Box.createRigidArea(new Dimension(30, 30)));
+        gamePanel.add(IDPanel);
 
-        // ADD GAMEPLAY GUI HERE
-        return gamePanel;
+        /* ATTEMPT AT JLAYEREDPANE FROM 3 AM IN THE NIGHT.. WILL PROBABLY BE NECESSARY
+
+        gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
+        gamePanel.setSize(900,700);
+        //JPanel boardPanel = new JPanel();
+        //fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fascistBoard.setBounds(900,0,fascistBoardImage.getIconWidth(),fascistBoardImage.getIconHeight());
+        //liberalBoard.setBounds(50,50,200,100);
+        JLayeredPane fascistBoardPane = new JLayeredPane();
+        fascistBoardPane.setPreferredSize(fascistBoard.getSize());
+        fascistBoardPane.add(fascistBoard, 1);
+        fascistBoardPane.add(new JLabel(fascistCard), 2);
+        // JLayeredPane liberalBoardPane = new JLayeredPane();
+        // liberalBoardPane.add(liberalBoard, 1);
+        JPanel boardPanel = new JPanel();
+        boardPanel.setLayout(null);
+        System.out.println(fascistBoard.getWidth());
+        System.out.println(fascistBoard.getLocation());
+        fascistBoardPane.setBounds(0, 0, fascistBoard.getWidth(), fascistBoard.getHeight());
+        //liberalBoardPane.setBounds(0, 0, liberalBoard.getWidth(), liberalBoard.getHeight());
+        boardPanel.add(fascistBoardPane);
+        //boardPanel.add(liberalBoardPane);
+        
+        */
+
+
+
+        // gamePanel.setSize(1200, 800);
+        // gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.X_AXIS));
+        // gameBox.add(Box.createRigidArea(new Dimension(10, 10)));
+        // fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // gameBox.add(fascistBoard);
+        // gameBox.add(Box.createRigidArea(new Dimension(10, 10)));
+        // liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // gameBox.add(liberalBoard);
+        // membershipCard.setHorizontalAlignment(JLabel.LEFT);
+        // membershipCard.setVerticalAlignment(JLabel.BOTTOM);
+        // gamePanel.add(membershipCard);
+        // gamePanel.add(Box.createRigidArea(new Dimension(50, 50)));
+        // gamePanel.add(gameBox);
+
     }
 
     public static void gameFrame() throws IOException {
         initializeCards();
+        initChatPanel();
+        initGamePanel();
         mainPanel = new JPanel(new BorderLayout());
-        JPanel chatPanel = chatPanel();
-        gamePanel = gamePanel();
-        drawBoards();
-        mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
+        mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 1000);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        //chatPanel.setAlignmentY(Component.LEFT_ALIGNMENT);
         System.out.println("Chat panel width is: " + chatPanel.getWidth());
         System.out.println("Game panel width is: " + gamePanel.getWidth());
+        //mainPanel.add(chatPanel, BorderLayout.WEST);
         mainPanel.add(chatPanel);
-        //mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
         mainPanel.add(gamePanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
+        //mainPanel.setLayout(new BorderLayout());
+        // mainPanel.add(gamePanel, BorderLayout.CENTER);
         newFrame.add(mainPanel);
         newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         newFrame.setSize(mainPanel.getSize());
-        //newFrame.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 800);
+        //newFrame.pack();
         newFrame.setLocationRelativeTo(null);
         newFrame.setVisible(true);
-        addNumOfPlayers();
-        //chooseCards(LegislativeType.Fascist,LegislativeType.Liberal, LegislativeType.Fascist);
+
         // welcomeDialogue();
     }
 
@@ -362,7 +427,7 @@ public class MenuComponents {
 
                 if (msg.equals(".help")) {
                     append(chatBox,
-                            "<ChatBot>: Chat commands will be listed:\n\n"
+                            "<ChatBot>: Chat commands will be listed:\n"
                                     + "\".clear\":   Clears the chat screen messages.\n"
                                     + "\".tcp\":   Lists the tcp address of the chat room.\n"
                                     + "\".leave\":   Allows for leaving chatroom.\n",
@@ -460,15 +525,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -505,15 +570,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            //String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+                    //IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -595,10 +660,6 @@ public class MenuComponents {
     };
 
     public static AbstractAction startGameAction = new AbstractAction() {
-
-        /**
-         *
-         */
         private static final long serialVersionUID = 3963988367577770364L;
 
         public void actionPerformed(ActionEvent e) {
@@ -608,7 +669,8 @@ public class MenuComponents {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            gamePanel.remove(startGameButton);
+            //gamePanel.remove(startGameButton);
+            innerIDPanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }

@@ -271,11 +271,11 @@ public class SecretHitlerV2 implements Runnable {
                         
                         if (president == _user.Id()) {
                             int[] cands = Helper.castIntArray(_gameSpace.get(new ActualField("allCands"), new FormalField(ArrayList.class))[1]);
-                            System.out.print("CANDS in pres: [");
-                            for (int i = 0; i < cands.length; ++i) {
-                                System.out.print(cands[i] + ", ");
-                            }
-                            System.out.println("]");
+                            // System.out.print("CANDS in pres: [");
+                            // for (int i = 0; i < cands.length; ++i) {
+                            //     System.out.print(cands[i] + ", ");
+                            // }
+                            // System.out.println("]");
                             int choice = -1;
                             String suggestMsg = "";
                             switch (executivePower) {
@@ -372,20 +372,29 @@ public class SecretHitlerV2 implements Runnable {
         1 = fascist law passed - game continues
         2 = liberal win (either by passing law, or assassinating Hitler)
         3 = fascist win (either by passing law, or hitler elected chancellor)
-        4 = game continues (not hitler elected, someone else executed)*/
+        4 = game continues (not hitler elected, someone else executed)
+        5 = election tracker is incremented
+        */
         int gameState = readAndPassGameState(playerCount);
         switch (gameState) {
             case 0:
                 MenuComponents.incLibArticles();
+                Thread.sleep(1000);
+                MenuComponents.resetLibFails();
                 break;
             case 1:
                 MenuComponents.incFascArticles();
+                Thread.sleep(1000);
+                MenuComponents.resetLibFails();
                 break;
             case 2:
             case 3:
                 return false;
 
             case 4:
+                break;
+            case 5:
+                MenuComponents.incLibFails();
                 break;
 
             default:

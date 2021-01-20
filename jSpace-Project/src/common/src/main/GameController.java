@@ -129,11 +129,11 @@ public class GameController implements Runnable {
                     suggestedChancellor = SuggestChancellor();
                     printDebug("Got suggestion");
                     elected = Election(suggestedChancellor);
-                    if (!elected) {
-                        // Putting gamestate = 4 to signify game continue.
-                        _gameSpace.put("gameState", 4, 0);
-                    }  
                     electionTracker++;
+                    if (!elected && electionTracker < 3) {
+                        // Putting gamestate = 4 to signify game continue.
+                        _gameSpace.put("gameState", 5, 0);
+                    }  
                 }
 
                 ArrayList<LegislativeType> cards;

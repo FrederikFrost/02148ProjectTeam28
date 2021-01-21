@@ -205,8 +205,8 @@ public class SecretHitlerV2 implements Runnable {
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             MenuComponents.chooseArticles(false, cards.get(0), cards.get(1), cards.get(2));
                             
-                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!\n");
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
+                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!\n");
                             cards = Helper.castLegislate(legiChoices[1]);
                             System.out.println("#I have chosen cards!");
                             boolean veto = (boolean) cardsTuple[2];

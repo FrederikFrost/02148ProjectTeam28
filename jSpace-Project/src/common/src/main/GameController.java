@@ -139,15 +139,17 @@ public class GameController implements Runnable {
                 ArrayList<LegislativeType> cards;
                 if (!elected) {
                     electionTracker = 0;
-                    // skip choose legislate - boolean is probably the easiest
-                    cards = GetCardsFromDeck(1);
-                    //get 1 card, no preview (no preview means the cards are removed from the deck)
-                    //directly update boards
-                    //term-limit forgotten
-                    ResetTermLimits();
-                    //executive power is ignored
-                    UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
-                    //win check
+                    // // skip choose legislate - boolean is probably the easiest
+                    // cards = GetCardsFromDeck(1);
+                    // //get 1 card, no preview (no preview means the cards are removed from the deck)
+                    // //directly update boards
+                    // //term-limit forgotten
+                    // ResetTermLimits();
+                    // //executive power is ignored
+                    // UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+                    // //win check
+                    
+                    PutTopCardsOnBoards();
                     useOldPres = rotatePresident(useOldPres);
                 } else {
                     //win check (chancellor has been chosen)
@@ -166,7 +168,6 @@ public class GameController implements Runnable {
                     _gameSpace.put(CommandType.LegislativeSession, 0);
                     _gameSpace.put("lock");
                     
-                    electionTracker = 0;
                     //check win
                     cards = GetCardsFromDeck(3);
                     System.out.println("about to uploads cards from deck");
@@ -187,12 +188,21 @@ public class GameController implements Runnable {
                         System.out.println("A card was picked");
                         LegislativeType finalCard = cards.get(0); //take the chosen card
                         executivePower = UpdateBoards(finalCard);
+                        electionTracker = 0;
                         //win check
                     } else {    //in case of veto
                         System.out.println("A veto was called");
                         electionTracker++;
                         executivePower = ActionType.None;
-                        _gameSpace.put("gameState", 5, 0);
+                        if (electionTracker == 3) {
+
+                            electionTracker = 0;
+                    
+                            PutTopCardsOnBoards();
+                            useOldPres = rotatePresident(useOldPres);
+                        } else {
+                            _gameSpace.put("gameState", 5, 0);
+                        }
                     }
 
                     _gameSpace.put("endLegislate", 0);
@@ -306,6 +316,17 @@ public class GameController implements Runnable {
             //possibly put tuble in game space to let players know an error occured
             e.printStackTrace();
         }
+    }
+
+    private void PutTopCardsOnBoards() throws Exception {                    // skip choose legislate - boolean is probably the easiest
+        ArrayList<LegislativeType> cards = GetCardsFromDeck(1);
+        //get 1 card, no preview (no preview means the cards are removed from the deck)
+        //directly update boards
+        //term-limit forgotten
+        ResetTermLimits();
+        //executive power is ignored
+        UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+        //win check
     }
 
     private void ExecutePlayer(int killedPlayer) throws Exception {

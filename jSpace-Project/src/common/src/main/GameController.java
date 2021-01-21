@@ -346,7 +346,7 @@ public class GameController implements Runnable {
             res = executivePowers[index];
         }
         Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
-            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!");
+            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!\n\n");
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.get(new ActualField("lock"));
         switch (gameState) {

@@ -427,7 +427,7 @@ public class SecretHitlerV2 implements Runnable {
         return true;
     }
 
-    private static void election(int playerCount) throws InterruptedException {
+    private static void election(int playerCount) throws InterruptedException, IOException {
         // Init election, and suggest chancellor if player is president.
         Boolean electionDone;
         Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
@@ -453,7 +453,7 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        VoteType vote = Game.vote(suggestion, pres == _user.Id());
+        VoteType vote = Game.vote(suggestion, pres == _user.Id(), _user.Id());
         // Put vote in the gameSpace tuple space.
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));

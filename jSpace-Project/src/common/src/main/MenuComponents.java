@@ -66,7 +66,6 @@ public class MenuComponents {
     static ImageIcon[][] fascistBoardImageMatrix = new ImageIcon[3][7];
     static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][5];
 
-
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistMembership;
@@ -74,10 +73,18 @@ public class MenuComponents {
     static ImageIcon fascistRole;
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
+
+    static ImageIcon jaIcon;
+    static ImageIcon neinIcon;
+    static ImageIcon jaIconSelected;
+    static ImageIcon neinIconSelected;
+    static String chosenVote;
+
     static JLabel fascistBoard = new JLabel();
     static JLabel liberalBoard = new JLabel();
     static JLabel membershipCard = new JLabel();
     static JLabel roleCard = new JLabel();
+
     static int fascistBoardIndex = 0;
     static int fascistArticles = 0;
     static int liberalArticles = 0;
@@ -118,6 +125,12 @@ public class MenuComponents {
         fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
         liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
         hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
+
+        // Vote cards
+        jaIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/ja.png")));
+        neinIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/nein.png")));
+        jaIconSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/ja-selected.png")));
+        neinIconSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/nein-selected.png")));
     }
 
     public static void menu() throws IOException {
@@ -312,76 +325,79 @@ public class MenuComponents {
     //     return input;
     // }
 
-    // public static void newVote(String sugChan) throws IOException {
-    //     JPanel choicePanel = new JPanel();
-    //     choicePanel.setSize(300, 400);
-    //     choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
-    //     JFrame choiceFrame = new JFrame();
-    //     choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
-    //     choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    //     ImageIcon jaIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/illu/Ja H.png")));
-    //     ImageIcon neinIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/illu/Nein H.png")));
-    //     ImageIcon[] voteIcons = {jaIcon, neinIcon};
-    //     for (ImageIcon icon : voteIcons) {
-    //         JButton voteButton = createButton(-1, null, null, icon);
-    //         choicePanel.add(voteButton);
-    //         choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
-    //         voteButton.addActionListener(new ActionListener() {
-    //             public void actionPerformed(ActionEvent e) {
-    //                 boolean isSelected = cardChoice.getIcon().equals(ios);
-    //                 boolean valid = false;
-    //                 if (legiChoices.size() < cards.length - 1 && !isSelected || legiChoices.size() >= 1 && isSelected) {
-    //                     cardChoice.setIcon(isSelected ? io : ios);
-    //                     cardChoice.invalidate(); // might not be needed
-    //                     cardChoice.repaint();
-    //                     isSelected = !isSelected;
-    //                     valid = true;
-    //                 }
-    //                 if (valid) {
-    //                     if (isSelected) {
-    //                         if (cardChoice.getIcon().equals(fascistCard)
-    //                                 || cardChoice.getIcon().equals(fascistCardSelected))
-    //                             legiChoices.add(LegislativeType.Fascist);
-    //                         else
-    //                             legiChoices.add(LegislativeType.Liberal);
-    //                     } else {
-    //                         if (cardChoice.getIcon().equals(fascistCard)
-    //                                 || cardChoice.getIcon().equals(fascistCardSelected))
-    //                             legiChoices.remove(LegislativeType.Fascist);
-    //                         else
-    //                             legiChoices.remove(LegislativeType.Liberal);
-    //                     }
-    //                     System.out.println("Legichoices size = " + legiChoices.size());
-    //                 }
-    //             }
-    //         });
-    //     }
-    //     JButton submitButton = new JButton("Submit article choices!");
-    //     submitButton.addActionListener(new ActionListener() {
-    //         public void actionPerformed(ActionEvent e) {
-    //             if (legiChoices.size() == cards.length - 1) {
-    //                 for (LegislativeType choice : legiChoices)
-    //                     System.out.println(choice);
-    //                 SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-    //                 try {
-    //                     Menu.game.getGameSpace().put("legiChoices", legiChoices);
-    //                 } catch (InterruptedException e1) {
-    //                     // TODO Auto-generated catch block
-    //                     e1.printStackTrace();
-    //                 }
-    //             } else
-    //                 System.out.println("You haven't picked the right amount of article cards!");
-    //         }
-    //     });
-    //     submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    //     choiceFrame.add(choicePanel);
-    //     choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
-    //     choiceFrame.add(submitButton, BorderLayout.CENTER);
-    //     choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
-    //     choiceFrame.pack();
-    //     choiceFrame.setLocationRelativeTo(null);
-    //     choiceFrame.setVisible(true);
-    // }
+    public static void voteDialogue(String sugChan) throws IOException {
+        chosenVote = null;
+
+        JFrame choiceFrame = new JFrame();
+        choiceFrame.setTitle("Vote for chancellor");
+        choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+        choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        JPanel choicePanel = new JPanel();
+        choicePanel.setSize(300, 400);
+        choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
+
+        JLabel voteLabel = new JLabel("Should " + sugChan + " be elected chancellor?");
+        voteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        voteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        for (int i = 0 ; i < 2 ; i++){
+            ImageIcon io, ios;
+            if (i == 0) { io = jaIcon; ios = jaIconSelected; }
+            else {io = neinIcon; ios = neinIconSelected; }
+            JButton voteButton = createButton(-1, null, null, io);
+            Border border = BorderFactory.createLineBorder(Color.BLACK);
+            voteButton.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(0,0,0,0)));
+            choicePanel.add(voteButton);
+            choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            voteButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    boolean isSelected = voteButton.getIcon().equals(ios);
+                    boolean valid = false;
+                    if (chosenVote == null || isSelected) {
+                        voteButton.setIcon(isSelected ? io : ios);
+                        voteButton.invalidate(); // might not be needed
+                        voteButton.repaint();
+                        isSelected = !isSelected;
+                        valid = true;
+                    }
+                    if (valid){
+                        if (isSelected) {
+                            chosenVote = voteButton.getIcon().equals(jaIconSelected) ? "Ja" : "Nein";
+                        }
+                        else chosenVote = null;
+                    }
+                }
+            });
+        }
+        JButton submitButton = new JButton("Submit vote!");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (chosenVote != null){
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    System.out.println(chosenVote);
+                    try {
+                        Menu.game.getGameSpace().put("vote", chosenVote, Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                } else
+                    System.out.println("You haven't picked a vote!");
+            }
+        });
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        choiceFrame.add(voteLabel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        choiceFrame.add(choicePanel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        choiceFrame.add(submitButton, BorderLayout.CENTER);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 10)));
+        choiceFrame.pack();
+        choiceFrame.setLocationRelativeTo(null);
+        choiceFrame.setVisible(true);
+    }
     
     public static void showRole(RoleType secretRole, PlayerRole[] allies) throws IOException {
         JPanel showPanel = new JPanel();
@@ -763,6 +779,7 @@ public class MenuComponents {
         gameFrame.setVisible(true);
         //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         //investigatePlayer("Elias", RoleType.Liberal);
+        //newVote("Elias");
         // welcomeDialogue();
     }
 
@@ -880,15 +897,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -925,15 +942,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);

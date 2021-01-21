@@ -152,9 +152,9 @@ public class GameController implements Runnable {
                 } else {
                     //win check (chancellor has been chosen)
                     /*Gamestate is 3 if fascist win by electing hitler, otherwise 4 to continue game*/
-                    int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 3 : 4;
+                    int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 7 : 4;
                     _gameSpace.put("gameState", gameState, 0);
-                    if (gameState == 3) {
+                    if (gameState == 7) {
                         Helper.appendAndSend("Hitler was elected chancellor with 3 fascist laws passed. Fascists win!");
                         gameStarted = false;
                         break;
@@ -212,6 +212,7 @@ public class GameController implements Runnable {
                         case Peek:
                             printDebug("Controller started peeking!");
                             cards = GetCardsFromDeck(3, true);
+                            Helper.printArray("peekCards", cards.toArray());
                             printDebug("Controller got 3 cards!");
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
@@ -273,7 +274,7 @@ public class GameController implements Runnable {
                             break;
                     }
                     if (killedPlayer != -1 && roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
-                        _gameSpace.put("gameState", 2, 0);
+                        _gameSpace.put("gameState", 6, 0);
                         gameStarted = false;
                         Helper.appendAndSend("Hitler was executed. Liberals win!");
                     } else {
@@ -385,7 +386,7 @@ public class GameController implements Runnable {
         ArrayList<LegislativeType> res = new ArrayList<LegislativeType>(numberOfCards);
         for (int i = 0; i < numberOfCards; ++i) {
             if (preview) {
-                res.add(deck.get(deck.size()-1));
+                res.add(deck.get(deck.size()-1-i));
             } else {
                 res.add(deck.remove(deck.size()-1));
             }
@@ -627,7 +628,7 @@ public class GameController implements Runnable {
             case 5:
             case 6:
                 executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
-                break;     
+                break;
             case 7:
             case 8:
                 executivePowers = new ActionType[] {ActionType.None, ActionType.Investigate, ActionType.S_Election, ActionType.Kill, ActionType.Veto, ActionType.None};
@@ -642,6 +643,7 @@ public class GameController implements Runnable {
         }
 
         deck = GetShuffledDeck();
+        Helper.printArray("Deck", deck.toArray());
 
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented

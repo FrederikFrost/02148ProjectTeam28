@@ -595,7 +595,7 @@ public class MenuComponents {
         String cardName;
         for (int i = 0; i < 3; i++) {
             
-            if (deckTop[i].equals(LegislativeType.Fascist)) {
+            if (deckTop[i] == LegislativeType.Fascist) {
                 cardIcon = fascistCard;
             } else {
                 cardIcon = liberalCard;
@@ -1100,6 +1100,10 @@ public class MenuComponents {
         liberalFails=0;
         liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
+
+	public static void deadScreen() {
+        
+	}
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

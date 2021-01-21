@@ -353,6 +353,7 @@ public class SecretHitlerV2 implements Runnable {
                         gameStarted = checkGameState(playerCount);
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
+                        if (imDead) MenuComponents.deadScreen();
                         //TODO: if dead show on screen
                         System.out.println("Executive action has happened");
                         break;
@@ -395,10 +396,12 @@ public class SecretHitlerV2 implements Runnable {
         /*Function to check the incoming game state. Returns false if the game is over, and true otherwise
         0 = liberal law passed - game continues
         1 = fascist law passed - game continues
-        2 = liberal win (either by passing law, or assassinating Hitler)
-        3 = fascist win (either by passing law, or hitler elected chancellor)
+        2 = liberal win (by passing law)
+        3 = fascist win (by passing law)
         4 = game continues (not hitler elected, someone else executed)
         5 = election tracker is incremented
+        6 = liberal win (executing Hitler)
+        7 = fascist win (Hitler elected)
         */
         int gameState = readAndPassGameState(playerCount);
         switch (gameState) {
@@ -420,6 +423,9 @@ public class SecretHitlerV2 implements Runnable {
             case 5:
                 MenuComponents.incLibFails();
                 break;
+            case 6:
+            case 7:
+                return false;
 
             default:
                 throw new RuntimeException("Something went wrong checking gamestate. Gamestate is: " + gameState);

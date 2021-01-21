@@ -1001,6 +1001,10 @@ public class MenuComponents {
         liberalFails=0;
         liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
+
+	public static void deadScreen() {
+        
+	}
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

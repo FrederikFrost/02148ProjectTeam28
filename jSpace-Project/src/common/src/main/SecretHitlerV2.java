@@ -353,6 +353,7 @@ public class SecretHitlerV2 implements Runnable {
                         gameStarted = checkGameState(playerCount);
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
+                        if (imDead) MenuComponents.deadScreen();
                         //TODO: if dead show on screen
                         System.out.println("Executive action has happened");
                         break;

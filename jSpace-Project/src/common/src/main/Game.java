@@ -2,8 +2,6 @@ package common.src.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.Space;

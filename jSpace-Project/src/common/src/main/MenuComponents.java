@@ -32,7 +32,7 @@ import java.util.List;
 public class MenuComponents {
     static String appName;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
-    static String externalIP = "192.168.0.102";
+    static String externalIP = "212.237.106.43";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -152,7 +152,6 @@ public class MenuComponents {
                 io = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/icons/icon48.png")));
                 index--;
             } else {
-                System.out.println("gui/icons/icon" + (int) Math.pow(2, 4 + index) + ".png");
                 io = new ImageIcon(
                         ImageIO.read(Menu.class.getResource("gui/icons/icon" + (int) Math.pow(2, 4 + index) + ".png")));
             }
@@ -925,6 +924,10 @@ public class MenuComponents {
         gameFrame.setBounds(100, 100, 1600, 1000);
         gameFrame.setVisible(true);
         gameFrame.setLocationRelativeTo(null);
+        welcomeDialogue();
+
+        // Testing of GUI elements:
+
         // suggestDialogueBox(new String[]{"Eli", "Fred"}, "Halløjsa!");
         // showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new
         // PlayerRole("Erik", RoleType.Fascist)});
@@ -936,7 +939,7 @@ public class MenuComponents {
         // showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias",
         // RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         // deadScreen();
-        winScreen(RoleType.Liberal);
+        // winScreen(RoleType.Liberal);
     }
 
     static class sendMessageListener implements ActionListener {
@@ -1087,7 +1090,7 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = inputBox("Enter tcp address: (default)", "212.237.106.43:9001", "IP input");
+            String IP_Port = inputBox("Enter tcp address: (default)", externalIP+":"+port, "IP input");
             // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 menuFrame.setVisible(true);

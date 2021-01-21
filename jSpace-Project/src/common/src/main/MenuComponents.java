@@ -23,9 +23,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MenuComponents {
     static String appName;
@@ -35,7 +38,7 @@ public class MenuComponents {
     static String username;
     static int numOfPlayers = 0;
     static boolean gameHost = false;
-    static JFrame frame = new JFrame("Secret Hitler");
+    static JFrame menuFrame = new JFrame("Secret Hitler");
     static JFrame gameFrame = new JFrame();
     static JPanel gamePanel = new JPanel();
     static JSplitPane mainPanel;
@@ -75,6 +78,8 @@ public class MenuComponents {
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
     static ImageIcon deadLabelIcon;
+    static List<ImageIcon> icons = new ArrayList<ImageIcon>();
+    static List<Image> iconImages = new ArrayList<Image>();
 
     static ImageIcon jaIcon;
     static ImageIcon neinIcon;
@@ -136,9 +141,28 @@ public class MenuComponents {
 
         // Additional labels
         deadLabelIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/labels/deadlabel.png")));
+
+        // Icons
+        int index = 0;
+        for (int i = 0 ; i < 4 ; i++) {
+            ImageIcon io;
+            index++;
+            if (i == 2) {
+                io = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/icons/icon48.png")));
+                index--;
+            }
+            else {
+                System.out.println("gui/icons/icon" + (int) Math.pow(2,4+index) + ".png");
+                io = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/icons/icon" + (int) Math.pow(2,4+index) + ".png")));
+            }
+            icons.add(io);
+            iconImages.add(io.getImage());
+        }
     }
 
     public static void menu() throws IOException {
+
+        initGameCards();
 
         // Labels
         createLabel(0, "secrethitlerlogo.png");
@@ -165,12 +189,13 @@ public class MenuComponents {
         startGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         startGameButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         // Frame
-        frame.setBackground(Color.WHITE);
-        frame.add(menuPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        menuFrame.setBackground(Color.WHITE);
+        menuFrame.add(menuPanel);
+        menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        menuFrame.pack();
+        menuFrame.setIconImages(iconImages);
+        menuFrame.setLocationRelativeTo(null);
+        menuFrame.setVisible(true);
 
         // Action Listeners
         createGameButton.addActionListener(createGameAction);
@@ -252,7 +277,8 @@ public class MenuComponents {
             choiceFrame.setTitle("Chancellor chooses article");
             infoLabel.setText("  Select 1 of 2 articles to pass as law!  ");
         }
-        System.out.println(cards.length);
+
+        choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
         for (LegislativeType card : cards) {
             ImageIcon io, ios;
             if (card == LegislativeType.Fascist) {
@@ -345,9 +371,11 @@ public class MenuComponents {
         choiceFrame.add(choicePanel);
         choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         choiceFrame.add(buttonPanel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         // choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
         // choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
         choiceFrame.pack();
+        choiceFrame.setIconImages(iconImages);
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
@@ -395,6 +423,7 @@ public class MenuComponents {
 
         choiceFrame.add(buttonPanel);
         choiceFrame.pack();
+        choiceFrame.setIconImages(iconImages);
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
@@ -481,6 +510,7 @@ public class MenuComponents {
         choiceFrame.add(submitButton, BorderLayout.CENTER);
         choiceFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         choiceFrame.pack();
+        choiceFrame.setIconImages(iconImages);
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
@@ -550,6 +580,7 @@ public class MenuComponents {
         showFrame.add(submitButton, BorderLayout.CENTER);
         showFrame.add(Box.createRigidArea(new Dimension(0,10)));
         showFrame.pack();
+        showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
     }
@@ -621,6 +652,7 @@ public class MenuComponents {
         showFrame.add(submitButton, BorderLayout.CENTER);
         showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.pack();
+        showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
     }
@@ -687,6 +719,7 @@ public class MenuComponents {
         showFrame.add(submitButton, BorderLayout.CENTER);
         showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.pack();
+        showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
     }
@@ -745,6 +778,7 @@ public class MenuComponents {
         showFrame.add(submitButton, BorderLayout.CENTER);
         showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
         showFrame.pack();
+        showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
     }
@@ -865,29 +899,29 @@ public class MenuComponents {
         gamePanel.add(boardPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 30)));
         gamePanel.add(IDPanel);
-        gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        gamePanel.add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
     public static void gameFrame() throws IOException {
-        initGameCards();
         initChatPanel();
         initGamePanel();
 
         mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatPanel, gamePanel);
         mainPanel.setDividerLocation(0.25);
+        gameFrame.setIconImages(iconImages);
         gameFrame.add(mainPanel);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setLocationRelativeTo(null);
-        gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        gameFrame.setBounds(100, 100, 1600, 1000);
         gameFrame.setVisible(true);
-        //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
-        //investigatePlayer("Elias", RoleType.Liberal);
-        //voteDialogue("Elias");
+        gameFrame.setLocationRelativeTo(null);
+        // suggestDialogueBox(new String[]{"Eli", "Fred"}, "Halløjsa!");
+        // showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        // investigatePlayer("Elias", RoleType.Liberal);
+        // voteDialogue("Elias");
         // welcomeDialogue();
-        //chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
-        // chooseCards(true, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
-        //showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
-        //deadScreen();
+        chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
+        // showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        // deadScreen();
     }
 
     static class sendMessageListener implements ActionListener {
@@ -961,12 +995,12 @@ public class MenuComponents {
     }
 
     public static int exitDialogue(String errorMessage) {
-        return JOptionPane.showOptionDialog(frame, errorMessage, "Error", 0, 1, null, null, null);
+        return JOptionPane.showOptionDialog(menuFrame, errorMessage, "Error", 0, 1, null, null, null);
     }
 
     public static String suggestDialogueBox(String[] choices, String suggestMsg) {
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                suggestMsg, JOptionPane.QUESTION_MESSAGE, null, // Use
+                suggestMsg, JOptionPane.QUESTION_MESSAGE, icons.get(2), // Use
                 // default
                 // icon
                 choices, // Array of choices
@@ -977,11 +1011,8 @@ public class MenuComponents {
     public static String voteDialogueBox(String sugChan) {
         String[] choices = { "Ja", "Nein" };
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
-                // default
-                // icon
-                choices, // Array of choices
-                "Select vote");
+                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE,
+                icons.get(2), choices, "Select vote");
         return input;
     }
 
@@ -991,31 +1022,21 @@ public class MenuComponents {
 
         public void actionPerformed(ActionEvent e) {
             // frame.setVisible(false);
-            String name = JOptionPane.showInputDialog(frame, "Enter your name");
+            String name = inputBox("Enter your name:", null, "Name input");
             if (name == null) {
-                frame.setVisible(true);
+                menuFrame.setVisible(true);
                 return;
-            } else if (name.isEmpty() || name.equals("ChatBot")) {
-                System.out.println("I go here");
-                do {
-                    name = JOptionPane.showInputDialog(frame, "Enter your name");
-                } while (name.isEmpty() || name.equals("ChatBot"));
             }
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = inputBox("Enter tcp address: (default)", "192.168.68.112:9001", "IP input");
             // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
-                frame.setVisible(true);
+                menuFrame.setVisible(true);
                 return;
-            } else if (IP_Port.isEmpty()) {
-                do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
-                } while (IP_Port.isEmpty());
-            }
-            frame.setVisible(false);
+            } 
+            menuFrame.setVisible(false);
             tcp = IP_Port;
             gameHost = true;
             gameFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
@@ -1042,48 +1063,43 @@ public class MenuComponents {
         public void actionPerformed(ActionEvent e) {
             // frame.setVisible(false);
             String hostName = "";
-            String name = getNameInput("Enter your name:");
+            String name = inputBox("Enter your name:", null, "Name input");
             if (name == null) {
-                frame.setVisible(true);
+                menuFrame.setVisible(true);
                 return;
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            String IP_Port = inputBox("Enter tcp address: (default)", "192.168.68.112:9001", "IP input");
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
-                frame.setVisible(true);
+                menuFrame.setVisible(true);
                 return;
-            } else if (IP_Port.isEmpty()) {
-                do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
-                } while (IP_Port.isEmpty());
-            }
-            frame.setVisible(false);
+            } 
+            menuFrame.setVisible(false);
 
             Menu.game.setIP_Port(IP_Port);
             Object[] joinObject;
             do {
                 joinObject = Menu.game.gameJoin();
                 if (joinObject[0].equals(ErrorType.NameTaken)) {
-                    name = getNameInput("Name taken, input new one:");
+                    name = inputBox("Name taken, input new one:", null, "Name input");
                     Menu.game.setUser(name);
                     if (name == null) {
-                        frame.setVisible(true);
+                        menuFrame.setVisible(true);
                         return;
                     }
                 } else if (joinObject[0].equals(ErrorType.GameFull)) {
                     int ok = exitDialogue("The game is full, try another IP.");
                     if (ok == -1) {
-                        frame.setVisible(true);
+                        menuFrame.setVisible(true);
                         return;
                     }
 
                 } else if (joinObject[0].equals(ErrorType.GameStarted)) {
                     int ok = exitDialogue("The game has started, try another IP.");
                     if (ok == -1) {
-                        frame.setVisible(true);
+                        menuFrame.setVisible(true);
                         return;
                     }
                 }
@@ -1110,16 +1126,18 @@ public class MenuComponents {
         }
     };
 
-    public static String getNameInput(String namePrompt) {
-        String name = JOptionPane.showInputDialog(frame, namePrompt);
-        if (name == null) {
+    public static String inputBox(String msg, String defval, String type) {
+        String input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, 
+            JOptionPane.QUESTION_MESSAGE, icons.get(2), null, defval);
+        if (input == null) {
             return null;
-        } else if (name.isEmpty() || name.equals("ChatBot")) {
+        } else if (input.isEmpty() || input.equals("ChatBot")) {
             do {
-                name = JOptionPane.showInputDialog(frame, "Name cannot be empty:");
-            } while (name.isEmpty() || name.equals("ChatBot"));
+                input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, 
+                    JOptionPane.QUESTION_MESSAGE, icons.get(2), null, defval);
+            } while (input.isEmpty() || input.equals("ChatBot"));
         }
-        return name;
+        return input;
     }
 
     public static AbstractAction exitAction = new AbstractAction() {
@@ -1251,6 +1269,7 @@ public class MenuComponents {
         showPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.add(showPanel);
         showFrame.pack();
+        showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
 	}

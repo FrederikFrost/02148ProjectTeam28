@@ -1070,7 +1070,7 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = inputBox("Enter tcp address: (default)", "192.168.68.112:9001", "IP input");
+            String IP_Port = inputBox("Enter tcp address: (default)", "212.237.106.43:9001", "IP input");
             // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 menuFrame.setVisible(true);

@@ -22,7 +22,7 @@ import common.src.main.Types.RoleType;
 import common.src.main.Types.ErrorType;
 import common.src.main.Types.VoteType;
 
-public class SecretHitlerV2 implements Runnable {
+public class GameHandler implements Runnable {
 
     public static Space _chatSpace;
     public static Space _userSpace;
@@ -627,7 +627,7 @@ public class SecretHitlerV2 implements Runnable {
         return _gameSpace;
     }
 
-    public SecretHitlerV2() {
+    public GameHandler() {
     }
 
 }

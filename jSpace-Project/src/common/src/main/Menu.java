@@ -1,12 +1,12 @@
 package common.src.main;
 
 public class Menu {
-    public static SecretHitlerV2 game;
+    public static GameHandler game;
     public static ChatHandler chatHandler;
 
     public static void main(String[] args) {
         
-        game = new SecretHitlerV2();
+        game = new GameHandler();
         try {
             MenuComponents.menu();
         } catch (Exception e) {

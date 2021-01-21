@@ -524,10 +524,10 @@ public class GameController implements Runnable {
 
         VoteType[] votes = new VoteType[playerCount];  //should account for dead players
         Arrays.fill(votes, VoteType.None);
-        _gameSpace.getp(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount)); 
+        _gameSpace.getp(new ActualField("votes"), new FormalField(VoteType[].class), new FormalField(Integer.class)); 
         // should also account for votes
 
-        _gameSpace.put("votes", votes, 0); 
+        _gameSpace.put("votes", votes, 0);
         _gameSpace.put("startVote");
         _gameSpace.put("lock");
 
@@ -538,6 +538,7 @@ public class GameController implements Runnable {
         Helper.printArray("dead players", (Helper.castIntArrayList(deads[1])).toArray());
         printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
+        _gameSpace.getp(new ActualField("startVote"));
         _gameSpace.put("electionDone",0);
         _gameSpace.getp(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
         _gameSpace.getp(new ActualField("suggestion"), new FormalField(Integer.class));

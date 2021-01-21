@@ -197,12 +197,14 @@ public class SecretHitlerV2 implements Runnable {
                         readAndPassKeyWord("startLegislate", playerCount);
 
                         if (_user.Id() == president) {
-                            System.out.println("Im president in legislative session!");
+                            System.out.println("Im President in legislative session!");
                             
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             MenuComponents.chooseCards(false, cards.get(0), cards.get(1), cards.get(2));
+                            
+                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!\n");
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             cards = Helper.castLegislate(legiChoices[1]);
                             System.out.println("#I have chosen cards!");
@@ -226,6 +228,7 @@ public class SecretHitlerV2 implements Runnable {
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
                             MenuComponents.chooseCards(veto, cards.get(0), cards.get(1));
+                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!\n");
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             ArrayList<LegislativeType> tempCards = Helper.castLegislate(legiChoices[1]);
                             //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
@@ -321,7 +324,7 @@ public class SecretHitlerV2 implements Runnable {
                                      *  TODO should prevent normal election of president somehow  
                                      * 
                                      */
-                                    suggestMsg = "Who do you want to elect as the next president?";
+                                    suggestMsg = "Who do you want to elect as the next President?";
                                     choice = Game.suggest(cands, suggestMsg);
                                     _gameSpace.put("specialPres", choice);
                                     break;
@@ -425,7 +428,7 @@ public class SecretHitlerV2 implements Runnable {
         return true;
     }
 
-    private void election(int playerCount) throws Exception {
+    private static void election(int playerCount) throws InterruptedException, IOException {
         // Init election, and suggest chancellor if player is president.
         Boolean electionDone;
         Object[] newElect = _gameSpace.query(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
@@ -438,7 +441,7 @@ public class SecretHitlerV2 implements Runnable {
             int[] eliCands = Helper.castIntArray(newElect[2]);
             
             Helper.appendAndSend(_user.Name() + " is President in this round");
-            Helper.appendAndSend("The president is suggesting a chancellor");
+            Helper.appendAndSend("The President is suggesting a Chancellor candidate!");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             // Helper.printArray("Cands", eligibleCands.toArray());
             String suggestMsg = "Who should be suggested chancellor?";
@@ -451,7 +454,7 @@ public class SecretHitlerV2 implements Runnable {
         }
 
         // Vote in GUI
-        VoteType vote = Game.vote(suggestion, pres == _user.Id());
+        VoteType vote = Game.vote(suggestion, pres == _user.Id(), _user.Id());
         // Put vote in the gameSpace tuple space.
         // Also update GUI with incoming votes until vote is complete.
         _gameSpace.query(new ActualField("startVote"));

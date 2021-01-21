@@ -1,5 +1,6 @@
 package common.src.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,7 +15,6 @@ public class Game {
     static Space userSpace = Menu.game.getUserSpace();
     static Space gameSpace = Menu.game.getGameSpace();
 
-    
     public static int suggest(int[] eligibleCands, String suggestMsg) throws InterruptedException {
         // TODO: make suggestion pop-up list.
         String[] choices = new String[eligibleCands.length];
@@ -23,12 +23,13 @@ public class Game {
         for (int i = 0; i < choices.length; ++i) {
             choices[i] = users[eligibleCands[i]].Name();
         }
-        
+
         Helper.printArray("choices", choices);
         String sugChan;
         sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
         if (sugChan == null) {
-            do sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
+            do
+                sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
             while (sugChan == null);
         }
         int suggestion = -1;
@@ -39,10 +40,10 @@ public class Game {
             }
         }
 
-		return suggestion;
-	}
+        return suggestion;
+    }
 
-	public static VoteType vote(int suggestion, boolean pres) {
+    public static VoteType vote(int suggestion, boolean pres, int id) throws InterruptedException, IOException {
         // TODO: Make vote pop-up.
         String sugChan = "";
         try {
@@ -60,10 +61,9 @@ public class Game {
         // MenuComponents.append(MenuComponents.chatBox, "<ChatBot>: " +
         // sugChan + " was suggested chancellor by the president! "
         //     + "Cast your vote now!\n", true);
-        String vote = null;
-        do {
-            vote = MenuComponents.voteDialogueBox(sugChan);
-        } while (vote == null);
+        MenuComponents.voteDialogue(sugChan);
+        Object[] voteObject = gameSpace.get(new ActualField("vote"), new FormalField(String.class), new ActualField(id));
+        String vote = (String) voteObject[1];
         Helper.appendAndSend(MenuComponents.username + " voted: " + vote);
         if (vote.equals("Ja")) {
             return VoteType.Ja;

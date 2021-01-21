@@ -42,6 +42,7 @@ public class MenuComponents {
     static JPanel chatPanel;
     static JPanel IDPanel;
     static JPanel innerIDPanel;
+    static JPanel startGamePanel;
     static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
@@ -66,7 +67,6 @@ public class MenuComponents {
     static ImageIcon[][] fascistBoardImageMatrix = new ImageIcon[3][7];
     static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][5];
 
-
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistMembership;
@@ -74,10 +74,19 @@ public class MenuComponents {
     static ImageIcon fascistRole;
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
+    static ImageIcon deadLabelIcon;
+
+    static ImageIcon jaIcon;
+    static ImageIcon neinIcon;
+    static ImageIcon jaIconSelected;
+    static ImageIcon neinIconSelected;
+    static String chosenVote;
+
     static JLabel fascistBoard = new JLabel();
     static JLabel liberalBoard = new JLabel();
     static JLabel membershipCard = new JLabel();
     static JLabel roleCard = new JLabel();
+
     static int fascistBoardIndex = 0;
     static int fascistArticles = 0;
     static int liberalArticles = 0;
@@ -118,12 +127,21 @@ public class MenuComponents {
         fascistRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/role.png")));
         liberalRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/role.png")));
         hitlerRole = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/hitler-role.png")));
+
+        // Vote cards
+        jaIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/ja.png")));
+        neinIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/nein.png")));
+        jaIconSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/ja-selected.png")));
+        neinIconSelected = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/votes/nein-selected.png")));
+
+        // Additional labels
+        deadLabelIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/labels/deadlabel.png")));
     }
 
     public static void menu() throws IOException {
 
         // Labels
-        createLabel(0, "SecretLogo.png");
+        createLabel(0, "secrethitlerlogo.png");
         createLabel(1, "label_secret-hitler.png");
         createLabel(2, "label_group-name.png");
 
@@ -145,6 +163,7 @@ public class MenuComponents {
         }
         startGameButton = createButton(3, "button_start-game.png", "button_start-game_hover.png", null);
         startGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        startGameButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         // Frame
         frame.setBackground(Color.WHITE);
         frame.add(menuPanel);
@@ -198,13 +217,7 @@ public class MenuComponents {
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
             waiting.setText("Waiting for host to start game!");
-
-            innerIDPanel.remove(numPlayerLabel);
-            innerIDPanel.remove(ra1);
-            innerIDPanel.add(ra3);
-            innerIDPanel.add(startGameButton);
-            innerIDPanel.add(ra4);
-            innerIDPanel.add(numPlayerLabel);
+            startGamePanel.add(startGameButton);
             gamePanel.revalidate();
         }
     }
@@ -213,7 +226,8 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            innerIDPanel.remove(startGameButton);
+            //innerIDPanel.remove(startGameButton);
+            startGamePanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }
@@ -373,15 +387,105 @@ public class MenuComponents {
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
+
+    // public static String voteDialogueBox(String sugChan) {
+    //     String[] choices = { "Ja", "Nein" };
+    //     String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+    //             "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+    //             // default
+    //             // icon
+    //             choices, // Array of choices
+    //             "Select vote");
+    //     return input;
+    // }
+
+    public static void voteDialogue(String sugChan) throws IOException {
+        chosenVote = null;
+
+        JFrame choiceFrame = new JFrame();
+        choiceFrame.setTitle("Vote for chancellor");
+        choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+        choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        JPanel choicePanel = new JPanel();
+        choicePanel.setSize(300, 400);
+        choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
+
+        JLabel voteLabel = new JLabel("Should " + sugChan + " be elected chancellor?");
+        voteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        voteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        for (int i = 0 ; i < 2 ; i++){
+            ImageIcon io, ios;
+            if (i == 0) { io = jaIcon; ios = jaIconSelected; }
+            else {io = neinIcon; ios = neinIconSelected; }
+            JButton voteButton = createButton(-1, null, null, io);
+            Border border = BorderFactory.createLineBorder(Color.BLACK);
+            voteButton.setBorder(BorderFactory.createCompoundBorder(border,
+                BorderFactory.createEmptyBorder(0,0,0,0)));
+            choicePanel.add(voteButton);
+            choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            voteButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    boolean isSelected = voteButton.getIcon().equals(ios);
+                    boolean valid = false;
+                    if (chosenVote == null || isSelected) {
+                        voteButton.setIcon(isSelected ? io : ios);
+                        voteButton.invalidate(); // might not be needed
+                        voteButton.repaint();
+                        isSelected = !isSelected;
+                        valid = true;
+                    }
+                    if (valid){
+                        if (isSelected) {
+                            chosenVote = voteButton.getIcon().equals(jaIconSelected) ? "Ja" : "Nein";
+                        }
+                        else chosenVote = null;
+                    }
+                }
+            });
+        }
+        JButton submitButton = new JButton("Submit vote!");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (chosenVote != null){
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                    System.out.println(chosenVote);
+                    try {
+                        Menu.game.getGameSpace().put("vote", chosenVote, Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                } else
+                    System.out.println("You haven't picked a vote!");
+            }
+        });
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        choiceFrame.add(voteLabel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        choiceFrame.add(choicePanel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        choiceFrame.add(submitButton, BorderLayout.CENTER);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 10)));
+        choiceFrame.pack();
+        choiceFrame.setLocationRelativeTo(null);
+        choiceFrame.setVisible(true);
+    }
     
     public static void showRole(RoleType secretRole, PlayerRole[] allies) throws IOException {
+        JFrame showFrame = new JFrame();
+        showFrame.setTitle("Your role and party");
+        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
+        showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
-        JFrame showFrame = new JFrame();
-        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
-        showFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        showFrame.setTitle("YOUR ROLE");
+
+        JLabel roleLabel = new JLabel("   You have been assigned the following party and secret role:   ");
+        roleLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         ImageIcon ioMem, ioSecret;
         if (secretRole == RoleType.Liberal) {
@@ -401,7 +505,7 @@ public class MenuComponents {
         JLabel secret = new JLabel(ioSecret);
         showPanel.add(secret);
 
-        JButton submitButton = new JButton("I got it");
+        JButton submitButton = new JButton("Duly noted!");
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (secretRole == RoleType.Liberal || allies == null) {
@@ -424,10 +528,14 @@ public class MenuComponents {
 
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        showFrame.add(Box.createRigidArea(new Dimension(0,30)));
+        showFrame.add(roleLabel);
+        showFrame.add(Box.createRigidArea(new Dimension(0,30)));
         showFrame.add(showPanel);
-        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(Box.createRigidArea(new Dimension(0,20)));
         showFrame.add(submitButton, BorderLayout.CENTER);
-        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.add(Box.createRigidArea(new Dimension(0,10)));
         showFrame.pack();
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
@@ -443,12 +551,12 @@ public class MenuComponents {
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
 
-        JLabel allyLabel = new JLabel("These players are your allies!");
+        JLabel allyLabel = new JLabel("   These players are your allies!   ");
         JLabel noteLabel = new JLabel("(Make a mental note in your head!)");
-        allyLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        allyLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         allyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        allyLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        noteLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
         
         ImageIcon ioSecret;
         String name;
@@ -715,22 +823,23 @@ public class MenuComponents {
         innerIDPanel.add(membershipCard);
         innerIDPanel.add(Box.createRigidArea(new Dimension(15,0)));
         innerIDPanel.add(roleCard);
+        startGamePanel = new JPanel();
+        startGamePanel.setLayout(new BorderLayout());
 
-        ra1 = Box.createRigidArea(new Dimension(400, 0));
-        innerIDPanel.add(ra1);
+        // ra1 = Box.createRigidArea(new Dimension(200, 0));
+        // innerIDPanel.add(ra1);
+        innerIDPanel.add(Box.createHorizontalGlue());
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
         gamePanel.add(waiting);
-        ra2 = Box.createRigidArea(new Dimension(0, 200));
+        gamePanel.add(startGamePanel);
+        ra2 = Box.createRigidArea(new Dimension(0, 50));
         gamePanel.add(ra2);
         gamePanel.add(joinedPlayers);
         gamePanel.add(boardPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 30)));
         gamePanel.add(IDPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-       
-
     }
 
     public static void gameFrame() throws IOException {
@@ -754,9 +863,12 @@ public class MenuComponents {
         gameFrame.setVisible(true);
         //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         //investigatePlayer("Elias", RoleType.Liberal);
+        //newVote("Elias");
         // welcomeDialogue();
         // chooseCards(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
         // chooseCards(true, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
+        //showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        // deadScreen();
     }
 
     static class sendMessageListener implements ActionListener {
@@ -1018,7 +1130,8 @@ public class MenuComponents {
                 e1.printStackTrace();
             }
             //gamePanel.remove(startGameButton);
-            innerIDPanel.remove(startGameButton);
+            //innerIDPanel.remove(startGameButton);
+            startGamePanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }
@@ -1028,6 +1141,7 @@ public class MenuComponents {
         gamePanel.remove(ra2);
         gamePanel.remove(joinedPlayers);
         gamePanel.remove(waiting);
+        gamePanel.remove(startGamePanel);
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
             fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
         liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
@@ -1078,7 +1192,49 @@ public class MenuComponents {
     }
 
 	public static void deadScreen() {
-        
+        JFrame showFrame = new JFrame();
+        showFrame.setTitle("You are dead!");
+        showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
+        showFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel showPanel = new JPanel();
+        showPanel.setSize(300, 400);
+        showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.Y_AXIS));
+
+        JLabel killedLabel = new JLabel("You have been killed!");
+        killedLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        killedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel deadLabel = new JLabel();
+        deadLabel.setIcon(deadLabelIcon);
+        deadLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JTextArea infoText = new JTextArea();
+        infoText.setFont(new Font("SansSerif", Font.BOLD, 14));
+        infoText.setEditable(false);
+        infoText.setText("   You will be able to spectate the game until it's done, \n           but you will be unable to perform any actions!   ");
+        infoText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton submitButton = new JButton("Alright!");
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                }
+            });
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        showPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        showPanel.add(killedLabel);
+        showPanel.add(deadLabel);
+        showPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        showPanel.add(infoText);
+        showPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        showPanel.add(submitButton);
+        showPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        showFrame.add(showPanel);
+        showFrame.pack();
+        showFrame.setLocationRelativeTo(null);
+        showFrame.setVisible(true);
 	}
     
     // public static void playSong(URL media) {

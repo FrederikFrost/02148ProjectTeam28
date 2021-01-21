@@ -355,7 +355,7 @@ public class GameController implements Runnable {
             res = executivePowers[index];
         }
         Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
-            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!");
+            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!\n\n");
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.get(new ActualField("lock"));
         switch (gameState) {
@@ -394,7 +394,7 @@ public class GameController implements Runnable {
         ArrayList<LegislativeType> res = new ArrayList<LegislativeType>(numberOfCards);
         for (int i = 0; i < numberOfCards; ++i) {
             if (preview) {
-                res.add(deck.get(deck.size()-1));
+                res.add(deck.get(deck.size()-1-i));
             } else {
                 res.add(deck.remove(deck.size()-1));
             }
@@ -635,9 +635,8 @@ public class GameController implements Runnable {
         switch (playerCount) {
             case 5:
             case 6:
-                // executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
-                executivePowers = new ActionType[] {ActionType.Veto, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
-                break;     
+                executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
+                break;
             case 7:
             case 8:
                 executivePowers = new ActionType[] {ActionType.None, ActionType.Investigate, ActionType.S_Election, ActionType.Kill, ActionType.Veto, ActionType.None};

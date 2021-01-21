@@ -129,9 +129,10 @@ public class GameController implements Runnable {
                     suggestedChancellor = SuggestChancellor();
                     printDebug("Got suggestion");
                     elected = Election(suggestedChancellor);
-                    electionTracker++;
+                    
                     if (!elected && electionTracker < 3) {
-                        // Putting gamestate = 4 to signify game continue.
+                        electionTracker++;
+                        // Putting gamestate = 5 to increment election tracker.
                         _gameSpace.put("gameState", 5, 0);
                     }  
                 }
@@ -149,7 +150,12 @@ public class GameController implements Runnable {
                     // UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
                     // //win check
                     
-                    PutTopCardsOnBoards();
+                    int gameState = PutTopCardsOnBoards();
+                    if (gameState == 2 || gameState == 3) 
+                    {
+                        gameStarted = false;
+                        break;
+                    }
                     useOldPres = rotatePresident(useOldPres);
                 } else {
                     //win check (chancellor has been chosen)
@@ -190,6 +196,10 @@ public class GameController implements Runnable {
                         executivePower = UpdateBoards(finalCard);
                         electionTracker = 0;
                         //win check
+                        if (liberalBoard[4] != LegislativeType.None || fascistBoard[5] != LegislativeType.None) {
+                            gameStarted = false;
+                            break;
+                        }
                     } else {    //in case of veto
                         System.out.println("A veto was called");
                         electionTracker++;
@@ -198,7 +208,11 @@ public class GameController implements Runnable {
 
                             electionTracker = 0;
                     
-                            PutTopCardsOnBoards();
+                            gameState = PutTopCardsOnBoards();
+                            if (gameState == 2 || gameState == 3) {
+                                gameStarted = false;
+                                break;
+                            }
                             useOldPres = rotatePresident(useOldPres);
                         } else {
                             _gameSpace.put("gameState", 5, 0);
@@ -293,8 +307,9 @@ public class GameController implements Runnable {
                     }
                     if (killedPlayer != -1 && roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
                         _gameSpace.put("gameState", 6, 0);
-                        gameStarted = false;
                         Helper.appendAndSend("Hitler was executed. Liberals win!");
+                        gameStarted = false;
+                        // break;
                     } else {
                         _gameSpace.put("gameState", 4, 0);
                     }
@@ -318,7 +333,7 @@ public class GameController implements Runnable {
         }
     }
 
-    private void PutTopCardsOnBoards() throws Exception {                    // skip choose legislate - boolean is probably the easiest
+    private int PutTopCardsOnBoards() throws Exception {                    // skip choose legislate - boolean is probably the easiest
         ArrayList<LegislativeType> cards = GetCardsFromDeck(1);
         //get 1 card, no preview (no preview means the cards are removed from the deck)
         //directly update boards
@@ -326,6 +341,12 @@ public class GameController implements Runnable {
         ResetTermLimits();
         //executive power is ignored
         UpdateBoards(cards.get(0)); //return ActionType, but it is ignored here!
+
+        if (liberalBoard[4] != LegislativeType.None || fascistBoard[5] != LegislativeType.None) {
+            return liberalBoard[4] == LegislativeType.Liberal? 2 : 3;
+        }
+
+        return 5;
         //win check
     }
 

@@ -155,6 +155,7 @@ public class SecretHitlerV2 implements Runnable {
         System.out.println("Hello mein friends!");
         boolean gameStarted = true;
         boolean imDead = false;
+        boolean oldImDead = false;
         try {
             int president;
             int chancellor; 
@@ -228,8 +229,8 @@ public class SecretHitlerV2 implements Runnable {
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
                             MenuComponents.chooseArticles(veto, cards.get(0), cards.get(1));
-                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!\n");
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
+                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!\n");
                             ArrayList<LegislativeType> tempCards = Helper.castLegislate(legiChoices[1]);
                             //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
                             /**
@@ -348,7 +349,11 @@ public class SecretHitlerV2 implements Runnable {
                         gameStarted = checkGameState(playerCount);
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
-                        if (imDead) MenuComponents.deadScreen();
+                        if (imDead && !oldImDead) {
+                            MenuComponents.deadScreen();
+                            Helper.appendAndSend(_user.Name() + " was killed by the president!");
+                        }
+                        oldImDead = imDead;
                         //TODO: if dead show on screen
                         System.out.println("Executive action has happened");
                         break;

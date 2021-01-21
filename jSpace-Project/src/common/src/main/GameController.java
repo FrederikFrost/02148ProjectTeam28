@@ -212,6 +212,7 @@ public class GameController implements Runnable {
                         case Peek:
                             printDebug("Controller started peeking!");
                             cards = GetCardsFromDeck(3, true);
+                            Helper.printArray("peekCards", cards.toArray());
                             printDebug("Controller got 3 cards!");
                             _gameSpace.get(new ActualField("lock"));
                             _gameSpace.put("peek", cards);
@@ -642,6 +643,7 @@ public class GameController implements Runnable {
         }
 
         deck = GetShuffledDeck();
+        Helper.printArray("Deck", deck.toArray());
 
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         // _gameSpace.put("deck", deck);   //possibly shouldn't be there, depends how the users gameLoop's logic is implemented

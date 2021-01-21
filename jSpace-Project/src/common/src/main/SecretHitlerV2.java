@@ -205,7 +205,7 @@ public class SecretHitlerV2 implements Runnable {
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             MenuComponents.chooseArticles(false, cards.get(0), cards.get(1), cards.get(2));
                             
-                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!\n");
+                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!");
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             cards = Helper.castLegislate(legiChoices[1]);
                             System.out.println("#I have chosen cards!");
@@ -230,7 +230,7 @@ public class SecretHitlerV2 implements Runnable {
                             boolean veto = (boolean) cardsTuple[2];
                             MenuComponents.chooseArticles(veto, cards.get(0), cards.get(1));
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
-                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!\n");
+                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!");
                             ArrayList<LegislativeType> tempCards = Helper.castLegislate(legiChoices[1]);
                             //Game.ChooseLegislate(cards, veto);  //veto should make it possible to return 0 cards
                             /**

@@ -151,8 +151,9 @@ public class GameController implements Runnable {
                     // //win check
                     
                     int gameState = PutTopCardsOnBoards();
-                    if (gameState == 2 || gameState == 3) 
-                    {
+                    if (gameState == 2 || gameState == 3) {
+                        RoleType winner = (gameState == 2) ? RoleType.Liberal : RoleType.Fascist;
+                        MenuComponents.winScreen(winner);
                         gameStarted = false;
                         break;
                     }
@@ -165,6 +166,7 @@ public class GameController implements Runnable {
                     _gameSpace.put("gameState", gameState, 0);
                     if (gameState == 7) {
                         Helper.appendAndSend("Hitler was elected chancellor with 3 fascist laws passed. Fascists win!");
+                        MenuComponents.winScreen(RoleType.Fascist);
                         gameStarted = false;
                         break;
                     }     
@@ -308,6 +310,7 @@ public class GameController implements Runnable {
                     if (killedPlayer != -1 && roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
                         _gameSpace.put("gameState", 6, 0);
                         Helper.appendAndSend("Hitler was executed. Liberals win!");
+                        MenuComponents.winScreen(RoleType.Liberal);
                         gameStarted = false;
                         // break;
                     } else {
@@ -397,7 +400,7 @@ public class GameController implements Runnable {
             res = executivePowers[index];
         }
         Helper.appendAndSend("A " + legislativeType.toString() + " law was passed! \n "
-            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!\n\n");
+            + (index + 1) + " of these laws were passed! \n gameState is: " + gameState + "!\n");
         // _gameSpace.put("boards", liberalBoard, fascistBoard, executivePowers);
         _gameSpace.get(new ActualField("lock"));
         switch (gameState) {

@@ -27,12 +27,12 @@ import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MenuComponents {
     static String appName;
-    static String localtcp = "192.168.0.101";//"192.168.50.218";
+    static String internalIP = "192.168.0.102";// "192.168.50.218";
+    static String externalIP = "192.168.0.102";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -60,8 +60,8 @@ public class MenuComponents {
     static JScrollBar scrollBar;
 
     static Component ra1, ra2;
-    static Component ra3 = Box.createRigidArea(new Dimension(150,0));
-    static Component ra4 = Box.createRigidArea(new Dimension(150,0));
+    static Component ra3 = Box.createRigidArea(new Dimension(150, 0));
+    static Component ra4 = Box.createRigidArea(new Dimension(150, 0));
 
     static ArrayList<LegislativeType> legiChoices;
     static ImageIcon fascistCard;
@@ -99,20 +99,21 @@ public class MenuComponents {
 
     public static void initGameCards() throws IOException {
 
-        //Boards
-        for (int i = 0 ; i < 3 ; i++) {
-            for (int j = 0 ; j < 7 ; j++) {
-                int index = (i*2) + 5;
-                fascistBoardImageMatrix[i][j] = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/boards/" +
-                    index + "to" + (index+1) + "/" + j + "-articles.png")));
+        // Boards
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 7; j++) {
+                int index = (i * 2) + 5;
+                fascistBoardImageMatrix[i][j] = new ImageIcon(ImageIO.read(Menu.class.getResource(
+                        "gui/gamecards/fascist/boards/" + index + "to" + (index + 1) + "/" + j + "-articles.png")));
             }
         }
 
-        for (int i = 0 ; i < 6 ; i++) {
-            for (int j = 0 ; j < 4 ; j++) {
-                liberalBoardImageMatrix[i][j] = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/boards/" +
-                    i + " articles/"+j+"-fails.png")));
-                if (i == 5) break;
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 4; j++) {
+                liberalBoardImageMatrix[i][j] = new ImageIcon(ImageIO.read(
+                        Menu.class.getResource("gui/gamecards/liberal/boards/" + i + " articles/" + j + "-fails.png")));
+                if (i == 5)
+                    break;
             }
         }
 
@@ -144,16 +145,16 @@ public class MenuComponents {
 
         // Icons
         int index = 0;
-        for (int i = 0 ; i < 4 ; i++) {
+        for (int i = 0; i < 4; i++) {
             ImageIcon io;
             index++;
             if (i == 2) {
                 io = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/icons/icon48.png")));
                 index--;
-            }
-            else {
-                System.out.println("gui/icons/icon" + (int) Math.pow(2,4+index) + ".png");
-                io = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/icons/icon" + (int) Math.pow(2,4+index) + ".png")));
+            } else {
+                System.out.println("gui/icons/icon" + (int) Math.pow(2, 4 + index) + ".png");
+                io = new ImageIcon(
+                        ImageIO.read(Menu.class.getResource("gui/icons/icon" + (int) Math.pow(2, 4 + index) + ".png")));
             }
             icons.add(io);
             iconImages.add(io.getImage());
@@ -227,7 +228,8 @@ public class MenuComponents {
         l.setAlignmentX(Component.CENTER_ALIGNMENT);
         labels[index] = l;
     }
-    public static void addJoinedPlayer(String user){
+
+    public static void addJoinedPlayer(String user) {
         StyledDocument doc = joinedPlayers.getStyledDocument();
         try {
             doc.insertString(doc.getLength(), "\n" + user, null);
@@ -251,7 +253,7 @@ public class MenuComponents {
         numOfPlayers--;
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers == 4 && gameHost) {
-            //innerIDPanel.remove(startGameButton);
+            // innerIDPanel.remove(startGameButton);
             startGamePanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
@@ -272,8 +274,7 @@ public class MenuComponents {
         if (cards.length == 3) {
             choiceFrame.setTitle("President chooses articles");
             infoLabel.setText("  Select 2 of 3 articles to pass to the Chancellor!  ");
-        }
-        else {
+        } else {
             choiceFrame.setTitle("Chancellor chooses article");
             infoLabel.setText("  Select 1 of 2 articles to pass as law!  ");
         }
@@ -332,7 +333,7 @@ public class MenuComponents {
             public void actionPerformed(ActionEvent e) {
                 if (legiChoices.size() == cards.length - 1) {
                     for (LegislativeType choice : legiChoices)
-                    System.out.println(choice);
+                        System.out.println(choice);
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     try {
                         Menu.game.getGameSpace().put("legiChoices", legiChoices);
@@ -341,18 +342,18 @@ public class MenuComponents {
                         e1.printStackTrace();
                     }
                 } else
-                System.out.println("You haven't picked the right amount of article cards!");
+                    System.out.println("You haven't picked the right amount of article cards!");
             }
         });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        if(veto) {
+        if (veto) {
             buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
             JButton vetoButton = new JButton("I wish to call Veto!");
             buttonPanel.add(vetoButton);
             vetoButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    
+
                     SwingUtilities.getWindowAncestor(vetoButton).setVisible(false);
                     try {
                         ArrayList<Integer> vetoCards = new ArrayList<Integer>();
@@ -429,14 +430,15 @@ public class MenuComponents {
     }
 
     // public static String voteDialogueBox(String sugChan) {
-    //     String[] choices = { "Ja", "Nein" };
-    //     String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-    //             "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
-    //             // default
-    //             // icon
-    //             choices, // Array of choices
-    //             "Select vote");
-    //     return input;
+    // String[] choices = { "Ja", "Nein" };
+    // String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+    // "Should " + sugChan + " be elected chancellor?",
+    // JOptionPane.QUESTION_MESSAGE, null, // Use
+    // // default
+    // // icon
+    // choices, // Array of choices
+    // "Select vote");
+    // return input;
     // }
 
     public static void voteDialogue(String sugChan) throws IOException {
@@ -455,16 +457,22 @@ public class MenuComponents {
         voteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
         voteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        for (int i = 0 ; i < 2 ; i++){
+        choicePanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        for (int i = 0; i < 2; i++) {
             ImageIcon io, ios;
-            if (i == 0) { io = jaIcon; ios = jaIconSelected; }
-            else {io = neinIcon; ios = neinIconSelected; }
+            if (i == 0) {
+                io = jaIcon;
+                ios = jaIconSelected;
+            } else {
+                io = neinIcon;
+                ios = neinIconSelected;
+            }
             JButton voteButton = createButton(-1, null, null, io);
             Border border = BorderFactory.createLineBorder(Color.BLACK);
-            voteButton.setBorder(BorderFactory.createCompoundBorder(border,
-                BorderFactory.createEmptyBorder(0,0,0,0)));
+            voteButton
+                    .setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 0, 0, 0)));
             choicePanel.add(voteButton);
-            choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+            choicePanel.add(Box.createRigidArea(new Dimension(10, 0)));
             voteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     boolean isSelected = voteButton.getIcon().equals(ios);
@@ -476,11 +484,11 @@ public class MenuComponents {
                         isSelected = !isSelected;
                         valid = true;
                     }
-                    if (valid){
+                    if (valid) {
                         if (isSelected) {
                             chosenVote = voteButton.getIcon().equals(jaIconSelected) ? "Ja" : "Nein";
-                        }
-                        else chosenVote = null;
+                        } else
+                            chosenVote = null;
                     }
                 }
             });
@@ -489,7 +497,7 @@ public class MenuComponents {
         submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (chosenVote != null){
+                if (chosenVote != null) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     System.out.println(chosenVote);
                     try {
@@ -514,7 +522,7 @@ public class MenuComponents {
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
-    
+
     public static void showRole(RoleType secretRole, PlayerRole[] allies) throws IOException {
         JFrame showFrame = new JFrame();
         showFrame.setTitle("Your role and party");
@@ -569,16 +577,17 @@ public class MenuComponents {
                     }
                 }
 
-            }});
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        showFrame.add(Box.createRigidArea(new Dimension(0,30)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 30)));
         showFrame.add(roleLabel);
-        showFrame.add(Box.createRigidArea(new Dimension(0,30)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 30)));
         showFrame.add(showPanel);
-        showFrame.add(Box.createRigidArea(new Dimension(0,20)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         showFrame.add(submitButton, BorderLayout.CENTER);
-        showFrame.add(Box.createRigidArea(new Dimension(0,10)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.pack();
         showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
@@ -601,7 +610,7 @@ public class MenuComponents {
         allyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         noteLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         noteLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-        
+
         ImageIcon ioSecret;
         String name;
         for (PlayerRole playerRole : allies) {
@@ -622,25 +631,26 @@ public class MenuComponents {
             allyPanel.add(Box.createRigidArea(new Dimension(10, 10)));
             allyPanel.add(allyRole);
             Border border = BorderFactory.createLineBorder(Color.BLACK);
-            allyPanel.setBorder(BorderFactory.createCompoundBorder(border,
-                BorderFactory.createEmptyBorder(0,0,0,0)));
-            showPanel.add(Box.createRigidArea(new Dimension(10,0)));
+            allyPanel
+                    .setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+            showPanel.add(Box.createRigidArea(new Dimension(10, 0)));
             showPanel.add(allyPanel);
         }
-        showPanel.add(Box.createRigidArea(new Dimension(10,0)));
+        showPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         JButton submitButton = new JButton("I got it");
         submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                    try {
-                        Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
-                    } catch (InterruptedException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-            }});
+                SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                try {
+                    Menu.game.getGameSpace().put("checkedMyRole", Menu.game.getUser().Id());
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         showFrame.add(allyLabel);
@@ -666,8 +676,7 @@ public class MenuComponents {
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
-        
-        
+
         String name = Name;
         ImageIcon ioMem;
         if (partyMembership == RoleType.Liberal) {
@@ -675,7 +684,7 @@ public class MenuComponents {
         } else {
             ioMem = fascistMembership;
         }
-        
+
         JPanel investigatePanel = new JPanel();
         investigatePanel.setLayout(new BoxLayout(investigatePanel, BoxLayout.Y_AXIS));
 
@@ -702,14 +711,15 @@ public class MenuComponents {
         submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                    try {
-                        Menu.game.getGameSpace().put("investigated");
-                    } catch (InterruptedException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-            }});
+                SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                try {
+                    Menu.game.getGameSpace().put("investigated");
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(Box.createRigidArea(new Dimension(0, 30)));
         showFrame.add(infoLabel);
@@ -733,11 +743,11 @@ public class MenuComponents {
         JPanel showPanel = new JPanel();
         showPanel.setSize(300, 400);
         showPanel.setLayout(new BoxLayout(showPanel, BoxLayout.X_AXIS));
-        
+
         ImageIcon cardIcon;
         String cardName;
         for (int i = 0; i < 3; i++) {
-            
+
             if (deckTop[i] == LegislativeType.Fascist) {
                 cardIcon = fascistCard;
             } else {
@@ -763,15 +773,16 @@ public class MenuComponents {
         submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                    try {
-                        Menu.game.getGameSpace().put("iPeekedCards");
-                    } catch (InterruptedException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
+                SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                try {
+                    Menu.game.getGameSpace().put("iPeekedCards");
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
 
-            }});
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         showFrame.add(showPanel);
         showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
@@ -821,21 +832,21 @@ public class MenuComponents {
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
         chatPanel.add(BorderLayout.SOUTH, southPanel);
-        //chatPanel.setSize(400,1000);
+        // chatPanel.setSize(400,1000);
     }
 
     public static void initGamePanel() {
         waiting = new JLabel("Waiting for players...");
-        waiting.setFont(new Font("SansSerif",Font.BOLD, 40));
+        waiting.setFont(new Font("SansSerif", Font.BOLD, 40));
         waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         joinedPlayers = new JTextPane();
         joinedPlayers.setEditable(false);
-        joinedPlayers.setFont(new Font("SansSerif",Font.PLAIN, 35));
+        joinedPlayers.setFont(new Font("SansSerif", Font.PLAIN, 35));
         joinedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
         Border border = BorderFactory.createLineBorder(Color.BLACK);
-        joinedPlayers.setBorder(BorderFactory.createCompoundBorder(border,
-            BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+        joinedPlayers
+                .setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 0, 0, 0)));
 
         StyledDocument doc = joinedPlayers.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
@@ -847,7 +858,7 @@ public class MenuComponents {
             e.printStackTrace();
         }
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-        //gamePanel.setSize(900,1000);
+        // gamePanel.setSize(900,1000);
 
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
@@ -861,7 +872,7 @@ public class MenuComponents {
         IDPanel.setLayout(new BorderLayout());
         innerIDPanel = new JPanel();
         innerIDPanel.setLayout(new BoxLayout(innerIDPanel, BoxLayout.X_AXIS));
-        
+
         startGamePanel = new JPanel();
         startGamePanel.setLayout(new BorderLayout());
 
@@ -885,7 +896,7 @@ public class MenuComponents {
         innerIDPanel.add(nameLabel);
         innerIDPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         innerIDPanel.add(membershipCard);
-        innerIDPanel.add(Box.createRigidArea(new Dimension(15,0)));
+        innerIDPanel.add(Box.createRigidArea(new Dimension(15, 0)));
         innerIDPanel.add(roleCard);
 
         innerIDPanel.add(Box.createHorizontalGlue());
@@ -915,13 +926,17 @@ public class MenuComponents {
         gameFrame.setVisible(true);
         gameFrame.setLocationRelativeTo(null);
         // suggestDialogueBox(new String[]{"Eli", "Fred"}, "Halløjsa!");
-        // showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        // showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new
+        // PlayerRole("Erik", RoleType.Fascist)});
         // investigatePlayer("Elias", RoleType.Liberal);
         // voteDialogue("Elias");
         // welcomeDialogue();
-        //chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
-        // showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
+        // chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist,
+        // LegislativeType.Liberal);
+        // showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias",
+        // RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         // deadScreen();
+        winScreen(RoleType.Liberal);
     }
 
     static class sendMessageListener implements ActionListener {
@@ -947,7 +962,7 @@ public class MenuComponents {
                     append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
                 } else if (msg.equals(".tcp")) {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
-                } else if (msg.equals(".increment")){
+                } else if (msg.equals(".increment")) {
                     append(chatBox, "<ChatBot>: The board was updated!\n", true);
                 } else if (msg.equals(".leave")) {
                     try {
@@ -999,8 +1014,8 @@ public class MenuComponents {
     }
 
     public static String suggestDialogueBox(String[] choices, String suggestMsg) {
-        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                suggestMsg, JOptionPane.QUESTION_MESSAGE, icons.get(2), // Use
+        String input = (String) JOptionPane.showInputDialog(null, "Choose now...", suggestMsg,
+                JOptionPane.QUESTION_MESSAGE, icons.get(2), // Use
                 // default
                 // icon
                 choices, // Array of choices
@@ -1011,8 +1026,8 @@ public class MenuComponents {
     public static String voteDialogueBox(String sugChan) {
         String[] choices = { "Ja", "Nein" };
         String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE,
-                icons.get(2), choices, "Select vote");
+                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, icons.get(2), choices,
+                "Select vote");
         return input;
     }
 
@@ -1029,20 +1044,22 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
             username = name;
-
-            String IP_Port = inputBox("Enter tcp address: (default)", "192.168.68.112:9001", "IP input");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            String IP_Port = inputBox("Enter tcp address: (default)", internalIP + ":" + port, "IP input");
+            // String IP_Port = inputBox("Enter tcp address: (default)",
+            // "192.168.68.112:9001", "IP input");
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address:
+            // (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 menuFrame.setVisible(true);
                 return;
-            } 
+            }
             menuFrame.setVisible(false);
             tcp = IP_Port;
             gameHost = true;
             gameFrame.setTitle("Secret Hitler  |  " + name + "'s Room  |  tcp: " + tcp);
             Menu.game.gameCreate(IP_Port);
             Menu.game.chatSetup();
-            
+
             try {
                 gameFrame();
             } catch (IOException e1) {
@@ -1070,12 +1087,13 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = inputBox("Enter tcp address: (default)", "192.168.68.112:9001", "IP input");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            String IP_Port = inputBox("Enter tcp address: (default)", externalIP + ":" + port, "IP input");
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address:
+            // (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 menuFrame.setVisible(true);
                 return;
-            } 
+            }
             menuFrame.setVisible(false);
 
             Menu.game.setIP_Port(IP_Port);
@@ -1127,14 +1145,14 @@ public class MenuComponents {
     };
 
     public static String inputBox(String msg, String defval, String type) {
-        String input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, 
-            JOptionPane.QUESTION_MESSAGE, icons.get(2), null, defval);
+        String input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, JOptionPane.QUESTION_MESSAGE,
+                icons.get(2), null, defval);
         if (input == null) {
             return null;
         } else if (input.isEmpty() || input.equals("ChatBot")) {
             do {
-                input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, 
-                    JOptionPane.QUESTION_MESSAGE, icons.get(2), null, defval);
+                input = (String) JOptionPane.showInputDialog(menuFrame, msg, type, JOptionPane.QUESTION_MESSAGE,
+                        icons.get(2), null, defval);
             } while (input.isEmpty() || input.equals("ChatBot"));
         }
         return input;
@@ -1166,29 +1184,33 @@ public class MenuComponents {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-            //gamePanel.remove(startGameButton);
-            //innerIDPanel.remove(startGameButton);
+            // gamePanel.remove(startGameButton);
+            // innerIDPanel.remove(startGameButton);
             startGamePanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
         }
     };
 
-    public static void setGameBoard(int playerCount){
+    public static void setGameBoard(int playerCount) {
         gamePanel.remove(joinedPlayers);
-        gamePanel.remove(waiting);
         gamePanel.remove(startGamePanel);
+        gamePanel.remove(waiting);
         fascistBoardIndex = (playerCount < 7) ? 0 : (playerCount < 9) ? 1 : 2;
-            fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
+        fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][0]);
         liberalBoard.setIcon(liberalBoardImageMatrix[0][0]);
+        gamePanel.revalidate();
+        gamePanel.repaint();
     }
 
-    public static void setCards(RoleType rt){
+    public static void setCards(RoleType rt) {
         ImageIcon role, party;
         if (rt == RoleType.Fascist || rt == RoleType.Hitler) {
             party = fascistMembership;
-            if (rt == RoleType.Hitler) role = hitlerRole;
-            else role = fascistRole;
+            if (rt == RoleType.Hitler)
+                role = hitlerRole;
+            else
+                role = fascistRole;
         } else {
             role = liberalRole;
             party = liberalMembership;
@@ -1197,37 +1219,37 @@ public class MenuComponents {
         roleCard.setIcon(role);
     }
 
-	public static void gameOverScreen(int gameState) {
+    public static void gameOverScreen(int gameState) {
         if (gameState == 1) {
             Helper.appendAndSend("Liberals won!");
         } else {
             Helper.appendAndSend("Fascists won!");
         }
-	}
+    }
 
-	public static void incFascArticles() {
+    public static void incFascArticles() {
         fascistArticles++;
         fascistBoard.setIcon(fascistBoardImageMatrix[fascistBoardIndex][fascistArticles]);
         resetLibFails();
     }
 
-	public static void incLibArticles() {
+    public static void incLibArticles() {
         liberalArticles++;
         liberalFails = 0;
         liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
-    
-    public static void incLibFails(){
+
+    public static void incLibFails() {
         liberalFails++;
         liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
 
-    public static void resetLibFails(){
-        liberalFails=0;
+    public static void resetLibFails() {
+        liberalFails = 0;
         liberalBoard.setIcon(liberalBoardImageMatrix[liberalArticles][liberalFails]);
     }
 
-	public static void deadScreen() {
+    public static void deadScreen() {
         JFrame showFrame = new JFrame();
         showFrame.setTitle("You are dead!");
         showFrame.setLayout(new BoxLayout(showFrame.getContentPane(), BoxLayout.Y_AXIS));
@@ -1248,15 +1270,17 @@ public class MenuComponents {
         JTextArea infoText = new JTextArea();
         infoText.setFont(new Font("SansSerif", Font.BOLD, 14));
         infoText.setEditable(false);
-        infoText.setText("   You will be able to spectate the game until it's done, \n           but you will be unable to perform any actions!   ");
+        infoText.setText("   You will be able to spectate the game until it's done,   \n"
+                + "        but you will be unable to perform any actions!  \n\n"
+                + "            (PS! You are not allowed to chat or speak)  ");
         infoText.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton submitButton = new JButton("Alright!");
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
-                }
-            });
+                SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+            }
+        });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         showPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -1272,7 +1296,64 @@ public class MenuComponents {
         showFrame.setIconImages(iconImages);
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
-	}
+    }
+
+    public static void winScreen(RoleType winningParty) {
+        String winners = "";
+        JFrame winnerFrame = new JFrame();
+        winnerFrame.setTitle("Game Over!");
+        winnerFrame.getContentPane().setLayout(new BoxLayout(winnerFrame.getContentPane(), BoxLayout.X_AXIS));
+
+        JPanel winnerPanel = new JPanel();
+        winnerPanel.setLayout(new BoxLayout(winnerPanel, BoxLayout.Y_AXIS));
+        JLabel winnerImage = new JLabel();
+        JLabel winnerLabel = new JLabel();
+        winnerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        winnerImage.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (winningParty == RoleType.Fascist) {
+            winners = "Fascists";
+            winnerImage.setIcon(fascistMembership);
+        } else {
+            winners = "Liberals";
+            winnerImage.setIcon(liberalMembership);
+        }
+        winnerLabel.setText("The " + winners + " have won the game!\n Click the button to quit!");
+
+        JButton submitButton = new JButton("Thanks for playing!");
+        submitButton.setFocusPainted(false);
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.getWindowAncestor(submitButton).dispose();
+                try {
+                    Menu.game.leaveGame();
+                    gameFrame.dispose();
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                }
+            });
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        winnerPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        winnerPanel.add(winnerLabel);
+        winnerPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        winnerPanel.add(winnerImage);
+        winnerPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        winnerPanel.add(submitButton);
+        winnerPanel.add(Box.createRigidArea(new Dimension(0,20)));
+
+        winnerFrame.add(Box.createRigidArea(new Dimension(20,0)));
+        winnerFrame.add(winnerPanel);
+        winnerFrame.add(Box.createRigidArea(new Dimension(20,0)));
+        winnerFrame.pack();
+        winnerFrame.setIconImages(iconImages);
+        winnerFrame.setLocationRelativeTo(null);
+        winnerFrame.setVisible(true);
+    }
+        
+
     
     // public static void playSong(URL media) {
     //     Player mediaPlayer = Manager.createRealizedPlayer(media);

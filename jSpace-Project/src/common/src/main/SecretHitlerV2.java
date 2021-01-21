@@ -155,6 +155,7 @@ public class SecretHitlerV2 implements Runnable {
         System.out.println("Hello mein friends!");
         boolean gameStarted = true;
         boolean imDead = false;
+        boolean oldImDead = false;
         try {
             int president;
             int chancellor; 
@@ -348,7 +349,11 @@ public class SecretHitlerV2 implements Runnable {
                         gameStarted = checkGameState(playerCount);
                         readAndPassWithController("endExecutive", playerCount);
                         imDead = CheckDeathStatus();
-                        if (imDead) MenuComponents.deadScreen();
+                        if (imDead && !oldImDead) {
+                            MenuComponents.deadScreen();
+                            Helper.appendAndSend(_user.Name() + " was killed by the president!");
+                        }
+                        oldImDead = imDead;
                         //TODO: if dead show on screen
                         System.out.println("Executive action has happened");
                         break;

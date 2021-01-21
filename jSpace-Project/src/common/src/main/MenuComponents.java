@@ -881,10 +881,10 @@ public class MenuComponents {
         gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         gameFrame.setVisible(true);
         //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
-        investigatePlayer("Elias", RoleType.Liberal);
+        //investigatePlayer("Elias", RoleType.Liberal);
         //voteDialogue("Elias");
         // welcomeDialogue();
-        chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
+        //chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
         // chooseCards(true, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
         //showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         //deadScreen();

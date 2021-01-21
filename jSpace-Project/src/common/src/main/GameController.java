@@ -386,7 +386,7 @@ public class GameController implements Runnable {
         ArrayList<LegislativeType> res = new ArrayList<LegislativeType>(numberOfCards);
         for (int i = 0; i < numberOfCards; ++i) {
             if (preview) {
-                res.add(deck.get(deck.size()-1));
+                res.add(deck.get(deck.size()-1-i));
             } else {
                 res.add(deck.remove(deck.size()-1));
             }
@@ -628,7 +628,7 @@ public class GameController implements Runnable {
             case 5:
             case 6:
                 executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
-                break;     
+                break;
             case 7:
             case 8:
                 executivePowers = new ActionType[] {ActionType.None, ActionType.Investigate, ActionType.S_Election, ActionType.Kill, ActionType.Veto, ActionType.None};

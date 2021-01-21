@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MenuComponents {
     static String appName;
-    static String localtcp = "192.168.50.218";
+    static String localtcp = "192.168.0.101";//"192.168.50.218";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -38,12 +38,12 @@ public class MenuComponents {
     static JFrame frame = new JFrame("Secret Hitler");
     static JFrame gameFrame = new JFrame();
     static JPanel gamePanel = new JPanel();
+    static JSplitPane mainPanel;
     static JPanel menuPanel = new JPanel();
     static JPanel chatPanel;
     static JPanel IDPanel;
     static JPanel innerIDPanel;
     static JPanel startGamePanel;
-    static JPanel mainPanel;
     static JLabel[] labels = new JLabel[3];
     static JLabel numPlayerLabel;
     static JLabel waiting;
@@ -233,18 +233,25 @@ public class MenuComponents {
         }
     }
 
-    public static void chooseCards(boolean veto, LegislativeType... cards) throws IOException {
+    public static void chooseArticles(boolean veto, LegislativeType... cards) throws IOException {
         legiChoices = new ArrayList<LegislativeType>();
         JPanel choicePanel = new JPanel();
         choicePanel.setSize(300, 400);
         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
+        JLabel infoLabel = new JLabel();
+        infoLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JFrame choiceFrame = new JFrame();
         choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
         choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        if (cards.length == 3)
-            choiceFrame.setTitle("Choose 2 out of 3 article cards");
-        else
-            choiceFrame.setTitle("Choose 1 out of 2 article cards");
+        if (cards.length == 3) {
+            choiceFrame.setTitle("President chooses articles");
+            infoLabel.setText("  Select 2 of 3 articles to pass to the Chancellor!  ");
+        }
+        else {
+            choiceFrame.setTitle("Chancellor chooses article");
+            infoLabel.setText("  Select 1 of 2 articles to pass as law!  ");
+        }
         System.out.println(cards.length);
         for (LegislativeType card : cards) {
             ImageIcon io, ios;
@@ -293,6 +300,7 @@ public class MenuComponents {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         JButton submitButton = new JButton("Submit article choices!");
+        submitButton.setFocusPainted(false);
         buttonPanel.add(submitButton);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -331,8 +339,11 @@ public class MenuComponents {
             });
             vetoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         }
-
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
+        choiceFrame.add(infoLabel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         choiceFrame.add(choicePanel);
+        choiceFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         choiceFrame.add(buttonPanel);
         // choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
         // choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
@@ -446,6 +457,7 @@ public class MenuComponents {
             });
         }
         JButton submitButton = new JButton("Submit vote!");
+        submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (chosenVote != null){
@@ -506,6 +518,7 @@ public class MenuComponents {
         showPanel.add(secret);
 
         JButton submitButton = new JButton("Duly noted!");
+        submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (secretRole == RoleType.Liberal || allies == null) {
@@ -579,13 +592,14 @@ public class MenuComponents {
             allyPanel.add(allyRole);
             Border border = BorderFactory.createLineBorder(Color.BLACK);
             allyPanel.setBorder(BorderFactory.createCompoundBorder(border,
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+                BorderFactory.createEmptyBorder(0,0,0,0)));
+            showPanel.add(Box.createRigidArea(new Dimension(10,0)));
             showPanel.add(allyPanel);
         }
-        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        showPanel.add(Box.createRigidArea(new Dimension(10,0)));
 
         JButton submitButton = new JButton("I got it");
+        submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
@@ -632,18 +646,28 @@ public class MenuComponents {
         
         JPanel investigatePanel = new JPanel();
         investigatePanel.setLayout(new BoxLayout(investigatePanel, BoxLayout.Y_AXIS));
+
+        JLabel infoLabel = new JLabel("  You have chosen to investigate Elias!  ");
         JLabel playerParty = new JLabel(ioMem);
         JLabel playerName = new JLabel(name);
+
+        infoLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        playerName.setFont(new Font("SansSerif", Font.BOLD, 14));
+
         playerName.setAlignmentX(Component.CENTER_ALIGNMENT);
         playerParty.setAlignmentX(Component.CENTER_ALIGNMENT);
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         investigatePanel.add(playerName);
-        investigatePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        investigatePanel.add(Box.createRigidArea(new Dimension(0, 10)));
         investigatePanel.add(playerParty);
-        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+
+        showPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         showPanel.add(investigatePanel);
-        showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        showPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         JButton submitButton = new JButton("I got it");
+        submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
@@ -655,10 +679,13 @@ public class MenuComponents {
                     }
             }});
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFrame.add(Box.createRigidArea(new Dimension(0, 30)));
+        showFrame.add(infoLabel);
+        showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         showFrame.add(showPanel);
-        showFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 20)));
         showFrame.add(submitButton, BorderLayout.CENTER);
-        showFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        showFrame.add(Box.createRigidArea(new Dimension(0, 10)));
         showFrame.pack();
         showFrame.setLocationRelativeTo(null);
         showFrame.setVisible(true);
@@ -700,6 +727,7 @@ public class MenuComponents {
         showPanel.add(Box.createRigidArea(new Dimension(10, 10)));
 
         JButton submitButton = new JButton("I got it");
+        submitButton.setFocusPainted(false);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
@@ -759,7 +787,7 @@ public class MenuComponents {
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
         chatPanel.add(BorderLayout.SOUTH, southPanel);
-        chatPanel.setSize(400,1000);
+        //chatPanel.setSize(400,1000);
     }
 
     public static void initGamePanel() {
@@ -784,23 +812,24 @@ public class MenuComponents {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-        gamePanel.setSize(900,1000);
+        //gamePanel.setSize(900,1000);
 
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new BoxLayout(boardPanel, BoxLayout.Y_AXIS));
         fascistBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
         boardPanel.add(fascistBoard);
-        boardPanel.add(Box.createRigidArea(new Dimension(10, 10)));
+        boardPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         liberalBoard.setAlignmentX(Component.CENTER_ALIGNMENT);
         boardPanel.add(liberalBoard);
+
         IDPanel = new JPanel();
-        innerIDPanel = new JPanel();
-        //innerIDPanel.setLayout(new GridLayout(1,0));
-        innerIDPanel.setLayout(new BoxLayout(innerIDPanel, BoxLayout.X_AXIS));
         IDPanel.setLayout(new BorderLayout());
-        //membershipCard.setHorizontalAlignment(JLabel.LEFT);
+        innerIDPanel = new JPanel();
+        innerIDPanel.setLayout(new BoxLayout(innerIDPanel, BoxLayout.X_AXIS));
+        
+        startGamePanel = new JPanel();
+        startGamePanel.setLayout(new BorderLayout());
 
         JLabel nameLabel = new JLabel(username);
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
@@ -818,23 +847,20 @@ public class MenuComponents {
         roleCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         roleCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
 
+        innerIDPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         innerIDPanel.add(nameLabel);
         innerIDPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         innerIDPanel.add(membershipCard);
         innerIDPanel.add(Box.createRigidArea(new Dimension(15,0)));
         innerIDPanel.add(roleCard);
-        startGamePanel = new JPanel();
-        startGamePanel.setLayout(new BorderLayout());
 
-        // ra1 = Box.createRigidArea(new Dimension(200, 0));
-        // innerIDPanel.add(ra1);
         innerIDPanel.add(Box.createHorizontalGlue());
         innerIDPanel.add(numPlayerLabel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
+
         gamePanel.add(waiting);
         gamePanel.add(startGamePanel);
-        ra2 = Box.createRigidArea(new Dimension(0, 50));
-        gamePanel.add(ra2);
+        gamePanel.add(Box.createRigidArea(new Dimension(0, 50)));
         gamePanel.add(joinedPlayers);
         gamePanel.add(boardPanel);
         gamePanel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -847,28 +873,21 @@ public class MenuComponents {
         initChatPanel();
         initGamePanel();
 
-        mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setSize(chatPanel.getWidth() + gamePanel.getWidth(), 1000);
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        mainPanel.add(chatPanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
-        mainPanel.add(gamePanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(30, 30)));
-
+        mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatPanel, gamePanel);
+        mainPanel.setDividerLocation(0.25);
         gameFrame.add(mainPanel);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameFrame.setSize(mainPanel.getSize());
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         gameFrame.setVisible(true);
         //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
-        //investigatePlayer("Elias", RoleType.Liberal);
-        //newVote("Elias");
+        investigatePlayer("Elias", RoleType.Liberal);
+        //voteDialogue("Elias");
         // welcomeDialogue();
-        // chooseCards(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
+        chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
         // chooseCards(true, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
         //showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
-        // deadScreen();
+        //deadScreen();
     }
 
     static class sendMessageListener implements ActionListener {
@@ -1138,7 +1157,6 @@ public class MenuComponents {
     };
 
     public static void setGameBoard(int playerCount){
-        gamePanel.remove(ra2);
         gamePanel.remove(joinedPlayers);
         gamePanel.remove(waiting);
         gamePanel.remove(startGamePanel);

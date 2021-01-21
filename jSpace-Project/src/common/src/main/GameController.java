@@ -152,9 +152,9 @@ public class GameController implements Runnable {
                 } else {
                     //win check (chancellor has been chosen)
                     /*Gamestate is 3 if fascist win by electing hitler, otherwise 4 to continue game*/
-                    int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 3 : 4;
+                    int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 7 : 4;
                     _gameSpace.put("gameState", gameState, 0);
-                    if (gameState == 3) {
+                    if (gameState == 7) {
                         Helper.appendAndSend("Hitler was elected chancellor with 3 fascist laws passed. Fascists win!");
                         gameStarted = false;
                         break;
@@ -273,7 +273,7 @@ public class GameController implements Runnable {
                             break;
                     }
                     if (killedPlayer != -1 && roles[killedPlayer].getSecretRole() == RoleType.Hitler) {
-                        _gameSpace.put("gameState", 2, 0);
+                        _gameSpace.put("gameState", 6, 0);
                         gameStarted = false;
                         Helper.appendAndSend("Hitler was executed. Liberals win!");
                     } else {

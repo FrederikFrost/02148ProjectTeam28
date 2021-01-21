@@ -300,6 +300,88 @@ public class MenuComponents {
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
     }
+
+    // public static String voteDialogueBox(String sugChan) {
+    //     String[] choices = { "Ja", "Nein" };
+    //     String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+    //             "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, null, // Use
+    //             // default
+    //             // icon
+    //             choices, // Array of choices
+    //             "Select vote");
+    //     return input;
+    // }
+
+    // public static void newVote(String sugChan) throws IOException {
+    //     JPanel choicePanel = new JPanel();
+    //     choicePanel.setSize(300, 400);
+    //     choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.X_AXIS));
+    //     JFrame choiceFrame = new JFrame();
+    //     choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+    //     choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    //     ImageIcon jaIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/illu/Ja H.png")));
+    //     ImageIcon neinIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/illu/Nein H.png")));
+    //     ImageIcon[] voteIcons = {jaIcon, neinIcon};
+    //     for (ImageIcon icon : voteIcons) {
+    //         JButton voteButton = createButton(-1, null, null, icon);
+    //         choicePanel.add(voteButton);
+    //         choicePanel.add(Box.createRigidArea(new Dimension(10, 10)));
+    //         voteButton.addActionListener(new ActionListener() {
+    //             public void actionPerformed(ActionEvent e) {
+    //                 boolean isSelected = cardChoice.getIcon().equals(ios);
+    //                 boolean valid = false;
+    //                 if (legiChoices.size() < cards.length - 1 && !isSelected || legiChoices.size() >= 1 && isSelected) {
+    //                     cardChoice.setIcon(isSelected ? io : ios);
+    //                     cardChoice.invalidate(); // might not be needed
+    //                     cardChoice.repaint();
+    //                     isSelected = !isSelected;
+    //                     valid = true;
+    //                 }
+    //                 if (valid) {
+    //                     if (isSelected) {
+    //                         if (cardChoice.getIcon().equals(fascistCard)
+    //                                 || cardChoice.getIcon().equals(fascistCardSelected))
+    //                             legiChoices.add(LegislativeType.Fascist);
+    //                         else
+    //                             legiChoices.add(LegislativeType.Liberal);
+    //                     } else {
+    //                         if (cardChoice.getIcon().equals(fascistCard)
+    //                                 || cardChoice.getIcon().equals(fascistCardSelected))
+    //                             legiChoices.remove(LegislativeType.Fascist);
+    //                         else
+    //                             legiChoices.remove(LegislativeType.Liberal);
+    //                     }
+    //                     System.out.println("Legichoices size = " + legiChoices.size());
+    //                 }
+    //             }
+    //         });
+    //     }
+    //     JButton submitButton = new JButton("Submit article choices!");
+    //     submitButton.addActionListener(new ActionListener() {
+    //         public void actionPerformed(ActionEvent e) {
+    //             if (legiChoices.size() == cards.length - 1) {
+    //                 for (LegislativeType choice : legiChoices)
+    //                     System.out.println(choice);
+    //                 SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+    //                 try {
+    //                     Menu.game.getGameSpace().put("legiChoices", legiChoices);
+    //                 } catch (InterruptedException e1) {
+    //                     // TODO Auto-generated catch block
+    //                     e1.printStackTrace();
+    //                 }
+    //             } else
+    //                 System.out.println("You haven't picked the right amount of article cards!");
+    //         }
+    //     });
+    //     submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //     choiceFrame.add(choicePanel);
+    //     choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+    //     choiceFrame.add(submitButton, BorderLayout.CENTER);
+    //     choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+    //     choiceFrame.pack();
+    //     choiceFrame.setLocationRelativeTo(null);
+    //     choiceFrame.setVisible(true);
+    // }
     
     public static void showRole(RoleType secretRole, PlayerRole[] allies) throws IOException {
         JPanel showPanel = new JPanel();

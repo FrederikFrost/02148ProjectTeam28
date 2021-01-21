@@ -277,7 +277,7 @@ public class GameController implements Runnable {
                         gameStarted = false;
                         Helper.appendAndSend("Hitler was executed. Liberals win!");
                     } else {
-                        _gameSpace.put("gameState", 0, 0);
+                        _gameSpace.put("gameState", 4, 0);
                     }
 
                     passAndWaitForReturn("endExecutive");

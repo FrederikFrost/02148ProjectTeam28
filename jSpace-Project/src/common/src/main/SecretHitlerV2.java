@@ -195,7 +195,7 @@ public class SecretHitlerV2 implements Runnable {
                         readAndPassKeyWord("startLegislate", playerCount);
 
                         if (_user.Id() == president) {
-                            System.out.println("Im president in legislative session!");
+                            System.out.println("Im President in legislative session!");
                             
                             _gameSpace.get(new ActualField("lock"));
                             Object[] cardsTuple = _gameSpace.get(new ActualField("president"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
@@ -209,6 +209,7 @@ public class SecretHitlerV2 implements Runnable {
                             //     isString = "No";
                             // }
                             // System.out.println("The card was a string?: " + isString);
+                            Helper.appendAndSend("The President is choosing 2 out of 3 articles to pass to the Chancellor!\n");
                             MenuComponents.chooseCards(cards.get(0), cards.get(1), cards.get(2));
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             cards = Helper.castLegislate(legiChoices[1]);
@@ -235,6 +236,7 @@ public class SecretHitlerV2 implements Runnable {
                             Object[] cardsTuple = _gameSpace.get(new ActualField("chancellor"), new FormalField(ArrayList.class), new FormalField(Boolean.class)); //maybe send veto bool here
                             ArrayList<LegislativeType> cards = Helper.castLegislate(cardsTuple[1]);
                             boolean veto = (boolean) cardsTuple[2];
+                            Helper.appendAndSend("The Chancellor is choosing 1 out of 2 articles to pass as law!\n");
                             MenuComponents.chooseCards(cards.get(0), cards.get(1));
                             Object[] legiChoices = _gameSpace.get(new ActualField("legiChoices"), new FormalField(ArrayList.class));
                             ArrayList<LegislativeType> tempCards = Helper.castLegislate(legiChoices[1]);
@@ -329,7 +331,7 @@ public class SecretHitlerV2 implements Runnable {
                                      *  TODO should prevent normal election of president somehow  
                                      * 
                                      */
-                                    suggestMsg = "Who do you want to elect as the next president?";
+                                    suggestMsg = "Who do you want to elect as the next President?";
                                     choice = Game.suggest(cands, suggestMsg);
                                     _gameSpace.put("specialPres", choice);
                                     break;
@@ -446,7 +448,7 @@ public class SecretHitlerV2 implements Runnable {
             int[] eliCands = Helper.castIntArray(newElect[2]);
             
             Helper.appendAndSend(_user.Name() + " is President in this round");
-            Helper.appendAndSend("The president is suggesting a chancellor");
+            Helper.appendAndSend("The President is suggesting a Chancellor candidate!");
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             // Helper.printArray("Cands", eligibleCands.toArray());
             String suggestMsg = "Who should be suggested chancellor?";

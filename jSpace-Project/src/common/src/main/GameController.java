@@ -129,9 +129,10 @@ public class GameController implements Runnable {
                     suggestedChancellor = SuggestChancellor();
                     printDebug("Got suggestion");
                     elected = Election(suggestedChancellor);
-                    electionTracker++;
+                    
                     if (!elected && electionTracker < 3) {
-                        // Putting gamestate = 4 to signify game continue.
+                        electionTracker++;
+                        // Putting gamestate = 5 to increment election tracker.
                         _gameSpace.put("gameState", 5, 0);
                     }  
                 }
@@ -195,6 +196,10 @@ public class GameController implements Runnable {
                         executivePower = UpdateBoards(finalCard);
                         electionTracker = 0;
                         //win check
+                        if (liberalBoard[4] != LegislativeType.None || fascistBoard[5] != LegislativeType.None) {
+                            gameStarted = false;
+                            break;
+                        }
                     } else {    //in case of veto
                         System.out.println("A veto was called");
                         electionTracker++;

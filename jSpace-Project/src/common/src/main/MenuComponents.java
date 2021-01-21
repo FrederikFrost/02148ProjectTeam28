@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MenuComponents {
     static String appName;
-    static String localtcp = "192.168.0.101";
+    static String localtcp = "192.168.50.218";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -219,7 +219,7 @@ public class MenuComponents {
         }
     }
 
-    public static void chooseCards(LegislativeType... cards) throws IOException {
+    public static void chooseCards(boolean veto, LegislativeType... cards) throws IOException {
         legiChoices = new ArrayList<LegislativeType>();
         JPanel choicePanel = new JPanel();
         choicePanel.setSize(300, 400);
@@ -274,12 +274,17 @@ public class MenuComponents {
                 }
             });
         }
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setSize(300, 400);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
         JButton submitButton = new JButton("Submit article choices!");
+        buttonPanel.add(submitButton);
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (legiChoices.size() == cards.length - 1) {
                     for (LegislativeType choice : legiChoices)
-                        System.out.println(choice);
+                    System.out.println(choice);
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     try {
                         Menu.game.getGameSpace().put("legiChoices", legiChoices);
@@ -288,14 +293,82 @@ public class MenuComponents {
                         e1.printStackTrace();
                     }
                 } else
-                    System.out.println("You haven't picked the right amount of article cards!");
+                System.out.println("You haven't picked the right amount of article cards!");
             }
         });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        if(veto) {
+            buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+            JButton vetoButton = new JButton("I wish to call Veto!");
+            buttonPanel.add(vetoButton);
+            vetoButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    
+                    SwingUtilities.getWindowAncestor(vetoButton).setVisible(false);
+                    try {
+                        ArrayList<Integer> vetoCards = new ArrayList<Integer>();
+                        Menu.game.getGameSpace().put("legiChoices", vetoCards);
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            vetoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        }
+
         choiceFrame.add(choicePanel);
-        choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
-        choiceFrame.add(submitButton, BorderLayout.CENTER);
-        choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        choiceFrame.add(buttonPanel);
+        // choiceFrame.add(Box.createRigidArea(new Dimension(20, 20)));
+        // choiceFrame.add(Box.createRigidArea(new Dimension(10, 10)));
+        choiceFrame.pack();
+        choiceFrame.setLocationRelativeTo(null);
+        choiceFrame.setVisible(true);
+    }
+
+    public static void presVeto() {
+        JFrame choiceFrame = new JFrame();
+        choiceFrame.setLayout(new BoxLayout(choiceFrame.getContentPane(), BoxLayout.Y_AXIS));
+        choiceFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        choiceFrame.setTitle("Accept/decline Veto");
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setSize(300, 400);
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
+        JButton noVetoButton = new JButton("I do not wish to call Veto!");
+        buttonPanel.add(noVetoButton);
+        noVetoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.getWindowAncestor(noVetoButton).setVisible(false);
+                try {
+                    Menu.game.getGameSpace().put("presVeto", false);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+        noVetoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        JButton vetoButton = new JButton("I wish to call Veto!");
+        buttonPanel.add(vetoButton);
+        vetoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.getWindowAncestor(vetoButton).setVisible(false);
+                try {
+                    Menu.game.getGameSpace().put("presVeto", true);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+        vetoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        choiceFrame.add(buttonPanel);
         choiceFrame.pack();
         choiceFrame.setLocationRelativeTo(null);
         choiceFrame.setVisible(true);
@@ -682,6 +755,8 @@ public class MenuComponents {
         //showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new PlayerRole("Erik", RoleType.Fascist)});
         //investigatePlayer("Elias", RoleType.Liberal);
         // welcomeDialogue();
+        // chooseCards(false, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
+        // chooseCards(true, LegislativeType.Fascist, LegislativeType.Fascist, LegislativeType.Liberal);
     }
 
     static class sendMessageListener implements ActionListener {
@@ -798,15 +873,15 @@ public class MenuComponents {
             Menu.game.setUser(name);
             username = name;
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "192.168.68.112:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);
@@ -843,15 +918,15 @@ public class MenuComponents {
             }
             Menu.game.setUser(name);
 
-            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+            // String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+            String IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
             if (IP_Port == null) {
                 frame.setVisible(true);
                 return;
             } else if (IP_Port.isEmpty()) {
                 do {
-                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
-                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
+                    // IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)", "212.237.106.43:9001");
+                    IP_Port = JOptionPane.showInputDialog(frame, "Enter tcp address: (default)",  localtcp+":"+port);
                 } while (IP_Port.isEmpty());
             }
             frame.setVisible(false);

@@ -152,6 +152,7 @@ public class GameController implements Runnable {
                 } else {
                     //win check (chancellor has been chosen)
                     /*Gamestate is 3 if fascist win by electing hitler, otherwise 4 to continue game*/
+                    System.out.println("checking game state");
                     int gameState = (fascistBoard[2] == LegislativeType.Fascist && roles[suggestedChancellor].getSecretRole() == RoleType.Hitler) ? 7 : 4;
                     _gameSpace.put("gameState", gameState, 0);
                     if (gameState == 7) {
@@ -159,6 +160,7 @@ public class GameController implements Runnable {
                         gameStarted = false;
                         break;
                     }     
+                    System.out.println("adding legislative command");
 
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put(CommandType.LegislativeSession, 0);
@@ -167,24 +169,30 @@ public class GameController implements Runnable {
                     electionTracker = 0;
                     //check win
                     cards = GetCardsFromDeck(3);
+                    System.out.println("about to uploads cards from deck");
 
                     _gameSpace.get(new ActualField("lock"));
                     _gameSpace.put("president", cards, veto); //maybe send veto bool here
                     _gameSpace.put("startLegislate", 0);
                     _gameSpace.put("lock");
+                    System.out.println("uploaded cards");
 
 
                     cards = Helper.castLegislate(_gameSpace.get(new ActualField("chancellorReturn"), new FormalField(ArrayList.class))[1]);
                     if (1 < cards.size()) throw new IllegalArgumentException("Too many legislatives left"); 
+                    System.out.println("got chancellors return");
 
                     ActionType executivePower;
                     if (cards.size() == 1) {
+                        System.out.println("A card was picked");
                         LegislativeType finalCard = cards.get(0); //take the chosen card
                         executivePower = UpdateBoards(finalCard);
                         //win check
                     } else {    //in case of veto
+                        System.out.println("A veto was called");
                         electionTracker++;
                         executivePower = ActionType.None;
+                        _gameSpace.put("gameState", 5, 0);
                     }
 
                     _gameSpace.put("endLegislate", 0);
@@ -509,7 +517,7 @@ public class GameController implements Runnable {
         Helper.printArray("dead players", (Helper.castIntArrayList(deads[1])).toArray());
         printDebug("Player count: " + playerCount + "\n deadPlayers: " + deadPlayers);
         Object[] votesReturn = _gameSpace.query(new ActualField("votes"), new FormalField(VoteType[].class), new ActualField(playerCount-deadPlayers));    //should also account for votes
-
+        _gameSpace.put("electionDone",0);
         _gameSpace.getp(new ActualField("suggest"), new FormalField(Integer.class), new FormalField(ArrayList.class));
         _gameSpace.getp(new ActualField("suggestion"), new FormalField(Integer.class));
 
@@ -627,7 +635,8 @@ public class GameController implements Runnable {
         switch (playerCount) {
             case 5:
             case 6:
-                executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
+                // executivePowers = new ActionType[] {ActionType.None, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
+                executivePowers = new ActionType[] {ActionType.Veto, ActionType.None, ActionType.Peek, ActionType.Kill, ActionType.Veto, ActionType.None};
                 break;     
             case 7:
             case 8:

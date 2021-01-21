@@ -497,7 +497,7 @@ public class MenuComponents {
         String cardName;
         for (int i = 0; i < 3; i++) {
             
-            if (deckTop[i].equals(LegislativeType.Fascist)) {
+            if (deckTop[i] == LegislativeType.Fascist) {
                 cardIcon = fascistCard;
             } else {
                 cardIcon = liberalCard;

@@ -32,7 +32,7 @@ import java.util.List;
 public class MenuComponents {
     static String appName;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
-    static String externalIP = "212.237.106.43";
+    static String externalIP = "82.211.204.41";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -52,7 +52,7 @@ public class MenuComponents {
     static JLabel numPlayerLabel;
     static JLabel waiting;
     static JTextPane joinedPlayers;
-    static Component box1, box2, box3;
+    static Component idBox, box1, box2, box3;
     static JButton[] buttons = new JButton[10];
     static JButton startGameButton;
     static JButton sendMessage;
@@ -682,7 +682,7 @@ public class MenuComponents {
         JPanel investigatePanel = new JPanel();
         investigatePanel.setLayout(new BoxLayout(investigatePanel, BoxLayout.Y_AXIS));
 
-        JLabel infoLabel = new JLabel("  You have chosen to investigate Elias!  ");
+        JLabel infoLabel = new JLabel("  You have chosen to investigate " + Name + "  ");
         JLabel playerParty = new JLabel(ioMem);
         JLabel playerName = new JLabel(name);
 
@@ -904,6 +904,9 @@ public class MenuComponents {
 
         innerIDPanel.add(Box.createHorizontalGlue());
         innerIDPanel.add(numPlayerLabel);
+        idBox = Box.createRigidArea(new Dimension(10, 0));
+        innerIDPanel.add(idBox);
+        gameFrameComps.add(idBox);
         gameFrameComps.add(innerIDPanel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
 

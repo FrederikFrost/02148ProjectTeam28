@@ -350,7 +350,8 @@ public class GameHandler implements Runnable {
                         imDead = CheckDeathStatus();
                         if (imDead && !oldImDead) {
                             MenuComponents.deadScreen();
-                            Helper.appendAndSend(_user.Name() + " was killed by the president!");
+                            Helper.appendAndSend(_user.Name() + " was killed by the president! " +
+                                "They must remain silent for the remainder of the round!");
                         }
                         oldImDead = imDead;
                         //TODO: if dead show on screen
@@ -362,7 +363,6 @@ public class GameHandler implements Runnable {
                 //_gameSpace.put(new ActualField("lock")); //TODO: determine why this lock is not breaking the game
                 //maybe OUTCOMMENT
             }
-            System.out.println("Haha! I am a weapon of mass destruction: Spaghetti code!");
         } catch (Exception e) {
             //TODO: Player was disconnected, handle this
             e.printStackTrace();

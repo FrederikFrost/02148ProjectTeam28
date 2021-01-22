@@ -63,7 +63,6 @@ public class ChatHandler implements Runnable {
          //TODO: make something
          e.printStackTrace();
          }
-
     }
 
     public void incChatId() {

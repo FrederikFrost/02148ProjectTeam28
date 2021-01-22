@@ -32,7 +32,7 @@ import java.util.List;
 public class MenuComponents {
     static String appName;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
-    static String externalIP = "212.237.106.43";
+    static String externalIP = "192.168.0.102";//"212.237.106.43";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -48,9 +48,11 @@ public class MenuComponents {
     static JPanel innerIDPanel;
     static JPanel startGamePanel;
     static JLabel[] labels = new JLabel[3];
+    static JLabel nameLabel;
     static JLabel numPlayerLabel;
     static JLabel waiting;
     static JTextPane joinedPlayers;
+    static Component box1, box2, box3;
     static JButton[] buttons = new JButton[10];
     static JButton startGameButton;
     static JButton sendMessage;
@@ -58,18 +60,12 @@ public class MenuComponents {
     static JEditorPane chatBox;
     static JScrollPane scrollPane;
     static JScrollBar scrollBar;
-
-    static Component ra1, ra2;
-    static Component ra3 = Box.createRigidArea(new Dimension(150, 0));
-    static Component ra4 = Box.createRigidArea(new Dimension(150, 0));
-
     static ArrayList<LegislativeType> legiChoices;
-    static ImageIcon fascistCard;
-    static ImageIcon fascistCardSelected;
 
     static ImageIcon[][] fascistBoardImageMatrix = new ImageIcon[3][7];
     static ImageIcon[][] liberalBoardImageMatrix = new ImageIcon[6][5];
-
+    static ImageIcon fascistCard;
+    static ImageIcon fascistCardSelected;
     static ImageIcon liberalCard;
     static ImageIcon liberalCardSelected;
     static ImageIcon fascistMembership;
@@ -78,14 +74,13 @@ public class MenuComponents {
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
     static ImageIcon deadLabelIcon;
-    static List<ImageIcon> icons = new ArrayList<ImageIcon>();
-    static List<Image> iconImages = new ArrayList<Image>();
-
     static ImageIcon jaIcon;
     static ImageIcon neinIcon;
     static ImageIcon jaIconSelected;
     static ImageIcon neinIconSelected;
     static String chosenVote;
+    static List<ImageIcon> icons = new ArrayList<ImageIcon>();
+    static List<Image> iconImages = new ArrayList<Image>();
 
     static JLabel fascistBoard = new JLabel();
     static JLabel liberalBoard = new JLabel();
@@ -97,6 +92,10 @@ public class MenuComponents {
     static int liberalArticles = 0;
     static int liberalFails = 0;
 
+    static ArrayList<Component> gameFrameComps = new ArrayList<Component>();
+    static ArrayList<Component> gameFrameTexts = new ArrayList<Component>();
+    static boolean darkMode = false;
+    static Color textColor = Color.BLACK;
     public static void initGameCards() throws IOException {
 
         // Boards
@@ -810,8 +809,11 @@ public class MenuComponents {
         chatBox = new JEditorPane("text/rtf", "");
         chatBox.setEditable(false);
         chatBox.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        gameFrameComps.add(chatBox);
         scrollPane = new JScrollPane(chatBox);
         scrollBar = scrollPane.getVerticalScrollBar();
+        gameFrameComps.add(scrollPane);
+        gameFrameComps.add(scrollBar);
         chatPanel.add(scrollPane, BorderLayout.CENTER);
 
         GridBagConstraints left = new GridBagConstraints();
@@ -831,21 +833,23 @@ public class MenuComponents {
         southPanel.add(messageBox, left);
         southPanel.add(sendMessage, right);
         chatPanel.add(BorderLayout.SOUTH, southPanel);
+        gameFrameComps.add(chatPanel);
         // chatPanel.setSize(400,1000);
     }
 
     public static void initGamePanel() {
         waiting = new JLabel("Waiting for players...");
         waiting.setFont(new Font("SansSerif", Font.BOLD, 40));
+        waiting.setForeground(textColor);
         waiting.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gameFrameTexts.add(waiting);
 
         joinedPlayers = new JTextPane();
         joinedPlayers.setEditable(false);
         joinedPlayers.setFont(new Font("SansSerif", Font.PLAIN, 35));
+        joinedPlayers.setForeground(textColor);
         joinedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Border border = BorderFactory.createLineBorder(Color.BLACK);
-        joinedPlayers
-                .setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+        joinedPlayers.setBorder(BorderFactory.createLineBorder(textColor));
 
         StyledDocument doc = joinedPlayers.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
@@ -875,16 +879,20 @@ public class MenuComponents {
         startGamePanel = new JPanel();
         startGamePanel.setLayout(new BorderLayout());
 
-        JLabel nameLabel = new JLabel(username);
+        nameLabel = new JLabel(username);
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        nameLabel.setForeground(textColor);
         nameLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         nameLabel.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+        gameFrameTexts.add(nameLabel);
 
         numPlayerLabel = new JLabel("Number of players: " + numOfPlayers);
+        numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         numPlayerLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         numPlayerLabel.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
+        numPlayerLabel.setForeground(textColor);
+        gameFrameTexts.add(numPlayerLabel);
 
-        numPlayerLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         membershipCard.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         membershipCard.setAlignmentY(JLabel.BOTTOM_ALIGNMENT);
 
@@ -900,16 +908,30 @@ public class MenuComponents {
 
         innerIDPanel.add(Box.createHorizontalGlue());
         innerIDPanel.add(numPlayerLabel);
+        gameFrameComps.add(innerIDPanel);
         IDPanel.add(innerIDPanel, BorderLayout.PAGE_END);
 
         gamePanel.add(waiting);
+        gameFrameComps.add(waiting);
         gamePanel.add(startGamePanel);
-        gamePanel.add(Box.createRigidArea(new Dimension(0, 50)));
+        gameFrameComps.add(startGamePanel);
+        box1 = Box.createRigidArea(new Dimension(0, 50));
+        gamePanel.add(box1);
+        gameFrameComps.add(box1);
         gamePanel.add(joinedPlayers);
+        gameFrameComps.add(joinedPlayers);
         gamePanel.add(boardPanel);
-        gamePanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        gameFrameComps.add(boardPanel);
+        box2 = Box.createRigidArea(new Dimension(0, 30));
+        gameFrameComps.add(box2);
+        gamePanel.add(box2);
         gamePanel.add(IDPanel);
-        gamePanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        gameFrameComps.add(IDPanel);
+        box3 = Box.createRigidArea(new Dimension(0, 5));
+        gamePanel.add(box3);
+        gameFrameComps.add(box3);
+
+        gameFrameComps.add(gamePanel);
     }
 
     public static void gameFrame() throws IOException {
@@ -918,13 +940,14 @@ public class MenuComponents {
 
         mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, chatPanel, gamePanel);
         mainPanel.setDividerLocation(0.25);
+        gameFrameComps.add(mainPanel);
         gameFrame.setIconImages(iconImages);
         gameFrame.add(mainPanel);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setBounds(100, 100, 1600, 1000);
         gameFrame.setVisible(true);
         gameFrame.setLocationRelativeTo(null);
-        welcomeDialogue();
+        //welcomeDialogue();
 
         // Testing of GUI elements:
 
@@ -953,16 +976,14 @@ public class MenuComponents {
                 mainPanel.revalidate();
                 scrollBar.setValue(scrollBar.getMaximum());
 
-                if (msg.equals(".help")) {
-                    append(chatBox,
-                            "<ChatBot>: Chat commands will be listed:\n"
-                                    + "\".clear\":   Clears the chat screen messages.\n"
-                                    + "\".tcp\":   Lists the tcp address of the chat room.\n"
-                                    + "\".leave\":   Allows for leaving chatroom.\n",
-                            true);
-                } else if (msg.equals(".clear")) {
+                if (msg.equals(".help")) displayChatFunctions();
+                else if (msg.equals(".clear")) {
                     chatBox.setText("");
                     append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
+                } else if (msg.equals(".mode")) {
+                    switchMode();
+                    String mode = darkMode ? "Night" : "Day";
+                    append(chatBox, "<ChatBot>: Display was set to " + mode + " mode!\n", true);
                 } else if (msg.equals(".tcp")) {
                     append(chatBox, "<ChatBot>: This chat room's tcp is: " + tcp + "\n", true);
                 } else if (msg.equals(".increment")) {
@@ -993,7 +1014,7 @@ public class MenuComponents {
             if (b)
                 doc.insertString(doc.getLength(), s, bold());
             else
-                doc.insertString(doc.getLength(), s, null);
+                doc.insertString(doc.getLength(), s, plain());
         } catch (BadLocationException exc) {
             exc.printStackTrace();
         }
@@ -1003,6 +1024,13 @@ public class MenuComponents {
     private static SimpleAttributeSet bold() {
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setBold(sas, true);
+        StyleConstants.setForeground(sas, textColor);
+        return sas;
+    }
+
+    private static SimpleAttributeSet plain() {
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setForeground(sas, textColor);
         return sas;
     }
 
@@ -1078,7 +1106,7 @@ public class MenuComponents {
     };
 
     public static AbstractAction joinGameAction = new AbstractAction() {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L; 
 
         public void actionPerformed(ActionEvent e) {
             // frame.setVisible(false);
@@ -1354,7 +1382,48 @@ public class MenuComponents {
         winnerFrame.setLocationRelativeTo(null);
         winnerFrame.setVisible(true);
     }
-        
+
+    public static void switchMode(){
+        textColor = darkMode ? Color.BLACK : Color.decode("#e5c454");
+        Color color = darkMode ? Color.WHITE : Color.decode("#252525");//Color.decode("#101010");
+        for (Component comp : gameFrameComps) comp.setBackground(color);
+        for (Component text : gameFrameTexts) text.setForeground(textColor);
+        gameFrame.getContentPane().setBackground(color);
+        joinedPlayers.setForeground(textColor);
+        joinedPlayers.setBorder(BorderFactory.createLineBorder(textColor));
+        joinedPlayers.repaint();
+        joinedPlayers.invalidate();
+        StyledDocument doc = (StyledDocument) chatBox.getDocument();
+        SimpleAttributeSet atts = new SimpleAttributeSet();
+        StyleConstants.setForeground(atts, textColor);
+        String text = "";
+        try {
+            text = doc.getText(0, doc.getLength());
+        } catch (BadLocationException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        System.out.println(text);
+        try {
+            doc.remove(0, doc.getLength());
+            doc.insertString(0, text, atts);
+        } catch (BadLocationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("I switched the background to " + color.toString());
+        System.out.println("Text colour is " + textColor.toString());
+        darkMode = !darkMode;
+    }
+
+    public static void displayChatFunctions(){
+        append(chatBox,"<ChatBot>: The chat commands are as follows:\n"
+        + ".clear   :   Clears the chat screen messages.\n"
+        + ".mode    :   Switches between night and day mode.\n"
+        + ".tcp     :   Lists the tcp address of the chat room.\n"
+        + ".leave   :   Leave game.\n"
+        + ".help    :   Will display this message again!\n",true);
+    }
 
     
     // public static void playSong(URL media) {

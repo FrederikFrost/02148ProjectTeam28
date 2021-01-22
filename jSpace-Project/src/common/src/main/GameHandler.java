@@ -150,6 +150,7 @@ public class GameHandler implements Runnable {
     }
 
     public void run() {
+        MenuComponents.displayChatFunctions();
         System.out.println("Hello mein friends!");
         boolean gameStarted = true;
         boolean imDead = false;

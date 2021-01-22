@@ -24,6 +24,5 @@ The game can be run either by double-clicking the SecretHitler.jar file, or by n
 # Sharing rights
 - The game is based upon the original board game Secret Hitler, created by Mike Boxleiter,
   Tommy Maranges, and Mac Schubert. Our version is merely a digital modified adaption of their invention, 
-  and is therefore released under the same Creative Common License (BY-NC-SA 4.0).
-  https://creativecommons.org/licenses/by-nc-sa/4.0/
+  and is therefore released under the same Creative Common License [BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
  

@@ -15,3 +15,14 @@ The game can be run either by double-clicking the SecretHitler.jar file, or by n
 - To run the game you'll need to have at least a JRE installed on your computer.
 - Lobbies are created on an IP:Port-basis. So to play a game you'll have to make use of an available online socket, or perhaps use port-forwarding to allow communication on a port on your routers external IP-address. 
 - To start and play a game, you'll need to be between 5 and 10 players, each with their own program running.
+
+# Playing the game
+ - Rules can be found on https://www.secrethitler.com/assets/Secret_Hitler_Rules.pdf.
+ - Each round, a player will be met with prompts of various dialogues and actions, that are well explained.
+ - IMPORTANT: Do not leave the game, after a game is started. This will cause the game to crash for all players, since the game is based on data of each player in the game at game start.
+
+# Sharing rights
+- The game is based upon the original board game Secret Hitler, created by Mike Boxleiter,
+  Tommy Maranges, and Mac Schubert. Our version is merely a digital adaption of their invention, 
+  and is therefore released under the same Creative Common License (BY-NC-SA 4.0).
+ 

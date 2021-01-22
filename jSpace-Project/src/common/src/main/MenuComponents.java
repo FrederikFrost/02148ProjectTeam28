@@ -1034,11 +1034,11 @@ public class MenuComponents {
         return sas;
     }
 
-    public static void welcomeDialogue() {
-        JOptionPane.showMessageDialog(null,
-                "Welcome to Secret Hitler! The game will commence " + "as soon as a minimum of 5 players have joined.",
-                "Welcome!", 1);
-    }
+    // public static void welcomeDialogue() {
+    //     JOptionPane.showMessageDialog(null,
+    //             "Welcome to Secret Hitler! The game will commence " + "as soon as a minimum of 5 players have joined.",
+    //             "Welcome!", 1);
+    // }
 
     public static int exitDialogue(String errorMessage) {
         return JOptionPane.showOptionDialog(menuFrame, errorMessage, "Error", 0, 1, null, null, null);
@@ -1293,7 +1293,9 @@ public class MenuComponents {
         JTextArea infoText = new JTextArea();
         infoText.setFont(new Font("SansSerif", Font.BOLD, 14));
         infoText.setEditable(false);
-        infoText.setText("   You will be able to spectate the game until it's done,   \n"
+        infoText.setText("                        "
+                + " DO NOT LEAVE THE GAME!         \n\n "
+                + " You will be able to spectate the game until it's done,   \n"
                 + "        but you will be unable to perform any actions!  \n\n"
                 + "            (PS! You are not allowed to chat or speak)  ");
         infoText.setAlignmentX(Component.CENTER_ALIGNMENT);

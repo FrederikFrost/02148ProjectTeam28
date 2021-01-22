@@ -12,7 +12,7 @@ The game can be run either by double-clicking the SecretHitler.jar file, or by n
 
 
 # Requirements
-- To run the game you'll need to have at least a JRE installed on your computer.
+- To run the game you'll need to have at least a JRE installed on your computer. AdoptOpenJDK 8 or 11 for example.
 - Lobbies are created on an IP:Port-basis. So to play a game you'll have to make use of an available online socket, or perhaps use port-forwarding to allow communication on a port on your routers external IP-address. 
 - To start and play a game, you'll need to be between 5 and 10 players, each with their own program running.
 

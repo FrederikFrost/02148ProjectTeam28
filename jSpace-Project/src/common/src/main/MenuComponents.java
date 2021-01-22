@@ -241,7 +241,6 @@ public class MenuComponents {
         numPlayerLabel.setText("Number of players: " + numOfPlayers);
         if (numOfPlayers >= 5 && gameHost) {
             System.out.println("Enough players to start!");
-            waiting.setText("Waiting for host to start game!");
             startGamePanel.add(startGameButton);
             gamePanel.revalidate();
         }
@@ -315,7 +314,6 @@ public class MenuComponents {
                             else
                                 legiChoices.remove(LegislativeType.Liberal);
                         }
-                        System.out.println("Legichoices size = " + legiChoices.size());
                     }
                 }
             });
@@ -331,7 +329,6 @@ public class MenuComponents {
             public void actionPerformed(ActionEvent e) {
                 if (legiChoices.size() == cards.length - 1) {
                     for (LegislativeType choice : legiChoices)
-                        System.out.println(choice);
                     SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
                     try {
                         Menu.game.getGameSpace().put("legiChoices", legiChoices);
@@ -504,8 +501,7 @@ public class MenuComponents {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
-                } else
-                    System.out.println("You haven't picked a vote!");
+                }
             }
         });
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -1406,8 +1402,6 @@ public class MenuComponents {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("I switched the background to " + color.toString());
-        System.out.println("Text colour is " + textColor.toString());
         darkMode = !darkMode;
     }
 

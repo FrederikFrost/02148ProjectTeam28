@@ -2,9 +2,9 @@
 
 This is team 28's project: Secret Hitler.
 The project is written by:
-Frederik Frost - s184182@student.dtu.dk
-Elias Ismail - s184194@student.dtu.dk
-Erik Thomsen - s184200@student.dtu.dk
+- Frederik Frost - s184182@student.dtu.dk
+- Elias Ismail - s184194@student.dtu.dk
+- Erik Thomsen - s184200@student.dtu.dk
 
 
 # Running the game

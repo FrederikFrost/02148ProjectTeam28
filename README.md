@@ -19,7 +19,7 @@ The game can be run either by double-clicking the SecretHitler.jar file, or by n
 # Playing the game
  - Rules can be found on https://www.secrethitler.com/assets/Secret_Hitler_Rules.pdf.
  - Each round, a player will be met with prompts of various dialogues and actions, that are well explained.
- - IMPORTANT: DO NOT LEAVE THE GAME, AFTER A GAME IS STARTED. THIS WILL CAUSE THE GAME TO CRASH FOR ALL PLAYERS, SINCE THE GAME IS BASED ON DATA OF EACH PLAYER AT GAME START.
+ - IMPORTANT: Do not leave the game, after a game is started. This will cause the game to crash for all players, since the game is based on data of each player in the game at game start.
 
 # Sharing rights
 - The game is based upon the original board game Secret Hitler, created by Mike Boxleiter,

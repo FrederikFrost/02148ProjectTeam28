@@ -32,7 +32,7 @@ import java.util.List;
 public class MenuComponents {
     static String appName;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
-    static String externalIP = "192.168.0.102";//"212.237.106.43";
+    static String externalIP = "212.237.106.43";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -1193,13 +1193,6 @@ public class MenuComponents {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-                Menu.game.leaveGame();
-                numOfPlayers--;
-            } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
-                throw new RuntimeException(e1);
-            }
             System.exit(1);
         }
     };

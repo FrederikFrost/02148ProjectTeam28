@@ -412,18 +412,22 @@ public class GameHandler implements Runnable {
                 break;
             case 2:
                 MenuComponents.incLibArticles();
+                MenuComponents.winScreen(RoleType.Liberal);
                 return false;
             case 3:
                 MenuComponents.incFascArticles();
+                MenuComponents.winScreen(RoleType.Fascist);
                 return false;
-
             case 4:
                 break;
             case 5:
                 MenuComponents.incLibFails();
                 break;
             case 6:
+                MenuComponents.winScreen(RoleType.Liberal);
+                return false;
             case 7:
+                MenuComponents.winScreen(RoleType.Fascist);
                 return false;
 
             default:

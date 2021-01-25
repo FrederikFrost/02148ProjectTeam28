@@ -32,7 +32,7 @@ import java.util.List;
 public class MenuComponents {
     static String appName;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
-    static String externalIP = "82.211.204.41";
+    static String externalIP = "192.168.0.102";//"82.211.204.41";
     static String port = "9001";
     static String tcp;
     static String username;
@@ -74,11 +74,13 @@ public class MenuComponents {
     static ImageIcon liberalRole;
     static ImageIcon hitlerRole;
     static ImageIcon deadLabelIcon;
+    static ImageIcon suggestLabelIcon;
     static ImageIcon jaIcon;
     static ImageIcon neinIcon;
     static ImageIcon jaIconSelected;
     static ImageIcon neinIconSelected;
     static String chosenVote;
+    static String suggestee;
     static List<ImageIcon> icons = new ArrayList<ImageIcon>();
     static List<Image> iconImages = new ArrayList<Image>();
 
@@ -141,6 +143,7 @@ public class MenuComponents {
 
         // Additional labels
         deadLabelIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/labels/deadlabel.png")));
+        suggestLabelIcon = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/labels/suggestlabel.png")));
 
         // Icons
         int index = 0;
@@ -946,11 +949,10 @@ public class MenuComponents {
         gameFrame.setBounds(100, 100, 1600, 1000);
         gameFrame.setVisible(true);
         gameFrame.setLocationRelativeTo(null);
+        suggestDialogue(new String[]{"Elias", "Frederik", "Erik"}, "Who should be suggested chancellor?");
         //welcomeDialogue();
 
         // Testing of GUI elements:
-
-        // suggestDialogueBox(new String[]{"Eli", "Fred"}, "Halløjsa!");
         // showAllyRoles(new PlayerRole[]{new PlayerRole("Elias", RoleType.Hitler), new
         // PlayerRole("Erik", RoleType.Fascist)});
         // investigatePlayer("Elias", RoleType.Liberal);
@@ -1043,23 +1045,80 @@ public class MenuComponents {
         return JOptionPane.showOptionDialog(menuFrame, errorMessage, "Error", 0, 1, null, null, null);
     }
 
-    public static String suggestDialogueBox(String[] choices, String suggestMsg) {
-        String input = (String) JOptionPane.showInputDialog(null, "Choose now...", suggestMsg,
-                JOptionPane.QUESTION_MESSAGE, icons.get(2), // Use
-                // default
-                // icon
-                choices, // Array of choices
-                choices[0]); // Initial choice
-        return input;
+    // public static String suggestDialogueBox(String[] choices, String suggestMsg) {
+    //     String input = (String) JOptionPane.showInputDialog(null, "Choose now...", suggestMsg,
+    //             JOptionPane.QUESTION_MESSAGE, icons.get(2), // Use
+    //             // default
+    //             // icon
+    //             choices, // Array of choices
+    //             choices[0]); // Initial choice
+    //     return input;
+    // }
+
+    public static void suggestDialogue(String[] choices, String suggestMsg) {
+        suggestee = "";
+        JFrame suggestFrame = new JFrame();
+        suggestFrame.setLayout(new BoxLayout(suggestFrame.getContentPane(), BoxLayout.X_AXIS));
+        suggestFrame.setTitle("Secret Hitler");
+
+        JPanel suggestPanel = new JPanel();
+        suggestPanel.setLayout(new BoxLayout(suggestPanel, BoxLayout.Y_AXIS));
+
+        JLabel suggestLabel = new JLabel();
+        suggestLabel.setIcon(suggestLabelIcon);
+        suggestLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel suggestText = new JLabel(suggestMsg);
+        suggestText.setFont(new Font("SansSerif", Font.BOLD, 16));
+        suggestText.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JComboBox<String> choiceBox = new JComboBox<String>(choices);
+        choiceBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton submitButton = new JButton("Submit suggestion!");
+        submitButton.setFocusPainted(false);
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (choiceBox.getSelectedItem().toString() != "") {
+                    try {
+                        SwingUtilities.getWindowAncestor(submitButton).setVisible(false);
+                        suggestee = choiceBox.getSelectedItem().toString();
+                        Menu.game.getGameSpace().put("sugdiag", suggestee, Menu.game.getUser().Id());
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        suggestPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        suggestPanel.add(suggestText);
+        suggestPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        suggestPanel.add(suggestLabel);
+        suggestPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        suggestPanel.add(choiceBox);
+        suggestPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        suggestPanel.add(submitButton);
+        suggestPanel.add(Box.createRigidArea(new Dimension(0,10)));
+
+        suggestFrame.add(Box.createRigidArea(new Dimension(10,0)));
+        suggestFrame.add(suggestPanel);
+        suggestFrame.add(Box.createRigidArea(new Dimension(10,0)));
+        suggestFrame.pack();
+        suggestFrame.setIconImages(iconImages);
+        suggestFrame.setLocationRelativeTo(null);
+        suggestFrame.setVisible(true);
     }
 
-    public static String voteDialogueBox(String sugChan) {
-        String[] choices = { "Ja", "Nein" };
-        String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
-                "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, icons.get(2), choices,
-                "Select vote");
-        return input;
-    }
+    // public static String voteDialogueBox(String sugChan) {
+    //     String[] choices = { "Ja", "Nein" };
+    //     String input = (String) JOptionPane.showInputDialog(null, "Choose now...",
+    //             "Should " + sugChan + " be elected chancellor?", JOptionPane.QUESTION_MESSAGE, icons.get(2), choices,
+    //             "Select vote");
+    //     return input;
+    // }
 
     // AbstractActions
     public static AbstractAction createGameAction = new AbstractAction() {

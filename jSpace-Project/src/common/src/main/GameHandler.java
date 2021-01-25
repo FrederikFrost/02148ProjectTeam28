@@ -299,7 +299,7 @@ public class GameHandler implements Runnable {
                                      * president looks in 'roles' tuple for info
                                      */
                                     suggestMsg = "Who do you want to investigate?";
-                                    choice = Game.suggest(cands, suggestMsg);
+                                    choice = Game.suggest(cands, suggestMsg, _user.Id());
                                     //TODO: get name and party
                                     
                                     MenuComponents.investigatePlayer(users[choice].Name(), roles[choice].getPartyMembership());
@@ -313,7 +313,7 @@ public class GameHandler implements Runnable {
                                      *      - president return person to kill
                                      */
                                     suggestMsg = "Who do you want to kill?";
-                                    choice = Game.suggest(cands, suggestMsg);
+                                    choice = Game.suggest(cands, suggestMsg, _user.Id());
                                     _gameSpace.put("dead", choice);
                                     break;
                                     
@@ -325,7 +325,7 @@ public class GameHandler implements Runnable {
                                      * 
                                      */
                                     suggestMsg = "Who do you want to elect as the next President?";
-                                    choice = Game.suggest(cands, suggestMsg);
+                                    choice = Game.suggest(cands, suggestMsg, _user.Id());
                                     _gameSpace.put("specialPres", choice);
                                     break;
                                     
@@ -336,7 +336,7 @@ public class GameHandler implements Runnable {
                                      * veto = true
                                     */
                                     suggestMsg = "Who do you want to kill?";
-                                    choice = Game.suggest(cands, suggestMsg);
+                                    choice = Game.suggest(cands, suggestMsg, _user.Id());
                                     _gameSpace.put("dead", choice);
 
                                     break;
@@ -453,7 +453,7 @@ public class GameHandler implements Runnable {
             // ArrayList<Integer> eligibleCands = Helper.cleanCast(newElect[2]);
             // Helper.printArray("Cands", eligibleCands.toArray());
             String suggestMsg = "Who should be suggested chancellor?";
-            suggestion = Game.suggest(eliCands, suggestMsg);
+            suggestion = Game.suggest(eliCands, suggestMsg, _user.Id());
             _gameSpace.get(new ActualField("lock"));
             _gameSpace.put("suggestion", suggestion);
             _gameSpace.put("lock");

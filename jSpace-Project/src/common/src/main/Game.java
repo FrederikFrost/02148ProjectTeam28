@@ -13,7 +13,7 @@ public class Game {
     static Space userSpace = Menu.game.getUserSpace();
     static Space gameSpace = Menu.game.getGameSpace();
 
-    public static int suggest(int[] eligibleCands, String suggestMsg) throws InterruptedException {
+    public static int suggest(int[] eligibleCands, String suggestMsg, int id) throws InterruptedException {
         // TODO: make suggestion pop-up list.
         String[] choices = new String[eligibleCands.length];
         User[] users = (User[]) gameSpace.query(new ActualField("users"), new FormalField(User[].class))[1];
@@ -23,13 +23,15 @@ public class Game {
         }
 
         Helper.printArray("choices", choices);
-        String sugChan;
-        sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
-        if (sugChan == null) {
-            do
-                sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
-            while (sugChan == null);
-        }
+        MenuComponents.suggestDialogue(choices, suggestMsg);
+        Object[] suggestObject = gameSpace.get(new ActualField("sugdiag"), new FormalField(String.class), new ActualField(id));
+        String sugChan = (String) suggestObject[1];
+        // sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
+        // if (sugChan == null) {
+        //     do
+        //         sugChan = MenuComponents.suggestDialogueBox(choices, suggestMsg);
+        //     while (sugChan == null);
+        // }
         int suggestion = -1;
         for (User user : users) {
             if (user.Name().equals(sugChan)) {

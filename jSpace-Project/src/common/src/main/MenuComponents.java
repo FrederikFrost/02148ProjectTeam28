@@ -949,7 +949,6 @@ public class MenuComponents {
         gameFrame.setBounds(100, 100, 1600, 1000);
         gameFrame.setVisible(true);
         gameFrame.setLocationRelativeTo(null);
-        suggestDialogue(new String[]{"Elias", "Frederik", "Erik"}, "Who should be suggested chancellor?");
         //welcomeDialogue();
 
         // Testing of GUI elements:

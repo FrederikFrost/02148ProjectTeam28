@@ -34,7 +34,7 @@ import java.util.List;
 
 public class MenuComponents {
     static String appName;
-    static String musicFilePath = System.getProperty("user.dir") + "/src/common/src/main/media/music.wav";
+    static String musicFilePath = System.getProperty("user.dir") + "/jSpace-Project/src/common/src/main/media/music.wav";
     static SimpleAudioPlayer audioPlayer;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
     static String externalIP = "192.168.0.102";//"82.211.204.41";
@@ -1171,12 +1171,6 @@ public class MenuComponents {
             new Thread(Menu.chatHandler).start();
             new Thread(Menu.game).start();
             System.out.println("Created Game");
-            try {
-                audioPlayer.stop();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
         }
     };
 
@@ -1289,11 +1283,7 @@ public class MenuComponents {
             mainPanel.repaint();
             try {
                 audioPlayer.stop();
-            } catch (UnsupportedAudioFileException e1) {
-                e1.printStackTrace();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (LineUnavailableException e1) {
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
                 e1.printStackTrace();
             }
         }

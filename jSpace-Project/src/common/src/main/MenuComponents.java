@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.BadLocationException;
@@ -26,11 +28,14 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuComponents {
     static String appName;
+    static String musicFilePath = System.getProperty("user.dir") + "/src/common/src/main/media/music.wav";
+    static SimpleAudioPlayer audioPlayer;
     static String internalIP = "192.168.0.102";// "192.168.50.218";
     static String externalIP = "192.168.0.102";//"82.211.204.41";
     static String port = "9001";
@@ -118,6 +123,8 @@ public class MenuComponents {
             }
         }
 
+        System.out.println(Paths.get("").toAbsolutePath().toString());
+
         // Article cards
         fascistCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/fascist/article.png")));
         liberalCard = new ImageIcon(ImageIO.read(Menu.class.getResource("gui/gamecards/liberal/article.png")));
@@ -162,7 +169,7 @@ public class MenuComponents {
         }
     }
 
-    public static void menu() throws IOException {
+    public static void menu() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 
         initGameCards();
 
@@ -204,6 +211,9 @@ public class MenuComponents {
         joinGameButton.addActionListener(joinGameAction);
         exitButton.addActionListener(exitAction);
         startGameButton.addActionListener(startGameAction);
+
+        audioPlayer = new SimpleAudioPlayer(musicFilePath);
+        audioPlayer.play();
     }
 
     // Method for creating buttons
@@ -956,7 +966,7 @@ public class MenuComponents {
         // PlayerRole("Erik", RoleType.Fascist)});
         // investigatePlayer("Elias", RoleType.Liberal);
         // voteDialogue("Elias");
-        // welcomeDialogue();
+        // //welcomeDialogue();
         // chooseArticles(false, LegislativeType.Fascist, LegislativeType.Fascist,
         // LegislativeType.Liberal);
         // showRole(RoleType.Fascist, new PlayerRole[]{new PlayerRole("Elias",
@@ -976,7 +986,9 @@ public class MenuComponents {
                 mainPanel.revalidate();
                 scrollBar.setValue(scrollBar.getMaximum());
 
-                if (msg.equals(".help")) displayChatFunctions();
+                if (msg.equals(".help")) {
+                    displayChatFunctions();
+                }
                 else if (msg.equals(".clear")) {
                     chatBox.setText("");
                     append(chatBox, "<ChatBot>: The chat has been cleared!\n", true);
@@ -1159,6 +1171,12 @@ public class MenuComponents {
             new Thread(Menu.chatHandler).start();
             new Thread(Menu.game).start();
             System.out.println("Created Game");
+            try {
+                audioPlayer.stop();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     };
 
@@ -1269,6 +1287,15 @@ public class MenuComponents {
             startGamePanel.remove(startGameButton);
             mainPanel.revalidate();
             mainPanel.repaint();
+            try {
+                audioPlayer.stop();
+            } catch (UnsupportedAudioFileException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (LineUnavailableException e1) {
+                e1.printStackTrace();
+            }
         }
     };
 
@@ -1475,9 +1502,4 @@ public class MenuComponents {
         + ".help    :   Will display this message again!\n",true);
     }
 
-    
-    // public static void playSong(URL media) {
-    //     Player mediaPlayer = Manager.createRealizedPlayer(media);
-    //     mediaPlayer.start();
-    // WORK IN PROGRESS
 }

@@ -86,7 +86,9 @@ public class GameController implements Runnable {
 
             Object[] startTuple = _gameSpace.query(new ActualField("start"), new FormalField(Integer.class));
             playerCount = (int) startTuple[1];
-            if (playerCount < 5 || 10 < playerCount) throw new IllegalArgumentException("Too few or too many players!");
+            if (playerCount < 5 || 10 < playerCount) {
+                throw new IllegalArgumentException("Too few or too many players!");
+            }
             printDebug("Game started! PlayerCount: " + playerCount);
             //TODO: maybe grap userSpace lock to prevent players from joining a started game
 
